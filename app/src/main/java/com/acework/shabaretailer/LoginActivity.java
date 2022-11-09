@@ -1,5 +1,6 @@
 package com.acework.shabaretailer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Toast;
@@ -7,11 +8,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 @SuppressWarnings("ConstantConditions")
-public class Login extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity {
     private TextInputLayout usernameLayout, passwordLayout;
     private TextInputEditText usernameField, passwordField;
     private MaterialButton loginButton, forgotPasswordButton, signUpButton;
@@ -42,7 +44,11 @@ public class Login extends AppCompatActivity {
 
     private void login() {
         if (validateInput()) {
-            Toast.makeText(this, "Login action!", Toast.LENGTH_SHORT).show();
+            if (mockBackendValidation(usernameField.getText().toString().trim(), passwordField.getText().toString().trim())) {
+                toCatalog();
+            } else {
+                Snackbar.make(usernameLayout, "Invalid credentials", Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -79,5 +85,13 @@ public class Login extends AppCompatActivity {
         }
         usernameLayout.setError("Invalid email address or telephone number");
         return false;
+    }
+
+    private boolean mockBackendValidation(String username, String password) {
+        return (username.equals("jsang275@gmail.com") || username.equals("0707686612")) && password.equals("12345678");
+    }
+
+    private void toCatalog() {
+        startActivity(new Intent(this, CatalogActivity.class));
     }
 }

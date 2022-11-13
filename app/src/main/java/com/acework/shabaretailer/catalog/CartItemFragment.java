@@ -4,10 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -15,12 +17,16 @@ import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
+import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 public class CartItemFragment extends Fragment {
     private Item item;
     private TextView itemName, price, minus5, minus, quantity, plus, plus5, total, dimensions, shape, weaving, leather, strap, weight, sku;
     private MaterialButton back, done;
+    private ImageView imageView;
 
     public CartItemFragment() {
     }
@@ -61,6 +67,7 @@ public class CartItemFragment extends Fragment {
         weight = view.findViewById(R.id.weight);
         sku = view.findViewById(R.id.sku);
         done = view.findViewById(R.id.done);
+        imageView = view.findViewById(R.id.image);
     }
 
     private void setValues() {
@@ -75,6 +82,7 @@ public class CartItemFragment extends Fragment {
         strap.setText(item.getStrapLength());
         weight.setText(getString(R.string.weight_formatted, item.getWeight()));
         sku.setText(item.getSku());
+        loadImage();
     }
 
     private void setTotal(Item item) {
@@ -132,5 +140,18 @@ public class CartItemFragment extends Fragment {
     public void setItem(Item item) {
         this.item = item;
         setValues();
+    }
+
+    private void loadImage() {
+        String imageName = item.getSku() + "_01.jpg";
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
+        shabaCSR.child(imageName).getDownloadUrl().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Glide.with(imageView).load(task.getResult()).placeholder(R.drawable.image_96).into(imageView);
+            } else {
+                imageView.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.image_96));
+            }
+        });
     }
 }

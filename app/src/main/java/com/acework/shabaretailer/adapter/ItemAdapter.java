@@ -93,7 +93,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     private void setImage(String itemSku, ImageView imageView) {
         String imageName = itemSku + "_01.jpg";
-        System.out.println(imageName);
         shabaItemImagesCloudStorageRef.child(imageName).getDownloadUrl().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Glide.with(imageView).load(task.getResult()).placeholder(R.drawable.image_96).into(imageView);

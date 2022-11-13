@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.acework.shabaretailer.dialog.SignupTCDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -56,7 +57,8 @@ public class SignupActivity extends AppCompatActivity {
     }
 
     private void readTc() {
-        Toast.makeText(this, "Read T&C!", Toast.LENGTH_SHORT).show();
+        SignupTCDialog dialog = SignupTCDialog.newInstance(this::tcAccepted);
+        dialog.show(getSupportFragmentManager(), SignupTCDialog.TAG);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -110,5 +112,9 @@ public class SignupActivity extends AppCompatActivity {
         } else {
             scrollView.fullScroll(View.FOCUS_UP);
         }
+    }
+
+    private void tcAccepted() {
+        tc.setChecked(true);
     }
 }

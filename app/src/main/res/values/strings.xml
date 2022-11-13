@@ -14,4 +14,6 @@
     <string name="confirm_password">Confirm password</string>
     <string name="read_accept_terms_and_conditions">Read &amp; accept terms and conditions</string>
     <string name="join">Join</string>
+    <string name="signup_terms_and_conditions"><![CDATA[Shaba Retailers Terms & Conditions]]></string>
+    <string name="accept">Accept</string>
 </resources>

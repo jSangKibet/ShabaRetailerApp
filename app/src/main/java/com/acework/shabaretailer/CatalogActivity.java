@@ -6,13 +6,16 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.acework.shabaretailer.catalog.CartFragment;
 import com.acework.shabaretailer.catalog.CartItemFragment;
 import com.acework.shabaretailer.catalog.CatalogFragment;
+import com.acework.shabaretailer.catalog.ConfirmOrderFragment;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -26,6 +29,7 @@ public class CatalogActivity extends AppCompatActivity {
     private CatalogFragment catalogFragment;
     private CartItemFragment cartItemFragment;
     private CartFragment cartFragment;
+    private ConfirmOrderFragment confirmOrderFragment;
     private Fragment activeFragment;
     private CartViewModel cartViewModel;
     private boolean fromCatalog;
@@ -54,6 +58,11 @@ public class CatalogActivity extends AppCompatActivity {
     public void toCart() {
         getSupportFragmentManager().beginTransaction().hide(activeFragment).show(cartFragment).commit();
         activeFragment = cartFragment;
+    }
+
+    public void toConfirmOrder() {
+        getSupportFragmentManager().beginTransaction().hide(activeFragment).show(confirmOrderFragment).commit();
+        activeFragment = confirmOrderFragment;
     }
 
     public void backFromCatalog() {
@@ -89,15 +98,25 @@ public class CatalogActivity extends AppCompatActivity {
         catalogFragment = new CatalogFragment();
         cartItemFragment = new CartItemFragment();
         cartFragment = new CartFragment();
+        confirmOrderFragment = new ConfirmOrderFragment();
         getSupportFragmentManager()
                 .beginTransaction()
                 .add(R.id.fragment_container, catalogFragment)
                 .add(R.id.fragment_container, cartItemFragment)
                 .add(R.id.fragment_container, cartFragment)
+                .add(R.id.fragment_container, confirmOrderFragment)
                 .hide(cartItemFragment)
                 .hide(cartFragment)
+                .hide(confirmOrderFragment)
                 .show(catalogFragment)
                 .commit();
         activeFragment = catalogFragment;
+    }
+
+    public void orderCompleted() {
+        FragmentContainerView view = findViewById(R.id.fragment_container);
+        cartViewModel.resetCart();
+        toCatalog();
+        Snackbar.make(view, "Order completed!", Snackbar.LENGTH_LONG).show();
     }
 }

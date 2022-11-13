@@ -48,4 +48,19 @@
     <string name="weight_total">Estimated weight total: %.2f KG</string>
     <string name="transport">Estimated transport cost: KES %,d</string>
     <string name="cart">Cart</string>
+    <string name="confirm_order">Confirm order</string>
+    <string name="order_details">Order details</string>
+    <string name="item_total_label">Item total:</string>
+    <string name="estimated_weight_label">Estimated weight:</string>
+    <string name="estimated_transport_cost_label">Estimated transport cost:</string>
+    <string name="estimated_total_label">Estimated total:</string>
+    <string name="email_address_label">Email address:</string>
+    <string name="telephone_label">Telephone:</string>
+    <string name="street_label">City/Town/Street:</string>
+    <string name="countyLabel">County:</string>
+    <string name="name_label">Name:</string>
+    <string name="recipient_information">Recipient information</string>
+    <string name="accepted_tc_order">I have read and accepted the terms and conditions of making an order</string>
+    <string name="kes">KES %,d</string>
+
 </resources>

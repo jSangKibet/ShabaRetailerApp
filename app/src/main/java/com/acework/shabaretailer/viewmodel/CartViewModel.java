@@ -10,6 +10,7 @@ import com.acework.shabaretailer.model.Item;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @SuppressWarnings("ConstantConditions")
 public class CartViewModel extends AndroidViewModel {
@@ -64,7 +65,7 @@ public class CartViewModel extends AndroidViewModel {
     public void removeItemFromCart(String sku) {
         List<Item> newItemsInCart = new ArrayList<>();
         for (Item itemInCart : cart.getValue()) {
-            if (itemInCart.getSku() != sku) newItemsInCart.add(itemInCart);
+            if (!Objects.equals(itemInCart.getSku(), sku)) newItemsInCart.add(itemInCart);
         }
         cart.setValue(newItemsInCart);
         refresh();
@@ -72,5 +73,12 @@ public class CartViewModel extends AndroidViewModel {
 
     public void refresh() {
         cart.setValue(cart.getValue());
+    }
+
+    public void resetCart(){
+        for (Item item:cart.getValue()){
+            item.setQuantity(0);
+        }
+        refresh();
     }
 }

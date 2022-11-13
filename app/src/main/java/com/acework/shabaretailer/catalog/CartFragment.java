@@ -62,6 +62,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         estimatedTotal = view.findViewById(R.id.estimated_total);
         back= view.findViewById(R.id.back_button);
         back.setOnClickListener(v -> back());
+        complete.setOnClickListener(v -> toConfirmOrder());
     }
 
     private void initializeList() {
@@ -110,5 +111,9 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     private void back() {
         cartViewModel.refresh();
         ((CatalogActivity) requireActivity()).backFromCatalog();
+    }
+
+    private void toConfirmOrder(){
+        ((CatalogActivity) requireActivity()).toConfirmOrder();
     }
 }

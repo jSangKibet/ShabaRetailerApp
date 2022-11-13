@@ -1,7 +1,8 @@
 package com.acework.shabaretailer.model;
 
 public class Retailer {
-    private final String name, businessName, telephone, email, county, street, password;
+    private String name, businessName, telephone, email, county, street, password;
+    public Retailer(){}
 
     public Retailer(String name, String businessName, String telephone, String email, String county, String street, String password) {
         this.name = name;
@@ -39,5 +40,33 @@ public class Retailer {
 
     public String getPassword() {
         return password;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public void setTelephone(String telephone) {
+        this.telephone = telephone;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

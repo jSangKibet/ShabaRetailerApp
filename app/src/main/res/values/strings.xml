@@ -20,4 +20,5 @@
     <string name="city_town_street">City/Town/Street</string>
     <string name="price">Price: KES %,d</string>
     <string name="add">Add</string>
+    <string name="search_name">Search name</string>
 </resources>

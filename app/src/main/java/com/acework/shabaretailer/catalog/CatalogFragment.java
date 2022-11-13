@@ -1,6 +1,8 @@
 package com.acework.shabaretailer.catalog;
 
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,9 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.ItemAdapter;
 import com.acework.shabaretailer.model.Item;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -26,6 +27,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CatalogFragment extends Fragment {
+    private TextInputEditText searchField;
+    private ItemAdapter adapter;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +47,7 @@ public class CatalogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         RecyclerView itemListView = view.findViewById(R.id.item_list);
         itemListView.setLayoutManager(new GridLayoutManager(requireContext(), 2));
-        ItemAdapter adapter = new ItemAdapter(requireContext(), this::itemSelected);
+        adapter = new ItemAdapter(requireContext(), this::itemSelected);
         itemListView.setAdapter(adapter);
         FirebaseDatabase shabaRealtimeDb = FirebaseDatabase.getInstance();
         DatabaseReference shabaRealtimeDbRef = shabaRealtimeDb.getReference();
@@ -59,9 +63,30 @@ public class CatalogFragment extends Fragment {
                 Snackbar.make(requireView(), task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
             }
         });
+        searchField = view.findViewById(R.id.search_field);
+        setSearchFunctionality();
     }
 
     private void itemSelected(Item item) {
         Toast.makeText(requireContext(), "Item selected: " + item.getName(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void setSearchFunctionality() {
+        searchField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                adapter.filter(s.toString());
+            }
+        });
     }
 }

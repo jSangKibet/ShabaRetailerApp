@@ -66,6 +66,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         if (key.isEmpty()) {
             filteredItems = allItems;
         } else {
+            filteredItems=new ArrayList<>();
             for (Item item : allItems) {
                 if (item.getName().toLowerCase().contains(key.toLowerCase())) {
                     filteredItems.add(item);
@@ -85,7 +86,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         System.out.println(imageName);
         shabaItemImagesCloudStorageRef.child(imageName).getDownloadUrl().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Glide.with(imageView).load(task.getResult()).into(imageView);
+                Glide.with(imageView).load(task.getResult()).placeholder(R.drawable.image_96).into(imageView);
             } else {
                 imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image_96));
             }

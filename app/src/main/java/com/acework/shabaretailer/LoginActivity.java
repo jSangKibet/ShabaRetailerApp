@@ -11,6 +11,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 
 @SuppressWarnings("ConstantConditions")
 public class LoginActivity extends AppCompatActivity {
@@ -44,11 +45,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login() {
         if (validateInput()) {
-            if (mockBackendValidation(usernameField.getText().toString().trim(), passwordField.getText().toString().trim())) {
-                toCatalog();
-            } else {
-                Snackbar.make(usernameLayout, "Invalid credentials", Snackbar.LENGTH_LONG).show();
-            }
+            FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+            firebaseAuth.signInWithEmailAndPassword(usernameField.getText().toString().trim(), passwordField.getText().toString()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    toCatalog();
+                } else {
+                    Snackbar.make(usernameLayout, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                }
+            });
         }
     }
 

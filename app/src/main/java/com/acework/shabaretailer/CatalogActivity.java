@@ -4,12 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.model.Item;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.acework.shabaretailer.catalog.CatalogFragment;
 
 public class CatalogActivity extends AppCompatActivity {
 
@@ -17,5 +12,11 @@ public class CatalogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
+        toCatalog();
+    }
+
+    private void toCatalog() {
+        CatalogFragment catalogFragment = new CatalogFragment();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, catalogFragment).commit();
     }
 }

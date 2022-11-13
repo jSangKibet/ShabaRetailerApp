@@ -41,7 +41,7 @@
     <string name="complete_order">Complete order</string>
     <string name="unique_tem_count">Number of unique items in cart: %d</string>
     <string name="total_item_count">Total number of items in cart: %d</string>
-    <string name="order_total">Order total: %,d</string>
+    <string name="order_total">Order total: KES %,d</string>
     <string name="qty">Qty: %d</string>
     <string name="total_in_cart">%,d x %,d = %,d</string>
     <string name="item_total">Item total: KES %,d</string>
@@ -64,5 +64,6 @@
     <string name="kes">KES %,d</string>
     <string name="shaba_retail_catalog">Shaba Retail - Catalog</string>
     <string name="my_orders">My orders</string>
-
+    <string name="order_num">#%s</string>
+    <string name="order_total_est">Total: KES %,d (estimated)</string>
 </resources>

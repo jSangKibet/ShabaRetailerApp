@@ -18,8 +18,6 @@ import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
@@ -144,7 +142,7 @@ public class ConfirmOrderFragment extends Fragment {
 
         return new Order(
                 uid + timestamp,
-                retailer,
+                uid,
                 timestamp,
                 "Pending",
                 itemsInCart,

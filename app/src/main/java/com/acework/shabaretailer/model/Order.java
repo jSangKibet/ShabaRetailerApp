@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Order {
     private String id;
-    private Retailer retailer;
+    private String retailerId;
     private long timestamp;
     private String status;
     private List<Item> orderItems;
@@ -12,9 +12,12 @@ public class Order {
     private int estimatedTransportCost;
     private int finalTotal;
 
-    public Order(String id, Retailer retailer, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal) {
+    public Order() {
+    }
+
+    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal) {
         this.id = id;
-        this.retailer = retailer;
+        this.retailerId = retailerId;
         this.timestamp = timestamp;
         this.status = status;
         this.orderItems = orderItems;
@@ -31,12 +34,12 @@ public class Order {
         this.id = id;
     }
 
-    public Retailer getRetailer() {
-        return retailer;
+    public String getRetailerId() {
+        return retailerId;
     }
 
-    public void setRetailer(Retailer retailer) {
-        this.retailer = retailer;
+    public void setRetailerId(String retailerId) {
+        this.retailerId = retailerId;
     }
 
     public long getTimestamp() {

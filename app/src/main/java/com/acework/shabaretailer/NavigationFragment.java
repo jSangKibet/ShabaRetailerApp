@@ -1,11 +1,11 @@
 package com.acework.shabaretailer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -48,7 +48,7 @@ public class NavigationFragment extends Fragment {
     }
 
     private void setListeners() {
-        toMyOrders.setOnClickListener(v -> Toast.makeText(requireContext(), "To my orders", Toast.LENGTH_SHORT).show());
+        toMyOrders.setOnClickListener(v -> startActivity(new Intent(requireContext(), MyOrdersActivity.class)));
     }
 
     @SuppressWarnings("ConstantConditions")

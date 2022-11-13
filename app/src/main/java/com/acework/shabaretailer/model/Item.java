@@ -3,15 +3,18 @@ package com.acework.shabaretailer.model;
 import java.util.List;
 
 public class Item {
-    private final String name;
-    private final int price;
-    private final String shape, dimensions, weaving, leather, insert, strapLength;
-    private final List<String> images;
-    private final String sku;
-    private final double weight;
-    private final int quantity;
+    private String name;
+    private int price;
+    private String shape, dimensions, weaving, leather, insert, strapLength;
+    private String sku;
+    private double weight;
+    private int quantity;
 
-    public Item(String name, int price, String shape, String dimensions, String weaving, String leather, String insert, String strapLength, List<String> images, String sku, double weight, int quantity) {
+    public Item() {
+
+    }
+
+    public Item(String name, int price, String shape, String dimensions, String weaving, String leather, String insert, String strapLength, String sku, double weight, int quantity) {
         this.name = name;
         this.price = price;
         this.shape = shape;
@@ -20,7 +23,6 @@ public class Item {
         this.leather = leather;
         this.insert = insert;
         this.strapLength = strapLength;
-        this.images = images;
         this.sku = sku;
         this.weight = weight;
         this.quantity = quantity;
@@ -56,10 +58,6 @@ public class Item {
 
     public String getStrapLength() {
         return strapLength;
-    }
-
-    public List<String> getImages() {
-        return images;
     }
 
     public String getSku() {

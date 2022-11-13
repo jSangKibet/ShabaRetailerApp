@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -52,8 +53,17 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         Item item = filteredItems.get(position);
         holder.name.setText(item.getName());
         holder.price.setText(context.getString(R.string.price, item.getPrice()));
+        holder.quantity.setText(context.getString(R.string.qty, item.getQuantity()));
         holder.add.setOnClickListener(v -> itemActionListener.itemSelected(item));
+        holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
         setImage(item.getSku(), holder.image);
+        if (item.getQuantity() > 0) {
+            holder.add.setVisibility(View.GONE);
+            holder.editLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.editLayout.setVisibility(View.GONE);
+            holder.add.setVisibility(View.VISIBLE);
+        }
     }
 
     public void setItems(List<Item> itemsToDisplay) {
@@ -66,7 +76,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         if (key.isEmpty()) {
             filteredItems = allItems;
         } else {
-            filteredItems=new ArrayList<>();
+            filteredItems = new ArrayList<>();
             for (Item item : allItems) {
                 if (item.getName().toLowerCase().contains(key.toLowerCase())) {
                     filteredItems.add(item);
@@ -98,9 +108,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final TextView name, price;
+        private final TextView name, price, quantity;
         private final ImageView image;
-        private final MaterialButton add;
+        private final MaterialButton add, edit;
+        private final ConstraintLayout editLayout;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -108,6 +119,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             price = itemView.findViewById(R.id.price);
             image = itemView.findViewById(R.id.image);
             add = itemView.findViewById(R.id.add);
+            quantity = itemView.findViewById(R.id.quantity);
+            edit = itemView.findViewById(R.id.edit);
+            editLayout = itemView.findViewById(R.id.edit_layout);
         }
     }
 }

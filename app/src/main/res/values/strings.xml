@@ -42,4 +42,5 @@
     <string name="unique_tem_count">Number of unique items in cart: %d</string>
     <string name="total_item_count">Total number of items in cart: %d</string>
     <string name="order_total">Order total: %,d</string>
+    <string name="qty">Qty: %d</string>
 </resources>

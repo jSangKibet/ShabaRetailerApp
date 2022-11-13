@@ -56,6 +56,7 @@ public class CatalogFragment extends Fragment {
             adapter.setItems(itemsInCart);
             computeTotals(itemsInCart);
         });
+        complete.setOnClickListener(v -> toCart());
     }
 
     private void bindViews(View view) {
@@ -75,7 +76,7 @@ public class CatalogFragment extends Fragment {
     }
 
     private void itemSelected(Item item) {
-        ((CatalogActivity) requireActivity()).toCartItem(item);
+        ((CatalogActivity) requireActivity()).toCartItem(item, true);
     }
 
     private void setSearchFunctionality() {
@@ -118,5 +119,9 @@ public class CatalogFragment extends Fragment {
         } else {
             summary.setVisibility(View.GONE);
         }
+    }
+
+    private void toCart() {
+        ((CatalogActivity) requireActivity()).toCart();
     }
 }

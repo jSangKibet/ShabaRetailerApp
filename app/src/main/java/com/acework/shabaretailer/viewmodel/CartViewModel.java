@@ -61,6 +61,15 @@ public class CartViewModel extends AndroidViewModel {
         return null;
     }
 
+    public void removeItemFromCart(String sku) {
+        List<Item> newItemsInCart = new ArrayList<>();
+        for (Item itemInCart : cart.getValue()) {
+            if (itemInCart.getSku() != sku) newItemsInCart.add(itemInCart);
+        }
+        cart.setValue(newItemsInCart);
+        refresh();
+    }
+
     public void refresh() {
         cart.setValue(cart.getValue());
     }

@@ -126,7 +126,7 @@ public class CartItemFragment extends Fragment {
     private void back() {
         CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         cartViewModel.refresh();
-        ((CatalogActivity) requireActivity()).toCatalog();
+        ((CatalogActivity) requireActivity()).backFromCatalog();
     }
 
     public void setItem(Item item) {

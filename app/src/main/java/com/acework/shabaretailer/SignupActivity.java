@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
+    FirebaseAuth firebaseAuth;
     private MaterialButton back, join;
     private TextInputLayout businessName, name, telephone, email, password, confirmPassword, county, street;
     private CheckBox tc;
@@ -40,6 +41,7 @@ public class SignupActivity extends AppCompatActivity {
         bindViews();
         setListeners();
         initializeCounties();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     private void bindViews() {
@@ -67,8 +69,7 @@ public class SignupActivity extends AppCompatActivity {
     private void join() {
         if (validate()) {
             Retailer retailer = getRetailer();
-            FirebaseAuth auth = FirebaseAuth.getInstance();
-            auth.createUserWithEmailAndPassword(retailer.getEmail(), retailer.getPassword()).addOnCompleteListener(task -> {
+            firebaseAuth.createUserWithEmailAndPassword(retailer.getEmail(), retailer.getPassword()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     createRetailer(retailer);
                 } else {
@@ -213,16 +214,17 @@ public class SignupActivity extends AppCompatActivity {
                 businessName.getEditText().getText().toString().trim(),
                 telephone.getEditText().getText().toString().trim(),
                 email.getEditText().getText().toString().trim(),
-                password.getEditText().getText().toString().trim(),
                 county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim());
+                street.getEditText().getText().toString().trim(),
+                password.getEditText().getText().toString().trim());
     }
 
     @SuppressWarnings("ConstantConditions")
     private void createRetailer(Retailer retailer) {
         FirebaseDatabase shabaRealtimeDb = FirebaseDatabase.getInstance();
         DatabaseReference shabaRealtimeDbRef = shabaRealtimeDb.getReference();
-        shabaRealtimeDbRef.setValue(retailer).addOnCompleteListener(task -> {
+        String uid = firebaseAuth.getCurrentUser().getUid();
+        shabaRealtimeDbRef.child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 toCatalog();
             } else {

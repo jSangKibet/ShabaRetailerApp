@@ -38,4 +38,5 @@
     <string name="sku">SKU:</string>
     <string name="total">Total: KES %,d</string>
     <string name="weight_formatted">%.2f Kg</string>
+    <string name="complete_order">Complete order</string>
 </resources>

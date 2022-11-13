@@ -6,4 +6,12 @@
     <string name="login">Log in</string>
     <string name="forgot_password_question">Forgot password?</string>
     <string name="sign_up">Sign up</string>
+    <string name="join_shaba_as_a_retailer">Join Shaba as a retailer</string>
+    <string name="business_name">Business name</string>
+    <string name="your_name">Your name</string>
+    <string name="telephone_number">Telephone number</string>
+    <string name="email_address">Email address</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="read_accept_terms_and_conditions">Read &amp; accept terms and conditions</string>
+    <string name="join">Join</string>
 </resources>

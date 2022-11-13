@@ -5,6 +5,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
@@ -33,12 +35,14 @@ public class CatalogActivity extends AppCompatActivity {
     private Fragment activeFragment;
     private CartViewModel cartViewModel;
     private boolean fromCatalog;
+    private DrawerLayout navDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
         cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+        navDrawer = findViewById(R.id.navigation_drawer);
         loadItems();
         initializeFragments();
     }
@@ -118,5 +122,9 @@ public class CatalogActivity extends AppCompatActivity {
         cartViewModel.resetCart();
         toCatalog();
         Snackbar.make(view, "Order completed!", Snackbar.LENGTH_LONG).show();
+    }
+
+    public void openDrawer() {
+        navDrawer.openDrawer(GravityCompat.START);
     }
 }

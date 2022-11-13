@@ -63,5 +63,6 @@
     <string name="accepted_tc_order">I have read and accepted the terms and conditions of making an order</string>
     <string name="kes">KES %,d</string>
     <string name="shaba_retail_catalog">Shaba Retail - Catalog</string>
+    <string name="my_orders">My orders</string>
 
 </resources>

@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -79,7 +78,7 @@ public class CatalogFragment extends Fragment {
 
     private void setListeners() {
         complete.setOnClickListener(v -> toCart());
-        menuBtn.setOnClickListener(v -> Toast.makeText(requireContext(), "Menu!", Toast.LENGTH_SHORT).show());
+        menuBtn.setOnClickListener(v -> ((CatalogActivity) requireActivity()).openDrawer());
     }
 
     private void itemSelected(Item item) {

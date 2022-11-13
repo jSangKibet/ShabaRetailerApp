@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +32,7 @@ public class CatalogFragment extends Fragment {
     private ItemAdapter adapter;
     private ConstraintLayout summary;
     private TextView numOfItems, totalQuantity, total;
-    private MaterialButton complete;
+    private MaterialButton complete, menuBtn;
     private RecyclerView itemList;
 
     @Override
@@ -56,7 +57,7 @@ public class CatalogFragment extends Fragment {
             adapter.setItems(itemsInCart);
             computeTotals(itemsInCart);
         });
-        complete.setOnClickListener(v -> toCart());
+        setListeners();
     }
 
     private void bindViews(View view) {
@@ -67,12 +68,18 @@ public class CatalogFragment extends Fragment {
         totalQuantity = view.findViewById(R.id.total_quantity);
         total = view.findViewById(R.id.total);
         complete = view.findViewById(R.id.complete_order);
+        menuBtn = view.findViewById(R.id.menu_button);
     }
 
     private void initializeList() {
         itemList.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         adapter = new ItemAdapter(requireContext(), this::itemSelected);
         itemList.setAdapter(adapter);
+    }
+
+    private void setListeners() {
+        complete.setOnClickListener(v -> toCart());
+        menuBtn.setOnClickListener(v -> Toast.makeText(requireContext(), "Menu!", Toast.LENGTH_SHORT).show());
     }
 
     private void itemSelected(Item item) {

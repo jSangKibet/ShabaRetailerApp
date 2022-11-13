@@ -19,11 +19,8 @@
         <item name="boxBackgroundColor">?attr/colorOnPrimary</item>
         <item name="boxCornerRadiusBottomEnd">5dp</item>
         <item name="boxCornerRadiusBottomStart">5dp</item>
-        <item name="boxStrokeColor">?attr/colorPrimary</item>
         <item name="boxCornerRadiusTopEnd">5dp</item>
         <item name="boxCornerRadiusTopStart">5dp</item>
-        <item name="boxStrokeWidth">1dp</item>
-        <item name="boxStrokeWidthFocused">1dp</item>
         <item name="hintEnabled">false</item>
         <item name="startIconDrawable">@drawable/search_24</item>
         <item name="startIconTint">?attr/colorPrimary</item>

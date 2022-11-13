@@ -45,6 +45,7 @@
     <string name="qty">Qty: %d</string>
     <string name="total_in_cart">%,d x %,d = %,d</string>
     <string name="item_total">Item total: KES %,d</string>
-    <string name="weight_total">Estimated weight total: %,2f KG</string>
+    <string name="weight_total">Estimated weight total: %.2f KG</string>
     <string name="transport">Estimated transport cost: KES %,d</string>
+    <string name="cart">Cart</string>
 </resources>

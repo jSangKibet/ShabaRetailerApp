@@ -36,4 +36,6 @@
     <string name="strap_length">Strap length:</string>
     <string name="weight">Weight:</string>
     <string name="sku">SKU:</string>
+    <string name="total">Total: KES %,d</string>
+    <string name="weight_formatted">%.2f Kg</string>
 </resources>

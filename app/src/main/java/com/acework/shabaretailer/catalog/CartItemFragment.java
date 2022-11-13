@@ -1,0 +1,132 @@
+package com.acework.shabaretailer.catalog;
+
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+
+import com.acework.shabaretailer.CatalogActivity;
+import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.model.Item;
+import com.google.android.material.button.MaterialButton;
+
+public class CartItemFragment extends Fragment {
+    private Item item;
+    private TextView itemName, price, minus5, minus, quantity, plus, plus5, total, dimensions, shape, weaving, leather, strap, weight, sku;
+    private MaterialButton back, done;
+
+    public CartItemFragment() {
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_cart_item, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        bindViews(view);
+        setListeners();
+    }
+
+    private void bindViews(View view) {
+        back = view.findViewById(R.id.back_button);
+        itemName = view.findViewById(R.id.name);
+        price = view.findViewById(R.id.price);
+        minus5 = view.findViewById(R.id.minus_5);
+        minus = view.findViewById(R.id.minus);
+        quantity = view.findViewById(R.id.quantity);
+        plus = view.findViewById(R.id.plus);
+        plus5 = view.findViewById(R.id.plus_5);
+        total = view.findViewById(R.id.total);
+        dimensions = view.findViewById(R.id.dimen);
+        shape = view.findViewById(R.id.shape);
+        weaving = view.findViewById(R.id.weaving);
+        leather = view.findViewById(R.id.leather);
+        strap = view.findViewById(R.id.strap);
+        weight = view.findViewById(R.id.weight);
+        sku = view.findViewById(R.id.sku);
+        done = view.findViewById(R.id.done);
+    }
+
+    private void setValues() {
+        itemName.setText(item.getName());
+        price.setText(getString(R.string.price, item.getPrice()));
+        quantity.setText(String.valueOf(item.getQuantity()));
+        setTotal(item);
+        dimensions.setText(item.getDimensions());
+        shape.setText(item.getShape());
+        weaving.setText(item.getWeaving());
+        leather.setText(item.getLeather());
+        strap.setText(item.getStrapLength());
+        weight.setText(getString(R.string.weight_formatted, item.getWeight()));
+        sku.setText(item.getSku());
+    }
+
+    private void setTotal(Item item) {
+        int totalInt = item.getPrice() * item.getQuantity();
+        total.setText(getString(R.string.total, totalInt));
+    }
+
+    private void setListeners() {
+        minus5.setOnClickListener(v -> decrementByFive());
+        minus.setOnClickListener(v -> decrementByOne());
+        plus.setOnClickListener(v -> incrementByOne());
+        plus5.setOnClickListener(v -> incrementByFive());
+        back.setOnClickListener(v -> back());
+        done.setOnClickListener(v -> back());
+    }
+
+    private void decrementByOne() {
+        if (item.getQuantity() > 0) {
+            item.setQuantity(item.getQuantity() - 1);
+        }
+        setValues();
+    }
+
+    private void decrementByFive() {
+        if (item.getQuantity() > 0) {
+            int newQuantity = item.getQuantity() - 5;
+            if (newQuantity < 0) newQuantity = 0;
+            item.setQuantity(newQuantity);
+        }
+        setValues();
+    }
+
+    private void incrementByOne() {
+        if (item.getQuantity() < 30) {
+            item.setQuantity(item.getQuantity() + 1);
+        }
+        setValues();
+    }
+
+    private void incrementByFive() {
+        if (item.getQuantity() < 30) {
+            int newQuantity = item.getQuantity() + 5;
+            if (newQuantity > 30) newQuantity = 30;
+            item.setQuantity(newQuantity);
+        }
+        setValues();
+    }
+
+    private void back() {
+        ((CatalogActivity) requireActivity()).toCatalog();
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+        setValues();
+    }
+}

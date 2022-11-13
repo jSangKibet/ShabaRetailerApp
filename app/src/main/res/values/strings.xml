@@ -16,4 +16,6 @@
     <string name="join">Join</string>
     <string name="signup_terms_and_conditions"><![CDATA[Shaba Retailers Terms & Conditions]]></string>
     <string name="accept">Accept</string>
+    <string name="county">County</string>
+    <string name="city_town_street">City/Town/Street</string>
 </resources>

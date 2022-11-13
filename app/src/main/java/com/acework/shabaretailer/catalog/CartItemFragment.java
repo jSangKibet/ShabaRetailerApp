@@ -9,10 +9,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.model.Item;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 
 public class CartItemFragment extends Fragment {
@@ -122,6 +124,8 @@ public class CartItemFragment extends Fragment {
     }
 
     private void back() {
+        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        cartViewModel.refresh();
         ((CatalogActivity) requireActivity()).toCatalog();
     }
 

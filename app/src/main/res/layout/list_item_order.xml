@@ -5,14 +5,14 @@
     android:layout_height="wrap_content"
     android:id="@+id/container"
     android:layout_marginBottom="4dp"
-    android:background="@drawable/bg_ripple_primary"
+    android:background="@drawable/bg_gray_01_ripple"
     android:padding="8dp">
 
     <TextView
         android:id="@+id/order_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="?attr/colorOnPrimary"
+        android:textColor="?attr/colorPrimary"
         android:textSize="12sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="?attr/colorOnPrimary"
+        android:textColor="?attr/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/order_number" />
 
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:textColor="?attr/colorOnPrimary"
+        android:textColor="?attr/colorPrimary"
         android:textStyle="italic"
         app:layout_constraintTop_toBottomOf="@id/order_total"
         app:layout_constraintEnd_toEndOf="parent" />

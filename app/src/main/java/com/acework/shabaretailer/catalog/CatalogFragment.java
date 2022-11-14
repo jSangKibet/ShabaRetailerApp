@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.ItemAdapter;
+import com.acework.shabaretailer.custom.GridSpacingItemDecoration;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
@@ -74,6 +75,7 @@ public class CatalogFragment extends Fragment {
         itemList.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         adapter = new ItemAdapter(requireContext(), this::itemSelected);
         itemList.setAdapter(adapter);
+        itemList.addItemDecoration(new GridSpacingItemDecoration(2, 8, true));
     }
 
     private void setListeners() {

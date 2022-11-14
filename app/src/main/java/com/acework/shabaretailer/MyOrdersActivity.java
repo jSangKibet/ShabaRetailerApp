@@ -2,6 +2,8 @@ package com.acework.shabaretailer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +25,7 @@ public class MyOrdersActivity extends AppCompatActivity {
     private MaterialButton back;
     private RecyclerView orderList;
     private OrderAdapter orderAdapter;
+    private TextView emptyList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class MyOrdersActivity extends AppCompatActivity {
     private void bindViews() {
         back = findViewById(R.id.back_button);
         orderList = findViewById(R.id.order_list);
+        emptyList = findViewById(R.id.empty_list);
     }
 
     private void setListeners() {
@@ -60,6 +64,7 @@ public class MyOrdersActivity extends AppCompatActivity {
                     retrievedOrders.add(child.getValue(Order.class));
                 }
                 orderAdapter.setItems(retrievedOrders);
+                if (retrievedOrders.size() < 1) emptyList.setVisibility(View.VISIBLE);
             } else {
                 Snackbar.make(back, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
             }

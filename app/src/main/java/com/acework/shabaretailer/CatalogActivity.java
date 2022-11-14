@@ -84,9 +84,8 @@ public class CatalogActivity extends AppCompatActivity {
         //noinspection ConstantConditions
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference shabaRtDbItemRef = FirebaseDatabase.getInstance().getReference().child("Items");
-        ValueEventListener itemsListener = new ValueEventListener() {
-            @Override
+
+        shabaRtDbRef.child("Items").addValueEventListener(new ValueEventListener() {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<Item> itemsFromDatabase = new ArrayList<>();
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
@@ -98,10 +97,10 @@ public class CatalogActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                Snackbar.make(navDrawer, "Error fetching catalog. Try again later.", Snackbar.LENGTH_LONG).show();
                 Log.w("LF", error.getDetails());
             }
-        };
-        shabaRtDbItemRef.addValueEventListener(itemsListener);
+        });
         shabaRtDbRef.child("Retailers").child(uid).get().addOnCompleteListener(task -> retailer = task.getResult().getValue(Retailer.class));
     }
 
@@ -125,10 +124,9 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     public void orderCompleted() {
-        FragmentContainerView view = findViewById(R.id.fragment_container);
         cartViewModel.resetCart();
         toCatalog();
-        Snackbar.make(view, "Order completed!", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(navDrawer, "Order completed!", Snackbar.LENGTH_LONG).show();
     }
 
     public void openDrawer() {

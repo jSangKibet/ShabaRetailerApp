@@ -13,14 +13,17 @@ import android.widget.CheckBox;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.dialog.SignupTCDialog;
 import com.acework.shabaretailer.model.Retailer;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -54,7 +57,7 @@ public class SignupActivity extends AppCompatActivity {
         password = findViewById(R.id.password_input);
         confirmPassword = findViewById(R.id.password_confirmation_input);
         tc = findViewById(R.id.tc_checkbox);
-        viewTc= findViewById(R.id.view_tc);
+        viewTc = findViewById(R.id.view_tc);
         scrollView = findViewById(R.id.scroll_view);
         county = findViewById(R.id.county_input);
         street = findViewById(R.id.street_input);
@@ -66,15 +69,25 @@ public class SignupActivity extends AppCompatActivity {
         viewTc.setOnClickListener(v -> viewTc());
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void join() {
         if (validate()) {
             Retailer retailer = getRetailer();
-            firebaseAuth.createUserWithEmailAndPassword(retailer.getEmail(), retailer.getPassword()).addOnCompleteListener(task -> {
+            firebaseAuth.fetchSignInMethodsForEmail(retailer.getEmail()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    createRetailer(retailer);
+                    if (task.getResult().getSignInMethods().isEmpty()) {
+                        firebaseAuth.createUserWithEmailAndPassword(retailer.getEmail(), retailer.getPassword()).addOnCompleteListener(task1 -> {
+                            if (task1.isSuccessful()) {
+                                createRetailer(retailer);
+                            } else {
+                                Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
+                            }
+                        });
+                    } else {
+                        Snackbar.make(back, "The provided email address is already in use.", Snackbar.LENGTH_LONG).show();
+                    }
                 } else {
-                    Toast.makeText(SignupActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
-                    Log.w("JF", task.getException());
+                    Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 }
             });
         }
@@ -212,17 +225,14 @@ public class SignupActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void createRetailer(Retailer retailer) {
-        FirebaseDatabase shabaRealtimeDb = FirebaseDatabase.getInstance();
-        DatabaseReference shabaRealtimeDbRef = shabaRealtimeDb.getReference();
+        retailer.setPassword("-");
         String uid = firebaseAuth.getCurrentUser().getUid();
-        shabaRealtimeDbRef.child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
+        FirebaseDatabase.getInstance().getReference().child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 toCatalog();
             } else {
-                Toast.makeText(SignupActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
-                Log.w("JF", task.getException());
-                FirebaseAuth auth = FirebaseAuth.getInstance();
-                auth.getCurrentUser().delete();
+                Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
+                FirebaseAuth.getInstance().getCurrentUser().delete();
             }
         });
     }
@@ -233,7 +243,7 @@ public class SignupActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void viewTc(){
+    private void viewTc() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.theshaba.com/terms-of-use"));
         startActivity(browserIntent);
     }

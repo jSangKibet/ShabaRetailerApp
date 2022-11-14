@@ -190,7 +190,7 @@ public class ConfirmOrderFragment extends Fragment {
                 if (task.isSuccessful()) {
                     ((CatalogActivity) requireActivity()).orderCompleted();
                 } else {
-                    Snackbar.make(requireView(), task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(requireView(), "Your order could not be placed at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
                     task.getException().printStackTrace();
                 }
             });

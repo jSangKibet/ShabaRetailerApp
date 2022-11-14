@@ -50,14 +50,14 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     toCatalog();
                 } else {
-                    Snackbar.make(usernameLayout, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(usernameLayout, "Could not log you in. Check your credentials and try again.", Snackbar.LENGTH_LONG).show();
                 }
             });
         }
     }
 
     private void forgotPassword() {
-        Toast.makeText(this, "Forgot password!", Toast.LENGTH_SHORT).show();
+        Snackbar.make(usernameLayout, "Coming soon", Snackbar.LENGTH_LONG).show();
     }
 
     private void signUp() {
@@ -89,10 +89,6 @@ public class LoginActivity extends AppCompatActivity {
         }
         usernameLayout.setError("Invalid email address or telephone number");
         return false;
-    }
-
-    private boolean mockBackendValidation(String username, String password) {
-        return (username.equals("jsang275@gmail.com") || username.equals("0707686612")) && password.equals("12345678");
     }
 
     private void toCatalog() {

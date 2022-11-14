@@ -66,7 +66,7 @@ public class MyOrdersActivity extends AppCompatActivity {
                 orderAdapter.setItems(retrievedOrders);
                 if (retrievedOrders.size() < 1) emptyList.setVisibility(View.VISIBLE);
             } else {
-                Snackbar.make(back, task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                Snackbar.make(back, "There was a problem fetching your orders. Please try again later.", Snackbar.LENGTH_LONG).show();
             }
         });
     }

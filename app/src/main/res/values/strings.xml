@@ -74,4 +74,6 @@
     <string name="order_status_label">Order status:</string>
     <string name="est_total">Kes %,d (estimated)</string>
     <string name="terms_amp_conditions"><![CDATA[Terms & conditions]]></string>
+    <string name="click_here_to_read_terms_and_conditions">Click here to read terms and conditions</string>
+    <string name="i_have_read_and_accepted_the_terms">I have read and accepted the terms and conditions of using Shaba retailers application</string>
 </resources>

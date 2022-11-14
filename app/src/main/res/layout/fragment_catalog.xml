@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    android:background="@drawable/bg_on_primary"
     tools:context=".catalog.CatalogFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout

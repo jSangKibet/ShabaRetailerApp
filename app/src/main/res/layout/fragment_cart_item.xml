@@ -79,7 +79,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_primary"
+        android:background="@drawable/bg_primary_cr_3"
         app:layout_constraintStart_toEndOf="@id/qty_label"
         app:layout_constraintTop_toBottomOf="@id/price">
 
@@ -148,7 +148,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/bg_primary"
+        android:background="@drawable/bg_primary_cr_3"
         app:layout_constraintStart_toEndOf="@id/quantity"
         app:layout_constraintTop_toBottomOf="@id/price">
 

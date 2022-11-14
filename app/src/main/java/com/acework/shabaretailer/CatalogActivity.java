@@ -16,8 +16,10 @@ import com.acework.shabaretailer.catalog.CartItemFragment;
 import com.acework.shabaretailer.catalog.CatalogFragment;
 import com.acework.shabaretailer.catalog.ConfirmOrderFragment;
 import com.acework.shabaretailer.model.Item;
+import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +38,7 @@ public class CatalogActivity extends AppCompatActivity {
     private CartViewModel cartViewModel;
     private boolean fromCatalog;
     private DrawerLayout navDrawer;
+    private Retailer retailer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +81,10 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void loadItems() {
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Items");
+        //noinspection ConstantConditions
+        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference shabaRtDbItemRef = FirebaseDatabase.getInstance().getReference().child("Items");
         ValueEventListener itemsListener = new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -95,7 +101,8 @@ public class CatalogActivity extends AppCompatActivity {
                 Log.w("LF", error.getDetails());
             }
         };
-        shabaRealtimeDbRef.addValueEventListener(itemsListener);
+        shabaRtDbItemRef.addValueEventListener(itemsListener);
+        shabaRtDbRef.child("Retailers").child(uid).get().addOnCompleteListener(task -> retailer = task.getResult().getValue(Retailer.class));
     }
 
     private void initializeFragments() {
@@ -126,5 +133,9 @@ public class CatalogActivity extends AppCompatActivity {
 
     public void openDrawer() {
         navDrawer.openDrawer(GravityCompat.START);
+    }
+
+    public Retailer getRetailer() {
+        return retailer;
     }
 }

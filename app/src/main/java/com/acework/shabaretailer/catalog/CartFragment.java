@@ -17,6 +17,7 @@ import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.ItemInCartAdapter;
 import com.acework.shabaretailer.model.Item;
+import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 
@@ -46,11 +47,8 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         super.onViewCreated(view, savedInstanceState);
         bindViews(view);
         initializeList();
-        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
-            adapter.setItems(getItemsInCart(itemsInCart));
-            computeTotals(itemsInCart);
-        });
+        loadData();
+        setListeners();
     }
 
     private void bindViews(View view) {
@@ -60,15 +58,26 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         weight = view.findViewById(R.id.weight);
         transport = view.findViewById(R.id.transport);
         estimatedTotal = view.findViewById(R.id.estimated_total);
-        back= view.findViewById(R.id.back_button);
-        back.setOnClickListener(v -> back());
-        complete.setOnClickListener(v -> toConfirmOrder());
+        back = view.findViewById(R.id.back_button);
     }
 
     private void initializeList() {
         itemList.setLayoutManager(new LinearLayoutManager(requireContext()));
         adapter = new ItemInCartAdapter(requireContext(), this);
         itemList.setAdapter(adapter);
+    }
+
+    private void loadData() {
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
+            adapter.setItems(getItemsInCart(itemsInCart));
+            computeTotals(itemsInCart);
+        });
+    }
+
+    private void setListeners() {
+        back.setOnClickListener(v -> back());
+        complete.setOnClickListener(v -> toConfirmOrder());
     }
 
     private void computeTotals(List<Item> itemsInCart) {
@@ -86,6 +95,17 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         weight.setText(getString(R.string.weight_total, weightDbl));
         transport.setText(getString(R.string.transport, 0));
         estimatedTotal.setText(getString(R.string.total, totalPrice));
+
+        Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
+        if (currentRetailer != null) {
+            int transPerKg = 500;
+            if (currentRetailer.getCounty().equals("Nairobi")) {
+                transPerKg = 250;
+            }
+            int finalTransCost = (int) Math.round(transPerKg * weightDbl);
+            transport.setText(getString(R.string.transport, finalTransCost));
+            estimatedTotal.setText(getString(R.string.total, totalPrice + finalTransCost));
+        }
     }
 
     private List<Item> getItemsInCart(List<Item> cart) {
@@ -113,7 +133,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         ((CatalogActivity) requireActivity()).backFromCatalog();
     }
 
-    private void toConfirmOrder(){
+    private void toConfirmOrder() {
         ((CatalogActivity) requireActivity()).toConfirmOrder();
     }
 }

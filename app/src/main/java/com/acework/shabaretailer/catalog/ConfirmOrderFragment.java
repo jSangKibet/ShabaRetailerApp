@@ -106,6 +106,17 @@ public class ConfirmOrderFragment extends Fragment {
         estWeight.setText(getString(R.string.weight_formatted, weightDbl));
         estTrans.setText(getString(R.string.kes, 0));
         estTotal.setText(getString(R.string.kes, totalPrice));
+
+        Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
+        if (currentRetailer != null) {
+            int transPerKg = 500;
+            if (currentRetailer.getCounty().equals("Nairobi")) {
+                transPerKg = 250;
+            }
+            int finalTransCost = (int) Math.round(transPerKg * weightDbl);
+            estTrans.setText(getString(R.string.kes, finalTransCost));
+            estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
+        }
     }
 
     private void setUserInfo(Retailer retailer) {
@@ -128,6 +139,7 @@ public class ConfirmOrderFragment extends Fragment {
     private Order getOrder() {
         int totalPrice = 0;
         double weightDbl = 0D;
+        int finalTransCost=0;
         List<Item> itemsInCart = getItemsInCart();
 
         for (Item itemInCart : itemsInCart) {
@@ -135,6 +147,15 @@ public class ConfirmOrderFragment extends Fragment {
                 totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
                 weightDbl += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
+        }
+
+        Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
+        if (currentRetailer != null) {
+            int transPerKg = 500;
+            if (currentRetailer.getCounty().equals("Nairobi")) {
+                transPerKg = 250;
+            }
+            finalTransCost = (int) Math.round(transPerKg * weightDbl);
         }
 
         long timestamp = System.currentTimeMillis();
@@ -145,8 +166,8 @@ public class ConfirmOrderFragment extends Fragment {
                 timestamp,
                 "Pending",
                 itemsInCart,
-                totalPrice,
-                0,
+                totalPrice+finalTransCost,
+                finalTransCost,
                 0);
     }
 

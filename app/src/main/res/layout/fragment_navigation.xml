@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
     android:background="?attr/colorOnPrimary"
+    android:padding="16dp"
     tools:context=".NavigationFragment">
 
     <TextView
@@ -52,4 +52,13 @@
         android:layout_marginTop="8dp"
         android:text="@string/my_orders"
         app:layout_constraintTop_toBottomOf="@id/divider" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/view_tc"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/terms_amp_conditions"
+        app:layout_constraintTop_toBottomOf="@id/to_my_orders" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -73,4 +73,5 @@
     <string name="total_label">Total:</string>
     <string name="order_status_label">Order status:</string>
     <string name="est_total">Kes %,d (estimated)</string>
+    <string name="terms_amp_conditions"><![CDATA[Terms & conditions]]></string>
 </resources>

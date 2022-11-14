@@ -27,13 +27,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ConstantConditions")
 public class ConfirmOrderFragment extends Fragment {
     private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email;
     private CheckBox tc;
     private MaterialButton confirm, back;
     private CartViewModel cartViewModel;
     private String uid;
-    private Retailer retailer;
 
 
     public ConfirmOrderFragment() {
@@ -109,7 +109,6 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     private void setUserInfo(Retailer retailer) {
-        this.retailer = retailer;
         name.setText(retailer.getName());
         county.setText(retailer.getCounty());
         street.setText(retailer.getStreet());
@@ -160,15 +159,19 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     private void confirmOrder() {
-        Order order = getOrder();
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("RetailOrders");
-        shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                ((CatalogActivity) requireActivity()).orderCompleted();
-            } else {
-                Snackbar.make(requireView(), task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
-                task.getException().printStackTrace();
-            }
-        });
+        if(tc.isChecked()){
+            Order order = getOrder();
+            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("RetailOrders");
+            shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    ((CatalogActivity) requireActivity()).orderCompleted();
+                } else {
+                    Snackbar.make(requireView(), task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
+                    task.getException().printStackTrace();
+                }
+            });
+        }else {
+            Snackbar.make(requireView(), "You must accept the terms and conditions before confirmind an order", Snackbar.LENGTH_LONG).show();
+        }
     }
 }

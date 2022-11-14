@@ -1,6 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,10 +29,9 @@ import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
-    private MaterialButton back, join;
+    private MaterialButton back, join, viewTc;
     private TextInputLayout businessName, name, telephone, email, password, confirmPassword, county, street;
     private CheckBox tc;
-    private View readTc;
     private ScrollView scrollView;
 
     @Override
@@ -54,7 +54,7 @@ public class SignupActivity extends AppCompatActivity {
         password = findViewById(R.id.password_input);
         confirmPassword = findViewById(R.id.password_confirmation_input);
         tc = findViewById(R.id.tc_checkbox);
-        readTc = findViewById(R.id.read_tc_view);
+        viewTc= findViewById(R.id.view_tc);
         scrollView = findViewById(R.id.scroll_view);
         county = findViewById(R.id.county_input);
         street = findViewById(R.id.street_input);
@@ -63,7 +63,7 @@ public class SignupActivity extends AppCompatActivity {
     private void setListeners() {
         back.setOnClickListener(v -> finish());
         join.setOnClickListener(v -> join());
-        readTc.setOnClickListener(v -> readTc());
+        viewTc.setOnClickListener(v -> viewTc());
     }
 
     private void join() {
@@ -78,11 +78,6 @@ public class SignupActivity extends AppCompatActivity {
                 }
             });
         }
-    }
-
-    private void readTc() {
-        SignupTCDialog dialog = SignupTCDialog.newInstance(this::tcAccepted);
-        dialog.show(getSupportFragmentManager(), SignupTCDialog.TAG);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -147,10 +142,6 @@ public class SignupActivity extends AppCompatActivity {
         } else {
             scrollView.fullScroll(View.FOCUS_UP);
         }
-    }
-
-    private void tcAccepted() {
-        tc.setChecked(true);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -240,5 +231,10 @@ public class SignupActivity extends AppCompatActivity {
         Intent intent = new Intent(this, CatalogActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+    }
+
+    private void viewTc(){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.theshaba.com/terms-of-use"));
+        startActivity(browserIntent);
     }
 }

@@ -1,6 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +20,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NavigationFragment extends Fragment {
     private TextView name, businessName, telephone;
-    private MaterialButton toMyOrders;
+    private MaterialButton toMyOrders, viewTc;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,10 +46,13 @@ public class NavigationFragment extends Fragment {
         businessName = view.findViewById(R.id.business_name);
         telephone = view.findViewById(R.id.telephone);
         toMyOrders = view.findViewById(R.id.to_my_orders);
+        viewTc=view.findViewById(R.id.view_tc);
+
     }
 
     private void setListeners() {
         toMyOrders.setOnClickListener(v -> startActivity(new Intent(requireContext(), MyOrdersActivity.class)));
+        viewTc.setOnClickListener(v -> viewTc());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -69,5 +73,10 @@ public class NavigationFragment extends Fragment {
         name.setText(retailer.getName());
         businessName.setText(retailer.getBusinessName());
         telephone.setText(retailer.getTelephone());
+    }
+
+    private void viewTc(){
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.theshaba.com/terms-of-use"));
+        startActivity(browserIntent);
     }
 }

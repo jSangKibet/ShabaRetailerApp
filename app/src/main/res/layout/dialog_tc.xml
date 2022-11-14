@@ -14,7 +14,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/signup_terms_and_conditions"
-            android:textColor="@color/black"
+            android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@ on the theory of ethics, very popular
 during the Renaissance. The first line of
  Lorem Ipsum, 'Lorem ipsum dolor sit amet..',
 comes from a line in section 1.10.32."
-            android:textColor="@color/black"
+            android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/title" />

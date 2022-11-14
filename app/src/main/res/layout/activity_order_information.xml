@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/order_information"
-        android:textColor="@color/black"
+        android:textColor="?attr/colorPrimary"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/back"
         app:layout_constraintStart_toEndOf="@id/back"

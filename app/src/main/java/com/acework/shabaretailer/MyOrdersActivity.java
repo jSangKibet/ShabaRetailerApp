@@ -1,7 +1,7 @@
 package com.acework.shabaretailer;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -67,6 +67,8 @@ public class MyOrdersActivity extends AppCompatActivity {
     }
 
     private void orderSelected(Order order) {
-        Toast.makeText(this, "Order selected!", Toast.LENGTH_SHORT).show();
+        Intent orderInfoIntent = new Intent(this, OrderInformationActivity.class);
+        orderInfoIntent.putExtra("oid", order.getId());
+        startActivity(orderInfoIntent);
     }
 }

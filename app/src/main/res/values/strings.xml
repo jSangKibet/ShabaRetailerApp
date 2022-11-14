@@ -66,4 +66,11 @@
     <string name="my_orders">My orders</string>
     <string name="order_num">#%s</string>
     <string name="order_total_est">Total: KES %,d (estimated)</string>
+    <string name="order_information">Order information</string>
+    <string name="order_number">Order number:</string>
+    <string name="date_made_label">Date made:</string>
+    <string name="items">Items</string>
+    <string name="total_label">Total:</string>
+    <string name="order_status_label">Order status:</string>
+    <string name="est_total">Kes %,d (estimated)</string>
 </resources>

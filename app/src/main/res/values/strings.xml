@@ -64,7 +64,7 @@
     <string name="kes">KES %,d</string>
     <string name="shaba_retail_catalog">Shaba Retail - Catalog</string>
     <string name="my_orders">My orders</string>
-    <string name="order_num">#%s</string>
+    <string name="order_num"># %s</string>
     <string name="order_total_est">Total: KES %,d (estimated)</string>
     <string name="order_information">Order information</string>
     <string name="order_number">Order number:</string>
@@ -72,8 +72,9 @@
     <string name="items">Items</string>
     <string name="total_label">Total:</string>
     <string name="order_status_label">Order status:</string>
-    <string name="est_total">Kes %,d (estimated)</string>
+    <string name="est_total">KES %,d (estimated)</string>
     <string name="terms_amp_conditions"><![CDATA[Terms & conditions]]></string>
     <string name="click_here_to_read_terms_and_conditions">Click here to read terms and conditions</string>
     <string name="i_have_read_and_accepted_the_terms">I have read and accepted the terms and conditions of using Shaba retailers application</string>
+    <string name="transport_cost_label">Transport cost:</string>
 </resources>

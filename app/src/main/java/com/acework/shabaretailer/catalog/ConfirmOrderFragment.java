@@ -139,7 +139,7 @@ public class ConfirmOrderFragment extends Fragment {
     private Order getOrder() {
         int totalPrice = 0;
         double weightDbl = 0D;
-        int finalTransCost=0;
+        int estTransCost = 0;
         List<Item> itemsInCart = getItemsInCart();
 
         for (Item itemInCart : itemsInCart) {
@@ -155,7 +155,7 @@ public class ConfirmOrderFragment extends Fragment {
             if (currentRetailer.getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
-            finalTransCost = (int) Math.round(transPerKg * weightDbl);
+            estTransCost = (int) Math.round(transPerKg * weightDbl);
         }
 
         long timestamp = System.currentTimeMillis();
@@ -166,9 +166,12 @@ public class ConfirmOrderFragment extends Fragment {
                 timestamp,
                 "Pending",
                 itemsInCart,
-                totalPrice+finalTransCost,
-                finalTransCost,
-                0);
+                totalPrice + estTransCost,
+                estTransCost,
+                0,
+                0,
+                currentRetailer == null ? "" : currentRetailer.getCounty(),
+                currentRetailer == null ? "" : currentRetailer.getStreet());
     }
 
     private List<Item> getItemsInCart() {
@@ -180,7 +183,7 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     private void confirmOrder() {
-        if(tc.isChecked()){
+        if (tc.isChecked()) {
             Order order = getOrder();
             DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("RetailOrders");
             shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
@@ -191,7 +194,7 @@ public class ConfirmOrderFragment extends Fragment {
                     task.getException().printStackTrace();
                 }
             });
-        }else {
+        } else {
             Snackbar.make(requireView(), "You must accept the terms and conditions before confirmind an order", Snackbar.LENGTH_LONG).show();
         }
     }

@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class OrderInformationActivity extends AppCompatActivity {
     private MaterialButton back;
-    private TextView id, date, total, status;
+    private TextView id, date, total, status, transport;
     private RecyclerView items;
     private ItemInOrderAdapter adapter;
 
@@ -41,6 +41,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         total = findViewById(R.id.total);
         status = findViewById(R.id.order_status);
         items = findViewById(R.id.item_list);
+        transport = findViewById(R.id.transport);
     }
 
     private void setListeners() {
@@ -74,7 +75,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
         String formattedDate = dateFormatter.format(new Date(order.getTimestamp()));
 
-        id.setText(order.getId());
+        id.setText(getString(R.string.order_num, order.getId()));
         date.setText(formattedDate);
         status.setText(order.getStatus());
 
@@ -82,6 +83,12 @@ public class OrderInformationActivity extends AppCompatActivity {
             total.setText(getString(R.string.kes, order.getFinalTotal()));
         } else {
             total.setText(getString(R.string.est_total, order.getEstimatedTotal()));
+        }
+
+        if (order.getFinalTransportCost() > 0) {
+            transport.setText(getString(R.string.kes, order.getFinalTransportCost()));
+        } else {
+            transport.setText(getString(R.string.est_total, order.getEstimatedTransportCost()));
         }
 
         adapter.setItems(order.getOrderItems());

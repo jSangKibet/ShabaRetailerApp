@@ -11,11 +11,14 @@ public class Order {
     private int estimatedTotal;
     private int estimatedTransportCost;
     private int finalTotal;
+    private int finalTransportCost;
+    private String county;
+    private String street;
 
     public Order() {
     }
 
-    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal) {
+    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street) {
         this.id = id;
         this.retailerId = retailerId;
         this.timestamp = timestamp;
@@ -24,6 +27,9 @@ public class Order {
         this.estimatedTotal = estimatedTotal;
         this.estimatedTransportCost = estimatedTransportCost;
         this.finalTotal = finalTotal;
+        this.finalTransportCost = finalTransportCost;
+        this.county = county;
+        this.street = street;
     }
 
     public String getId() {
@@ -88,5 +94,17 @@ public class Order {
 
     public void setFinalTotal(int finalTotal) {
         this.finalTotal = finalTotal;
+    }
+
+    public int getFinalTransportCost() {
+        return finalTransportCost;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public String getStreet() {
+        return street;
     }
 }

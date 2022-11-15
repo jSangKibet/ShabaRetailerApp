@@ -75,4 +75,19 @@ public class Item {
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
+
+    public Item cloneItem() {
+        return new Item(
+                name,
+                price,
+                shape,
+                dimensions,
+                weaving,
+                leather,
+                insert,
+                strapLength,
+                sku,
+                weight,
+                quantity);
+    }
 }

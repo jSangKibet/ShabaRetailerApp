@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.acework.shabaretailer.catalog.CartFragment;
@@ -36,9 +35,9 @@ public class CatalogActivity extends AppCompatActivity {
     private ConfirmOrderFragment confirmOrderFragment;
     private Fragment activeFragment;
     private CartViewModel cartViewModel;
-    private boolean fromCatalog;
     private DrawerLayout navDrawer;
     private Retailer retailer;
+    private boolean fromCatalog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +54,8 @@ public class CatalogActivity extends AppCompatActivity {
         activeFragment = catalogFragment;
     }
 
-    public void toCartItem(Item item, boolean fromCatalog) {
-        this.fromCatalog = fromCatalog;
+    public void toCartItem(Item item) {
+        fromCatalog = activeFragment == catalogFragment;
         cartItemFragment.setItem(item);
         getSupportFragmentManager().beginTransaction().hide(activeFragment).show(cartItemFragment).commit();
         activeFragment = cartItemFragment;
@@ -70,14 +69,6 @@ public class CatalogActivity extends AppCompatActivity {
     public void toConfirmOrder() {
         getSupportFragmentManager().beginTransaction().hide(activeFragment).show(confirmOrderFragment).commit();
         activeFragment = confirmOrderFragment;
-    }
-
-    public void backFromCatalog() {
-        if (fromCatalog) {
-            toCatalog();
-        } else {
-            toCart();
-        }
     }
 
     private void loadItems() {
@@ -135,5 +126,30 @@ public class CatalogActivity extends AppCompatActivity {
 
     public Retailer getRetailer() {
         return retailer;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (activeFragment == cartItemFragment) {
+            cartViewModel.refresh();
+            if (fromCatalog) {
+                toCatalog();
+            } else {
+                toCart();
+            }
+            return;
+        }
+
+        if (activeFragment == cartFragment) {
+            toCatalog();
+            return;
+        }
+
+        if (activeFragment == confirmOrderFragment) {
+            toCart();
+            return;
+        }
+
+        super.onBackPressed();
     }
 }

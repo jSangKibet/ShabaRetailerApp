@@ -76,7 +76,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     private void setListeners() {
-        back.setOnClickListener(v -> back());
+        back.setOnClickListener(v -> requireActivity().onBackPressed());
         complete.setOnClickListener(v -> toConfirmOrder());
     }
 
@@ -125,12 +125,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
 
     @Override
     public void itemSelected(Item item) {
-        ((CatalogActivity) requireActivity()).toCartItem(item, false);
-    }
-
-    private void back() {
-        cartViewModel.refresh();
-        ((CatalogActivity) requireActivity()).backFromCatalog();
+        ((CatalogActivity) requireActivity()).toCartItem(item);
     }
 
     private void toConfirmOrder() {

@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
@@ -95,8 +94,8 @@ public class CartItemFragment extends Fragment {
         minus.setOnClickListener(v -> decrementByOne());
         plus.setOnClickListener(v -> incrementByOne());
         plus5.setOnClickListener(v -> incrementByFive());
-        back.setOnClickListener(v -> back());
-        done.setOnClickListener(v -> back());
+        back.setOnClickListener(v -> requireActivity().onBackPressed());
+        done.setOnClickListener(v -> done());
     }
 
     private void decrementByOne() {
@@ -131,14 +130,8 @@ public class CartItemFragment extends Fragment {
         setValues();
     }
 
-    private void back() {
-        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        cartViewModel.refresh();
-        ((CatalogActivity) requireActivity()).backFromCatalog();
-    }
-
     public void setItem(Item item) {
-        this.item = item;
+        this.item = item.cloneItem();
         setValues();
     }
 
@@ -153,5 +146,11 @@ public class CartItemFragment extends Fragment {
                 imageView.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.image_96));
             }
         });
+    }
+
+    private void done() {
+        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        cartViewModel.setQuantity(item.getSku(), item.getQuantity());
+        requireActivity().onBackPressed();
     }
 }

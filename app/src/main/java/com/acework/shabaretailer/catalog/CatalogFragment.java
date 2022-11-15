@@ -84,7 +84,7 @@ public class CatalogFragment extends Fragment {
     }
 
     private void itemSelected(Item item) {
-        ((CatalogActivity) requireActivity()).toCartItem(item, true);
+        ((CatalogActivity) requireActivity()).toCartItem(item);
     }
 
     private void setSearchFunctionality() {

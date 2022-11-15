@@ -128,12 +128,8 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     private void setListeners() {
-        back.setOnClickListener(v -> back());
+        back.setOnClickListener(v -> requireActivity().onBackPressed());
         confirm.setOnClickListener(v -> confirmOrder());
-    }
-
-    private void back() {
-        ((CatalogActivity) requireActivity()).toCart();
     }
 
     private Order getOrder() {

@@ -61,4 +61,11 @@
         android:layout_marginTop="8dp"
         android:text="@string/terms_amp_conditions"
         app:layout_constraintTop_toBottomOf="@id/to_my_orders" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/logout"
+        app:layout_constraintBottom_toBottomOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

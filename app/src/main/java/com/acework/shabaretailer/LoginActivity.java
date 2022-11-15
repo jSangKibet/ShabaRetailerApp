@@ -93,5 +93,6 @@ public class LoginActivity extends AppCompatActivity {
 
     private void toCatalog() {
         startActivity(new Intent(this, CatalogActivity.class));
+        finish();
     }
 }

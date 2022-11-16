@@ -12,6 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/work_sans_regular"
         android:textColor="?attr/colorPrimary"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@id/image"
@@ -22,6 +23,7 @@
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
+        android:adjustViewBounds="true"
         android:importantForAccessibility="no"
         app:layout_constraintBottom_toTopOf="@id/price"
         app:layout_constraintEnd_toEndOf="parent"
@@ -32,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
+        android:fontFamily="@font/work_sans_regular"
         android:textColor="?attr/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/buttons"
         app:layout_constraintStart_toStartOf="parent" />
@@ -46,6 +49,7 @@
             android:id="@+id/add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_bold"
             android:text="@string/add"
             app:layout_constraintBottom_toBottomOf="parent" />
 
@@ -57,12 +61,12 @@
             app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
+                android:id="@+id/quantity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/work_sans_bold"
                 android:textColor="?attr/colorPrimary"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:id="@+id/quantity"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/edit"
                 app:layout_constraintStart_toStartOf="parent"

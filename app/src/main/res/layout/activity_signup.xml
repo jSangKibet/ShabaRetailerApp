@@ -23,6 +23,7 @@
         android:id="@+id/title_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/work_sans_bold"
         android:layout_marginStart="16dp"
         android:text="@string/join_shaba_as_a_retailer"
         android:textColor="?attr/colorPrimary"
@@ -55,6 +56,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -70,6 +72,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -86,6 +89,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_height="wrap_content"
                     android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -102,6 +106,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/work_sans_regular"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -117,6 +122,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -133,6 +139,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_height="wrap_content"
                     android:inputType="textPassword" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -141,6 +148,7 @@
                 android:id="@+id/view_tc"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/work_sans_regular"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/click_here_to_read_terms_and_conditions"
@@ -149,6 +157,7 @@
             <CheckBox
                 android:id="@+id/tc_checkbox"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/work_sans_regular"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:buttonTint="?attr/colorPrimary"
@@ -167,6 +176,7 @@
 
                 <AutoCompleteTextView
                     android:id="@+id/county"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none" />
@@ -183,6 +193,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:fontFamily="@font/work_sans_regular"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -190,6 +201,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/join_button"
                 android:layout_width="match_parent"
+                android:fontFamily="@font/work_sans_bold"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/join"

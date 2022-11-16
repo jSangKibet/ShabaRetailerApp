@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/container"
     android:layout_marginBottom="4dp"
     android:background="@drawable/bg_gray_01_ripple"
     android:padding="8dp">
@@ -12,9 +12,9 @@
         android:id="@+id/order_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/work_sans_regular"
         android:textColor="?attr/colorPrimary"
-        android:textSize="12sp"
-        android:textStyle="bold"
+        android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,7 +23,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:fontFamily="@font/work_sans_regular"
         android:textColor="?attr/colorPrimary"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/order_number" />
 
@@ -32,9 +34,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:fontFamily="@font/work_sans_bold"
         android:textColor="?attr/colorPrimary"
-        android:textStyle="italic"
-        app:layout_constraintTop_toBottomOf="@id/order_total"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_total" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

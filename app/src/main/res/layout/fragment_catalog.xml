@@ -31,6 +31,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_bold"
             android:layout_marginStart="16dp"
             android:text="@string/shaba_retail_catalog"
             android:textColor="?attr/colorOnPrimary"
@@ -50,6 +51,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_field"
+                android:fontFamily="@font/work_sans_regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/search_name"
@@ -76,6 +78,7 @@
         <TextView
             android:id="@+id/item_count"
             android:layout_width="wrap_content"
+            android:fontFamily="@font/work_sans_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:textColor="?attr/colorPrimary"
@@ -87,6 +90,7 @@
             android:id="@+id/total_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_regular"
             android:layout_marginBottom="8dp"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
@@ -96,6 +100,7 @@
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
+            android:fontFamily="@font/work_sans_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:textColor="?attr/colorPrimary"
@@ -106,6 +111,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/complete_order"
             android:layout_width="match_parent"
+            android:fontFamily="@font/work_sans_bold"
             android:layout_height="wrap_content"
             android:text="@string/complete_order"
             app:layout_constraintBottom_toBottomOf="parent" />

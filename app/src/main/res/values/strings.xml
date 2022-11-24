@@ -85,4 +85,8 @@
     <string name="account_verification_prompt">An email with a link to verify your account has been sent to your email address. Please follow the instructions in the email to verify your account. If more than five minutes have passed and you didn\'t get the email, check your spam folder or request a new verification mail below.</string>
     <string name="resend_verification_email">Resend verification email</string>
     <string name="i_have_verified">I have verified my account</string>
+    <string name="verification_code">Verification code</string>
+    <string name="set_number">Set number</string>
+    <string name="set_mobile_number">Set your mobile number</string>
+    <string name="get_verification_code">Get verification code</string>
 </resources>

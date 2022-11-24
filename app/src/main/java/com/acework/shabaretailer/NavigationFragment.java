@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NavigationFragment extends Fragment {
     private TextView name, businessName, telephone;
-    private MaterialButton toMyOrders, viewTc, logout;
+    private MaterialButton toMyOrders, viewTc, logout, setNumber;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,12 +49,14 @@ public class NavigationFragment extends Fragment {
         toMyOrders = view.findViewById(R.id.to_my_orders);
         viewTc = view.findViewById(R.id.view_tc);
         logout = view.findViewById(R.id.logout);
+        setNumber = view.findViewById(R.id.set_number);
     }
 
     private void setListeners() {
         toMyOrders.setOnClickListener(v -> startActivity(new Intent(requireContext(), MyOrdersActivity.class)));
         viewTc.setOnClickListener(v -> viewTc());
         logout.setOnClickListener(v -> logoutButtonClicked());
+        setNumber.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangeNumberActivity.class)));
     }
 
     @SuppressWarnings("ConstantConditions")

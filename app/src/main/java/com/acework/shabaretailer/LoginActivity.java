@@ -61,7 +61,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signUp() {
-        startActivity(new Intent(this, SignupActivity.class));
+        startActivity(new Intent(this, SignupActivity2.class));
     }
 
     private boolean validateInput() {

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -14,11 +15,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        FirebaseAuth firebaseAuth=FirebaseAuth.getInstance();
-        if(firebaseAuth.getCurrentUser()==null){
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
             startActivity(new Intent(this, LoginActivity.class));
-        }else {
-            startActivity(new Intent(this, CatalogActivity.class));
+        } else {
+            if (user.isEmailVerified()) {
+                startActivity(new Intent(this, CatalogActivity.class));
+            } else {
+                startActivity(new Intent(this, AccountVerificationActivity.class));
+            }
         }
         finish();
     }

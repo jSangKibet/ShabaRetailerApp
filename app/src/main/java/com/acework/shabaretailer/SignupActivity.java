@@ -4,14 +4,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,8 +21,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.SignInMethodQueryResult;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
@@ -33,7 +29,7 @@ import java.util.List;
 public class SignupActivity extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     private MaterialButton back, join, viewTc;
-    private TextInputLayout businessName, name, telephone, email, password, confirmPassword, county, street;
+    private TextInputLayout businessName, name, email, password, confirmPassword, county, street;
     private CheckBox tc;
     private ScrollView scrollView;
 
@@ -52,7 +48,6 @@ public class SignupActivity extends AppCompatActivity {
         join = findViewById(R.id.join_button);
         businessName = findViewById(R.id.business_name_input);
         name = findViewById(R.id.name_input);
-        telephone = findViewById(R.id.telephone_input);
         email = findViewById(R.id.email_input);
         password = findViewById(R.id.password_input);
         confirmPassword = findViewById(R.id.password_confirmation_input);
@@ -106,11 +101,6 @@ public class SignupActivity extends AppCompatActivity {
             scroll(name);
             return false;
         }
-        if (!telephone.getEditText().getText().toString().trim().matches("\\d{10}")) {
-            telephone.setError("Invalid telephone number");
-            scroll(telephone);
-            return false;
-        }
         if (!Patterns.EMAIL_ADDRESS.matcher(email.getEditText().getText().toString().trim()).matches()) {
             email.setError("Invalid email address");
             return false;
@@ -141,7 +131,6 @@ public class SignupActivity extends AppCompatActivity {
     private void clearErrors() {
         businessName.setError(null);
         name.setError(null);
-        telephone.setError(null);
         email.setError(null);
         password.setError(null);
         confirmPassword.setError(null);
@@ -216,7 +205,7 @@ public class SignupActivity extends AppCompatActivity {
         return new Retailer(
                 name.getEditText().getText().toString().trim(),
                 businessName.getEditText().getText().toString().trim(),
-                telephone.getEditText().getText().toString().trim(),
+                "-",
                 email.getEditText().getText().toString().trim(),
                 county.getEditText().getText().toString(),
                 street.getEditText().getText().toString().trim(),
@@ -229,7 +218,7 @@ public class SignupActivity extends AppCompatActivity {
         String uid = firebaseAuth.getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference().child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                toCatalog();
+                FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());
             } else {
                 Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 FirebaseAuth.getInstance().getCurrentUser().delete();
@@ -237,8 +226,8 @@ public class SignupActivity extends AppCompatActivity {
         });
     }
 
-    private void toCatalog() {
-        Intent intent = new Intent(this, CatalogActivity.class);
+    private void toAccountVerification() {
+        Intent intent = new Intent(this, AccountVerificationActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
     }

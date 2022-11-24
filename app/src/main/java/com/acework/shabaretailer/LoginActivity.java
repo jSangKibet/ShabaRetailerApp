@@ -3,7 +3,6 @@ package com.acework.shabaretailer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -48,7 +47,11 @@ public class LoginActivity extends AppCompatActivity {
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseAuth.signInWithEmailAndPassword(usernameField.getText().toString().trim(), passwordField.getText().toString()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    toCatalog();
+                    if (firebaseAuth.getCurrentUser().isEmailVerified()) {
+                        startActivity(new Intent(this, CatalogActivity.class));
+                    } else {
+                        startActivity(new Intent(this, AccountVerificationActivity.class));
+                    }
                 } else {
                     Snackbar.make(usernameLayout, "Could not log you in. Check your credentials and try again.", Snackbar.LENGTH_LONG).show();
                 }
@@ -61,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void signUp() {
-        startActivity(new Intent(this, SignupActivity2.class));
+        startActivity(new Intent(this, SignupActivity.class));
     }
 
     private boolean validateInput() {
@@ -89,10 +92,5 @@ public class LoginActivity extends AppCompatActivity {
         }
         usernameLayout.setError("Invalid email address or telephone number");
         return false;
-    }
-
-    private void toCatalog() {
-        startActivity(new Intent(this, CatalogActivity.class));
-        finish();
     }
 }

@@ -77,23 +77,6 @@
                     android:inputType="textCapWords" />
             </com.google.android.material.textfield.TextInputLayout>
 
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/telephone_input"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:hint="@string/telephone_number"
-                app:layout_constraintTop_toBottomOf="@id/name_input">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:fontFamily="@font/work_sans_regular"
-                    android:layout_height="wrap_content"
-                    android:inputType="number" />
-            </com.google.android.material.textfield.TextInputLayout>
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/email_input"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -101,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:hint="@string/email_address"
-                app:layout_constraintTop_toBottomOf="@id/telephone_input">
+                app:layout_constraintTop_toBottomOf="@id/name_input">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -118,7 +101,7 @@
                 android:layout_marginTop="16dp"
                 android:hint="@string/password"
                 app:endIconMode="password_toggle"
-                app:layout_constraintTop_toBottomOf="@id/email_input">
+                app:layout_constraintTop_toBottomOf="@id/street_input">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -172,7 +155,7 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/county"
                 android:labelFor="@id/county"
-                app:layout_constraintTop_toBottomOf="@id/view_tc">
+                app:layout_constraintTop_toBottomOf="@id/email_input">
 
                 <AutoCompleteTextView
                     android:id="@+id/county"
@@ -205,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:text="@string/join"
-                app:layout_constraintTop_toBottomOf="@id/street_input" />
+                app:layout_constraintTop_toBottomOf="@id/view_tc" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

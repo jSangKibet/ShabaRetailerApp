@@ -31,27 +31,10 @@ public class CartViewModel extends AndroidViewModel {
             if (itemInCart == null) {
                 newCart.add(itemToSet);
             } else {
-                if (isSimilar(itemInCart, itemToSet)) {
-                    newCart.add(itemInCart);
-                } else {
-                    newCart.add(itemToSet);
-                }
+                newCart.add(itemToSet);
             }
         }
         cart.setValue(newCart);
-        refresh();
-    }
-
-    private boolean isSimilar(Item item1, Item item2) {
-        if (!item1.getName().equals(item2.getName())) return false;
-        if (!(item1.getPrice() == item2.getPrice())) return false;
-        if (!item1.getShape().equals(item2.getShape())) return false;
-        if (!item1.getDimensions().equals(item2.getDimensions())) return false;
-        if (!item1.getWeaving().equals(item2.getWeaving())) return false;
-        if (!item1.getLeather().equals(item2.getLeather())) return false;
-        if (!item1.getInsert().equals(item2.getInsert())) return false;
-        if (!item1.getStrapLength().equals(item2.getStrapLength())) return false;
-        return item1.getWeight() == item2.getWeight();
     }
 
     private Item getItemFromCart(String sku) {

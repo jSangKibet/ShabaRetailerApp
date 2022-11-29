@@ -261,7 +261,7 @@
                 android:paddingEnd="16dp">
 
                 <TextView
-                    android:id="@+id/dimen_label"
+                    android:id="@+id/size_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -273,7 +273,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/dimen"
+                    android:id="@+id/size"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
@@ -285,30 +285,6 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/shape_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/work_sans_regular"
-                    android:text="@string/shape"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/dimen_label" />
-
-                <TextView
-                    android:id="@+id/shape"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/work_sans_bold"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/dimen_label" />
-
-                <TextView
                     android:id="@+id/weaving_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -318,7 +294,7 @@
                     android:textColor="?attr/colorPrimary"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/shape_label" />
+                    app:layout_constraintTop_toBottomOf="@id/size_label" />
 
                 <TextView
                     android:id="@+id/weaving"
@@ -330,31 +306,7 @@
                     android:textColor="?attr/colorPrimary"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/shape_label" />
-
-                <TextView
-                    android:id="@+id/leather_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:fontFamily="@font/work_sans_regular"
-                    android:text="@string/type_of_leather"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="12sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/weaving_label" />
-
-                <TextView
-                    android:id="@+id/leather"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="8dp"
-                    android:fontFamily="@font/work_sans_bold"
-                    android:textColor="?attr/colorPrimary"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/weaving_label" />
+                    app:layout_constraintTop_toBottomOf="@id/size_label" />
 
                 <TextView
                     android:id="@+id/strap_label"
@@ -366,7 +318,7 @@
                     android:textColor="?attr/colorPrimary"
                     android:textSize="12sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/leather_label" />
+                    app:layout_constraintTop_toBottomOf="@id/weaving_label" />
 
                 <TextView
                     android:id="@+id/strap"
@@ -378,7 +330,7 @@
                     android:textColor="?attr/colorPrimary"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/leather_label" />
+                    app:layout_constraintTop_toBottomOf="@id/weaving_label" />
 
                 <TextView
                     android:id="@+id/weight_label"

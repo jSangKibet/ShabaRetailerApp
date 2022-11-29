@@ -82,17 +82,17 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
 
     private void computeTotals(List<Item> itemsInCart) {
         int totalPrice = 0;
-        double weightDbl = 0D;
+        int totalWeight = 0;
 
         for (Item itemInCart : itemsInCart) {
             if (itemInCart.getQuantity() > 0) {
                 totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
-                weightDbl += (itemInCart.getWeight() * itemInCart.getQuantity());
+                totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
 
         total.setText(getString(R.string.item_total, totalPrice));
-        weight.setText(getString(R.string.weight_total, weightDbl));
+        weight.setText(getString(R.string.weight_total, totalWeight));
         transport.setText(getString(R.string.transport, 0));
         estimatedTotal.setText(getString(R.string.total, totalPrice));
 
@@ -102,7 +102,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
             if (currentRetailer.getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
-            int finalTransCost = (int) Math.round(transPerKg * weightDbl);
+            int finalTransCost = ConfirmOrderFragment.getTransportCost(totalWeight, transPerKg);
             transport.setText(getString(R.string.transport, finalTransCost));
             estimatedTotal.setText(getString(R.string.total, totalPrice + finalTransCost));
         }

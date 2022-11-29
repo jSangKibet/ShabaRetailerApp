@@ -39,6 +39,13 @@ public class ConfirmOrderFragment extends Fragment {
     public ConfirmOrderFragment() {
     }
 
+    public static int getTransportCost(int weight, int costPerKG) {
+        int kg = weight / 1000;
+        int remainder = weight % 1000;
+        if (remainder > 0) kg += 1;
+        return kg * costPerKG;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,17 +100,17 @@ public class ConfirmOrderFragment extends Fragment {
 
     private void computeValues(List<Item> itemsInCart) {
         int totalPrice = 0;
-        double weightDbl = 0D;
+        int totalWeight = 0;
 
         for (Item itemInCart : itemsInCart) {
             if (itemInCart.getQuantity() > 0) {
                 totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
-                weightDbl += (itemInCart.getWeight() * itemInCart.getQuantity());
+                totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
 
         itemTotal.setText(getString(R.string.kes, totalPrice));
-        estWeight.setText(getString(R.string.weight_formatted, weightDbl));
+        estWeight.setText(getString(R.string.weight_formatted, totalWeight));
         estTrans.setText(getString(R.string.kes, 0));
         estTotal.setText(getString(R.string.kes, totalPrice));
 
@@ -113,7 +120,7 @@ public class ConfirmOrderFragment extends Fragment {
             if (currentRetailer.getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
-            int finalTransCost = (int) Math.round(transPerKg * weightDbl);
+            int finalTransCost = getTransportCost(totalWeight, transPerKg);
             estTrans.setText(getString(R.string.kes, finalTransCost));
             estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
         }
@@ -134,14 +141,14 @@ public class ConfirmOrderFragment extends Fragment {
 
     private Order getOrder() {
         int totalPrice = 0;
-        double weightDbl = 0D;
+        int totalWeight = 0;
         int estTransCost = 0;
         List<Item> itemsInCart = getItemsInCart();
 
         for (Item itemInCart : itemsInCart) {
             if (itemInCart.getQuantity() > 0) {
                 totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
-                weightDbl += (itemInCart.getWeight() * itemInCart.getQuantity());
+                totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
 
@@ -151,7 +158,7 @@ public class ConfirmOrderFragment extends Fragment {
             if (currentRetailer.getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
-            estTransCost = (int) Math.round(transPerKg * weightDbl);
+            estTransCost = transPerKg * totalWeight;
         }
 
         long timestamp = System.currentTimeMillis();

@@ -23,7 +23,7 @@ import com.google.firebase.storage.StorageReference;
 
 public class CartItemFragment extends Fragment {
     private Item item;
-    private TextView itemName, price, minus5, minus, quantity, plus, plus5, total, dimensions, shape, weaving, leather, strap, weight, sku;
+    private TextView itemName, price, minus5, minus, quantity, plus, plus5, total, size, weaving, strap, weight, sku;
     private MaterialButton back, done;
     private ImageView imageView;
 
@@ -58,10 +58,8 @@ public class CartItemFragment extends Fragment {
         plus = view.findViewById(R.id.plus);
         plus5 = view.findViewById(R.id.plus_5);
         total = view.findViewById(R.id.total);
-        dimensions = view.findViewById(R.id.dimen);
-        shape = view.findViewById(R.id.shape);
+        size = view.findViewById(R.id.size);
         weaving = view.findViewById(R.id.weaving);
-        leather = view.findViewById(R.id.leather);
         strap = view.findViewById(R.id.strap);
         weight = view.findViewById(R.id.weight);
         sku = view.findViewById(R.id.sku);
@@ -74,10 +72,8 @@ public class CartItemFragment extends Fragment {
         price.setText(getString(R.string.price, item.getPrice()));
         quantity.setText(String.valueOf(item.getQuantity()));
         setTotal(item);
-        dimensions.setText(item.getDimensions());
-        shape.setText(item.getShape());
+        size.setText(item.getSize());
         weaving.setText(item.getWeaving());
-        leather.setText(item.getLeather());
         strap.setText(item.getStrapLength());
         weight.setText(getString(R.string.weight_formatted, item.getWeight()));
         sku.setText(item.getSku());

@@ -120,7 +120,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
 
     @Override
     public void itemRemoved(Item item) {
-        cartViewModel.removeItemFromCart(item.getSku());
+        cartViewModel.removeItemFromCart(item);
     }
 
     @Override

@@ -92,4 +92,6 @@
     <string name="error_loading_catalog">There was an error loading the catalog. Please check your network and try again after a few minutes.</string>
     <string name="insert_color">Insert Color</string>
     <string name="mustard">Mustard</string>
+    <string name="maroon">Maroon</string>
+    <string name="dark_brown">Dark brown</string>
 </resources>

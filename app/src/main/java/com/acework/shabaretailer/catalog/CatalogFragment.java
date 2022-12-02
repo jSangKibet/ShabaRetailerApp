@@ -22,18 +22,27 @@ import com.acework.shabaretailer.adapter.ItemAdapter;
 import com.acework.shabaretailer.custom.GridSpacingItemDecoration;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
+import com.airbnb.lottie.LottieAnimationView;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class CatalogFragment extends Fragment {
     private TextInputEditText searchField;
     private ItemAdapter adapter;
     private ConstraintLayout summary;
-    private TextView numOfItems, totalQuantity, total;
+    private TextView numOfItems, totalQuantity, total, errorMessage;
     private MaterialButton complete, menuBtn;
     private RecyclerView itemList;
+    private CartViewModel cartViewModel;
+    private LottieAnimationView loadingAnim;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +61,9 @@ public class CatalogFragment extends Fragment {
         bindViews(view);
         initializeList();
         setSearchFunctionality();
-        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
-            adapter.setItems(itemsInCart);
-            computeTotals(itemsInCart);
-        });
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         setListeners();
+        fetchItems();
     }
 
     private void bindViews(View view) {
@@ -69,6 +75,8 @@ public class CatalogFragment extends Fragment {
         total = view.findViewById(R.id.total);
         complete = view.findViewById(R.id.complete_order);
         menuBtn = view.findViewById(R.id.menu_button);
+        loadingAnim = view.findViewById(R.id.loading_anim);
+        errorMessage = view.findViewById(R.id.error_message);
     }
 
     private void initializeList() {
@@ -131,5 +139,48 @@ public class CatalogFragment extends Fragment {
 
     private void toCart() {
         ((CatalogActivity) requireActivity()).toCart();
+    }
+
+    private void fetchItems() {
+        FirebaseDatabase.getInstance().getReference().child("Items2").get().addOnCompleteListener(task -> {
+            hideAnimation();
+            if (task.isSuccessful()) {
+                List<Item> itemsFromDatabase = new ArrayList<>();
+                for (DataSnapshot childSnapshot : task.getResult().getChildren()) {
+                    Item coercedItem = childSnapshot.getValue(Item.class);
+                    itemsFromDatabase.add(coercedItem);
+                }
+                adapter.setItems(itemsFromDatabase);
+                setQuantityObserver();
+            } else {
+                errorMessage.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void setQuantityObserver() {
+        cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
+            computeTotals(itemsInCart);
+            calculateQuantities(itemsInCart);
+        });
+    }
+
+    private void hideAnimation() {
+        loadingAnim.pauseAnimation();
+        loadingAnim.setVisibility(View.GONE);
+    }
+
+    private void calculateQuantities(List<Item> itemsInCart) {
+        HashMap<String, Integer> itemQuantities = new HashMap<>();
+        for (Item i : itemsInCart) {
+            String sku = i.getSku();
+            Integer currentQty = itemQuantities.get(sku);
+            if (currentQty == null) {
+                itemQuantities.put(sku, i.getQuantity());
+            } else {
+                itemQuantities.put(sku, currentQty + i.getQuantity());
+            }
+        }
+        adapter.updateQuantities(itemQuantities);
     }
 }

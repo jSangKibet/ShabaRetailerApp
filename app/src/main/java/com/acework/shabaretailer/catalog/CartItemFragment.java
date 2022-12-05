@@ -22,10 +22,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class CartItemFragment extends Fragment {
-    private Item item;
-    private TextView itemName, price, minus5, minus, quantity, plus, plus5, total, size, weaving, strap, weight, sku;
-    private MaterialButton back, done;
+    private Item item, itemMustard, itemMaroon, itemDarkBrown;
+    private TextView itemName, price, quantityMustard, quantityMaroon, quantityDarkBrown, total;
+    private MaterialButton back, done, mustardMinus5, mustardMinus, mustardPlus, mustardPlus5;
+    private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
+    private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
     private ImageView imageView;
+    private CartViewModel cartViewModel;
 
     public CartItemFragment() {
     }
@@ -44,6 +47,7 @@ public class CartItemFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         bindViews(view);
         setListeners();
     }
@@ -52,82 +56,95 @@ public class CartItemFragment extends Fragment {
         back = view.findViewById(R.id.back_button);
         itemName = view.findViewById(R.id.name);
         price = view.findViewById(R.id.price);
-        minus5 = view.findViewById(R.id.minus_5);
-        minus = view.findViewById(R.id.minus);
-        quantity = view.findViewById(R.id.quantity);
-        plus = view.findViewById(R.id.plus);
-        plus5 = view.findViewById(R.id.plus_5);
+        quantityMustard = view.findViewById(R.id.mustard_qty);
+        quantityMaroon = view.findViewById(R.id.maroon_qty);
+        quantityDarkBrown = view.findViewById(R.id.dark_brown_qty);
         total = view.findViewById(R.id.total);
-        size = view.findViewById(R.id.size);
-        weaving = view.findViewById(R.id.weaving);
-        strap = view.findViewById(R.id.strap);
-        weight = view.findViewById(R.id.weight);
-        sku = view.findViewById(R.id.sku);
         done = view.findViewById(R.id.done);
         imageView = view.findViewById(R.id.image);
+        mustardMinus = view.findViewById(R.id.mustard_minus);
+        mustardMinus5 = view.findViewById(R.id.mustard_minus_5);
+        mustardPlus = view.findViewById(R.id.mustard_plus);
+        mustardPlus5 = view.findViewById(R.id.mustard_plus_5);
+        maroonMinus = view.findViewById(R.id.maroon_minus);
+        maroonMinus5 = view.findViewById(R.id.maroon_minus_5);
+        maroonPlus = view.findViewById(R.id.maroon_plus);
+        maroonPlus5 = view.findViewById(R.id.maroon_plus_5);
+        darkBrownMinus = view.findViewById(R.id.dark_brown_minus);
+        darkBrownMinus5 = view.findViewById(R.id.dark_brown_minus_5);
+        darkBrownPlus = view.findViewById(R.id.dark_brown_plus);
+        darkBrownPlus5 = view.findViewById(R.id.dark_brown_plus_5);
     }
 
     private void setValues() {
         itemName.setText(item.getName());
         price.setText(getString(R.string.price, item.getPrice()));
-        quantity.setText(String.valueOf(item.getQuantity()));
-        setTotal(item);
-        size.setText(item.getSize());
-        weaving.setText(item.getWeaving());
-        strap.setText(item.getStrapLength());
-        weight.setText(getString(R.string.weight_formatted, item.getWeight()));
-        sku.setText(item.getSku());
-        loadImage();
+        quantityMustard.setText(String.valueOf(itemMustard.getQuantity()));
+        quantityMaroon.setText(String.valueOf(itemMaroon.getQuantity()));
+        quantityDarkBrown.setText(String.valueOf(itemDarkBrown.getQuantity()));
+        setTotal();
     }
 
-    private void setTotal(Item item) {
-        int totalInt = item.getPrice() * item.getQuantity();
+    private void setTotal() {
+        int totalInt = itemMustard.getPrice() * itemMustard.getQuantity();
+        totalInt += (itemMaroon.getPrice() * itemMaroon.getQuantity());
+        totalInt += (itemDarkBrown.getPrice() * itemDarkBrown.getQuantity());
         total.setText(getString(R.string.total, totalInt));
     }
 
     private void setListeners() {
-        minus5.setOnClickListener(v -> decrementByFive());
-        minus.setOnClickListener(v -> decrementByOne());
-        plus.setOnClickListener(v -> incrementByOne());
-        plus5.setOnClickListener(v -> incrementByFive());
         back.setOnClickListener(v -> requireActivity().onBackPressed());
         done.setOnClickListener(v -> done());
+        mustardMinus.setOnClickListener(v -> decrementByOne(itemMustard));
+        mustardMinus5.setOnClickListener(v -> decrementByFive(itemMustard));
+        mustardPlus.setOnClickListener(v -> incrementByOne(itemMustard));
+        mustardPlus5.setOnClickListener(v -> incrementByFive(itemMustard));
+        maroonMinus.setOnClickListener(v -> decrementByOne(itemMaroon));
+        maroonMinus5.setOnClickListener(v -> decrementByFive(itemMaroon));
+        maroonPlus.setOnClickListener(v -> incrementByOne(itemMaroon));
+        maroonPlus5.setOnClickListener(v -> incrementByFive(itemMaroon));
+        darkBrownMinus.setOnClickListener(v -> decrementByOne(itemDarkBrown));
+        darkBrownMinus5.setOnClickListener(v -> decrementByFive(itemDarkBrown));
+        darkBrownPlus.setOnClickListener(v -> incrementByOne(itemDarkBrown));
+        darkBrownPlus5.setOnClickListener(v -> incrementByFive(itemDarkBrown));
     }
 
-    private void decrementByOne() {
-        if (item.getQuantity() > 0) {
-            item.setQuantity(item.getQuantity() - 1);
+    private void decrementByOne(Item itemToDecrement) {
+        if (itemToDecrement.getQuantity() > 0) {
+            itemToDecrement.setQuantity(itemToDecrement.getQuantity() - 1);
         }
         setValues();
     }
 
-    private void decrementByFive() {
-        if (item.getQuantity() > 0) {
-            int newQuantity = item.getQuantity() - 5;
+    private void decrementByFive(Item itemToDecrement) {
+        if (itemToDecrement.getQuantity() > 0) {
+            int newQuantity = itemToDecrement.getQuantity() - 5;
             if (newQuantity < 0) newQuantity = 0;
-            item.setQuantity(newQuantity);
+            itemToDecrement.setQuantity(newQuantity);
         }
         setValues();
     }
 
-    private void incrementByOne() {
-        if (item.getQuantity() < 30) {
-            item.setQuantity(item.getQuantity() + 1);
+    private void incrementByOne(Item itemToDecrement) {
+        if (itemToDecrement.getQuantity() < 30) {
+            itemToDecrement.setQuantity(itemToDecrement.getQuantity() + 1);
         }
         setValues();
     }
 
-    private void incrementByFive() {
-        if (item.getQuantity() < 30) {
-            int newQuantity = item.getQuantity() + 5;
+    private void incrementByFive(Item itemToDecrement) {
+        if (itemToDecrement.getQuantity() < 30) {
+            int newQuantity = itemToDecrement.getQuantity() + 5;
             if (newQuantity > 30) newQuantity = 30;
-            item.setQuantity(newQuantity);
+            itemToDecrement.setQuantity(newQuantity);
         }
         setValues();
     }
 
     public void setItem(Item item) {
-        this.item = item.cloneItem();
+        this.item = item;
+        loadImage();
+        getItems(item);
         setValues();
     }
 
@@ -145,8 +162,18 @@ public class CartItemFragment extends Fragment {
     }
 
     private void done() {
-        CartViewModel cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        cartViewModel.setQuantity(item.getSku(), item.getQuantity());
+        cartViewModel.setItem(itemMustard);
+        cartViewModel.setItem(itemMaroon);
+        cartViewModel.setItem(itemDarkBrown);
         requireActivity().onBackPressed();
+    }
+
+    private void getItems(Item item) {
+        itemMustard = cartViewModel.getItemFromCart(item.getSku(), "Mustard");
+        if (itemMustard == null) itemMustard = item.cloneItem("Mustard");
+        itemMaroon = cartViewModel.getItemFromCart(item.getSku(), "Maroon");
+        if (itemMaroon == null) itemMaroon = item.cloneItem("Maroon");
+        itemDarkBrown = cartViewModel.getItemFromCart(item.getSku(), "Dark brown");
+        if (itemDarkBrown == null) itemDarkBrown = item.cloneItem("Dark brown");
     }
 }

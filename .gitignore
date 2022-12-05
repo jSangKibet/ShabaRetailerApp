@@ -21,5 +21,4 @@ local.properties
 gradle/wrapper/gradle-wrapper.properties
 gradle/wrapper/gradle-wrapper.jar
 .idea/deploymentTargetDropDown.xml
-app/debug/app-debug.aab
-app/release/app-release.aab
+*.aab

@@ -5,9 +5,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
@@ -40,16 +42,23 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemsInCart.get(position);
-        int total=item.getPrice()*item.getQuantity();
+        int total = item.getPrice() * item.getQuantity();
         holder.name.setText(item.getName());
         holder.total.setText(context.getString(R.string.total_in_cart, item.getPrice(), item.getQuantity(), total));
         holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
         holder.delete.setOnClickListener(v -> itemActionListener.itemRemoved(item));
+        if(item.getInsertColour().equals("Dark brown")){
+            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
+        }else if(item.getInsertColour().equals("Maroon")){
+            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
+        }else {
+            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setItems(List<Item> itemsToDisplay) {
-        itemsInCart=itemsToDisplay;
+        itemsInCart = itemsToDisplay;
         notifyDataSetChanged();
     }
 
@@ -61,12 +70,14 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
 
     public interface ItemActionListener {
         void itemSelected(Item item);
+
         void itemRemoved(Item item);
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView name, total;
         private final MaterialButton edit, delete;
+        private final ImageView insertColor;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +85,7 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
             edit = itemView.findViewById(R.id.edit);
             total = itemView.findViewById(R.id.total);
             delete = itemView.findViewById(R.id.delete);
+            insertColor = itemView.findViewById(R.id.insert_color);
         }
     }
 }

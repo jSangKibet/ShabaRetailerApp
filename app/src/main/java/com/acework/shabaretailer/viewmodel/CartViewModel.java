@@ -24,33 +24,16 @@ public class CartViewModel extends AndroidViewModel {
         return cart;
     }
 
-    public void setCartItems(List<Item> itemsToSet) {
-        List<Item> newCart = new ArrayList<>();
-        for (Item itemToSet : itemsToSet) {
-            Item itemInCart = getItemFromCart(itemToSet.getSku());
-            if (itemInCart == null) {
-                newCart.add(itemToSet);
-            } else {
-                newCart.add(itemToSet);
-            }
-        }
-        cart.setValue(newCart);
-    }
-
-    private Item getItemFromCart(String sku) {
+    public Item getItemFromCart(String sku, String insertColor) {
         for (Item itemInCart : cart.getValue()) {
-            if (itemInCart.getSku().equals(sku)) return itemInCart;
+            if (itemInCart.getSku().equals(sku) && itemInCart.getInsertColour().equals(insertColor))
+                return itemInCart;
         }
         return null;
     }
 
-    public void removeItemFromCart(String sku) {
-        for (Item item : cart.getValue()) {
-            if (item.getSku().equals(sku)) {
-                item.setQuantity(0);
-                break;
-            }
-        }
+    public void removeItemFromCart(Item itemToRemove) {
+        cart.getValue().remove(itemToRemove);
         refresh();
     }
 
@@ -65,11 +48,15 @@ public class CartViewModel extends AndroidViewModel {
         refresh();
     }
 
-    public void setQuantity(String sku, int quantity) {
-        for (Item item : cart.getValue()) {
-            if (item.getSku().equals(sku)) {
-                item.setQuantity(quantity);
-                break;
+    public void setItem(Item item) {
+        Item itemInCart = getItemFromCart(item.getSku(), item.getInsertColour());
+        if (itemInCart == null) {
+            cart.getValue().add(item);
+        } else {
+            if (item.getQuantity() == 0) {
+                cart.getValue().remove(itemInCart);
+            } else {
+                itemInCart.setQuantity(item.getQuantity());
             }
         }
         refresh();

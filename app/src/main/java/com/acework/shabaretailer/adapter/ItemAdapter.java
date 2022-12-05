@@ -2,6 +2,7 @@ package com.acework.shabaretailer.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
@@ -100,6 +102,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 imageView.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.image_96));
             }
         });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void updateQuantities(HashMap<String, Integer> itemQuantities) {
+        for (Item item : allItems) {
+            Integer itemQty = itemQuantities.get(item.getSku());
+            item.setQuantity(itemQty == null ? 0 : itemQty);
+        }
+        notifyDataSetChanged();
     }
 
     public interface ItemActionListener {

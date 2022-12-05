@@ -6,4 +6,7 @@
   <color name="primaryTextColor">#ffffff</color>
 
   <color name="gray_01">#ebebeb</color>
+  <color name="mustard">#F3B110</color>
+  <color name="maroon">#860C2D</color>
+  <color name="dark_brown">#4F3732</color>
 </resources>

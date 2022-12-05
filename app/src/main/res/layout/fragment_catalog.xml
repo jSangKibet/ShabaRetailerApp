@@ -31,8 +31,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_bold"
             android:layout_marginStart="16dp"
+            android:fontFamily="@font/work_sans_bold"
             android:text="@string/shaba_retail_catalog"
             android:textColor="?attr/colorOnPrimary"
             android:textSize="16sp"
@@ -51,9 +51,9 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_field"
-                android:fontFamily="@font/work_sans_regular"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/work_sans_regular"
                 android:hint="@string/search_name"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
@@ -66,6 +66,33 @@
         app:layout_constraintBottom_toTopOf="@id/summary_layout"
         app:layout_constraintTop_toBottomOf="@id/header_layout" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/loading_anim"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_layout"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/shopping_bag" />
+
+    <TextView
+        android:id="@+id/error_message"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:fontFamily="@font/work_sans_regular"
+        android:text="@string/error_loading_catalog"
+        android:textAlignment="center"
+        android:textColor="?attr/colorPrimary"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/header_layout" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/summary_layout"
         android:layout_width="match_parent"
@@ -76,22 +103,11 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <TextView
-            android:id="@+id/item_count"
-            android:layout_width="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toTopOf="@id/total_quantity"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <TextView
             android:id="@+id/total_quantity"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/total"
@@ -100,9 +116,9 @@
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/complete_order"
@@ -111,8 +127,8 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/complete_order"
             android:layout_width="match_parent"
-            android:fontFamily="@font/work_sans_bold"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_bold"
             android:text="@string/complete_order"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,182 +1,35 @@
 {
   "project_info": {
-    "project_number": "1085050065265",
-    "firebase_url": "https://shaba-86abf-default-rtdb.firebaseio.com",
-    "project_id": "shaba-86abf",
-    "storage_bucket": "shaba-86abf.appspot.com"
+    "project_number": "362679378309",
+    "firebase_url": "https://shaba-retail-default-rtdb.firebaseio.com",
+    "project_id": "shaba-retail",
+    "storage_bucket": "shaba-retail.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1085050065265:android:68a7ab93f8d0bc2c43e6d0",
-        "android_client_info": {
-          "package_name": "com.acework.shaba"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1085050065265-5ler9erhoif2p2scpkmteiqd6929006o.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.acework.shaba",
-            "certificate_hash": "daab406c9f44e88b6fd458f8869b60bbc943885f"
-          }
-        },
-        {
-          "client_id": "1085050065265-gisootq20n7rs6a9m21i0ne15po8l212.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.acework.shaba",
-            "certificate_hash": "81666107ad2684ec8735e97e1ed7c53aed8d208d"
-          }
-        },
-        {
-          "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCfgKgTp6uVCf0E2qjhOqjVl1IlpHEclYY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1085050065265-rqt9scjvug67t2f9nhkp21ubeibd2frt.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.theShaba"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1085050065265:android:a2d6404880673d4843e6d0",
+        "mobilesdk_app_id": "1:362679378309:android:4a1775a03224601670a4ec",
         "android_client_info": {
           "package_name": "com.acework.shabaretailer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
+          "client_id": "362679378309-q6ictdfhjgnk9mn757q2fbmvvovplh5l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCfgKgTp6uVCf0E2qjhOqjVl1IlpHEclYY"
+          "current_key": "AIzaSyCo0dOxtDx9z6ZdUeSWG29P4lZ0n4nW2_o"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
+              "client_id": "362679378309-q6ictdfhjgnk9mn757q2fbmvvovplh5l.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "1085050065265-rqt9scjvug67t2f9nhkp21ubeibd2frt.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.theShaba"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1085050065265:android:3107ff6652ed3f5a43e6d0",
-        "android_client_info": {
-          "package_name": "com.acework.theshaba"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1085050065265-48rg66lq513jtnlgiffeclh619ft3ehb.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.acework.theshaba",
-            "certificate_hash": "daab406c9f44e88b6fd458f8869b60bbc943885f"
-          }
-        },
-        {
-          "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCfgKgTp6uVCf0E2qjhOqjVl1IlpHEclYY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1085050065265-rqt9scjvug67t2f9nhkp21ubeibd2frt.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.theShaba"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:1085050065265:android:2395d808ba1874d843e6d0",
-        "android_client_info": {
-          "package_name": "com.example.shaba"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "1085050065265-jo221cp3h3r7c2uba30cgk0oa55fpiaa.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.shaba",
-            "certificate_hash": "64b60a72dee7601ab01a6766e169fb4c1caee3b3"
-          }
-        },
-        {
-          "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCfgKgTp6uVCf0E2qjhOqjVl1IlpHEclYY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1085050065265-btlsqpbig40ieqkmi227eb62i3mjdkfn.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1085050065265-rqt9scjvug67t2f9nhkp21ubeibd2frt.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.example.theShaba"
-              }
             }
           ]
         }

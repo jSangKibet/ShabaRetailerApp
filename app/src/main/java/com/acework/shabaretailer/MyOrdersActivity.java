@@ -2,6 +2,7 @@ package com.acework.shabaretailer;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,7 +57,7 @@ public class MyOrdersActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void loadOrders() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("RetailOrders");
+        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Orders");
         shabaRtDbRef.orderByChild("retailerId").equalTo(uid).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 List<Order> retrievedOrders = new ArrayList<>();
@@ -66,6 +67,7 @@ public class MyOrdersActivity extends AppCompatActivity {
                 orderAdapter.setItems(retrievedOrders);
                 if (retrievedOrders.size() < 1) emptyList.setVisibility(View.VISIBLE);
             } else {
+                task.getException().printStackTrace();
                 Snackbar.make(back, "There was a problem fetching your orders. Please try again later.", Snackbar.LENGTH_LONG).show();
             }
         });

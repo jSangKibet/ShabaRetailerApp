@@ -5,9 +5,11 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
@@ -40,6 +42,13 @@ public class ItemInOrderAdapter extends RecyclerView.Adapter<ItemInOrderAdapter.
         int total = item.getPrice() * item.getQuantity();
         holder.name.setText(item.getName());
         holder.total.setText(context.getString(R.string.total_in_cart, item.getPrice(), item.getQuantity(), total));
+        if(item.getInsertColour().equals("Dark brown")){
+            holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
+        }else if(item.getInsertColour().equals("Maroon")){
+            holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
+        }else {
+            holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -55,11 +64,13 @@ public class ItemInOrderAdapter extends RecyclerView.Adapter<ItemInOrderAdapter.
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         private final TextView name, total;
+        private final ImageView insertColour;
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
             name = itemView.findViewById(R.id.name);
             total = itemView.findViewById(R.id.total);
+            insertColour=itemView.findViewById(R.id.insert_color);
         }
     }
 }

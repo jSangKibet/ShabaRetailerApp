@@ -158,7 +158,7 @@ public class ConfirmOrderFragment extends Fragment {
             if (currentRetailer.getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
-            estTransCost = transPerKg * totalWeight;
+            estTransCost = getTransportCost(totalWeight, transPerKg);
         }
 
         long timestamp = System.currentTimeMillis();

@@ -93,7 +93,7 @@ public class CatalogActivity extends AppCompatActivity {
     public void orderCompleted() {
         cartViewModel.resetCart();
         toCatalog();
-        Snackbar.make(navDrawer, "Order completed!", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(navDrawer, "Order placed!", Snackbar.LENGTH_LONG).show();
     }
 
     public void openDrawer() {

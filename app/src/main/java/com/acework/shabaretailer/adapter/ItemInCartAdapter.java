@@ -47,9 +47,9 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
         holder.total.setText(context.getString(R.string.total_in_cart, item.getPrice(), item.getQuantity(), total));
         holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
         holder.delete.setOnClickListener(v -> itemActionListener.itemRemoved(item));
-        if(item.getInsertColor().equals("Dark brown")){
+        if(item.getInsertColour().equals("Dark brown")){
             holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
-        }else if(item.getInsertColor().equals("Maroon")){
+        }else if(item.getInsertColour().equals("Maroon")){
             holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
         }else {
             holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));

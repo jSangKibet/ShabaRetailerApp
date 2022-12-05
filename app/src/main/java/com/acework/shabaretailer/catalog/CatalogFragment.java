@@ -142,7 +142,7 @@ public class CatalogFragment extends Fragment {
     }
 
     private void fetchItems() {
-        FirebaseDatabase.getInstance().getReference().child("Items2").get().addOnCompleteListener(task -> {
+        FirebaseDatabase.getInstance().getReference().child("Items").get().addOnCompleteListener(task -> {
             hideAnimation();
             if (task.isSuccessful()) {
                 List<Item> itemsFromDatabase = new ArrayList<>();

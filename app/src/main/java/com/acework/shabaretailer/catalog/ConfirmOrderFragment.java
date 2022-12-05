@@ -188,7 +188,7 @@ public class ConfirmOrderFragment extends Fragment {
     private void confirmOrder() {
         if (tc.isChecked()) {
             Order order = getOrder();
-            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("RetailOrders");
+            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Orders");
             shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     ((CatalogActivity) requireActivity()).orderCompleted();
@@ -198,7 +198,7 @@ public class ConfirmOrderFragment extends Fragment {
                 }
             });
         } else {
-            Snackbar.make(requireView(), "You must accept the terms and conditions before confirmind an order", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(requireView(), "You must accept the terms and conditions before confirming an order", Snackbar.LENGTH_LONG).show();
         }
     }
 }

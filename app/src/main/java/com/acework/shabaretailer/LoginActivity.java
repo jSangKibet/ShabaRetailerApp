@@ -1,8 +1,10 @@
 package com.acework.shabaretailer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -70,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
     private boolean validateInput() {
         passwordLayout.setError(null);
         usernameLayout.setError(null);
+        hideKeyboard();
 
         if (validateUsername()) {
             if (passwordField.getText().toString().length() < 8) {
@@ -92,5 +95,10 @@ public class LoginActivity extends AppCompatActivity {
         }
         usernameLayout.setError("Invalid email address or telephone number");
         return false;
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager manager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(usernameLayout.getWindowToken(), 0);
     }
 }

@@ -1,22 +1,21 @@
 package com.acework.shabaretailer;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.model.Retailer;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
@@ -67,6 +66,7 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void join() {
         if (validate()) {
+            join.setEnabled(false);
             Retailer retailer = getRetailer();
             firebaseAuth.fetchSignInMethodsForEmail(retailer.getEmail()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -75,13 +75,16 @@ public class SignupActivity extends AppCompatActivity {
                             if (task1.isSuccessful()) {
                                 createRetailer(retailer);
                             } else {
+                                join.setEnabled(true);
                                 Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                             }
                         });
                     } else {
+                        join.setEnabled(true);
                         Snackbar.make(back, "The provided email address is already in use.", Snackbar.LENGTH_LONG).show();
                     }
                 } else {
+                    join.setEnabled(true);
                     Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 }
             });
@@ -91,6 +94,7 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private boolean validate() {
         clearErrors();
+        hideKeyboard();
         if (businessName.getEditText().getText().toString().trim().isEmpty()) {
             businessName.setError("This field is required");
             scroll(businessName);
@@ -220,6 +224,7 @@ public class SignupActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());
             } else {
+                join.setEnabled(true);
                 Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 FirebaseAuth.getInstance().getCurrentUser().delete();
             }
@@ -235,5 +240,10 @@ public class SignupActivity extends AppCompatActivity {
     private void viewTc() {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.theshaba.com/terms-of-use"));
         startActivity(browserIntent);
+    }
+
+    private void hideKeyboard() {
+        InputMethodManager manager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        manager.hideSoftInputFromWindow(back.getWindowToken(), 0);
     }
 }

@@ -3,7 +3,7 @@ package com.acework.shabaretailer.model;
 import java.util.List;
 
 public class Item {
-    private String name, type, description, size, material, weaving, colour, strap, strapLength, insert, insertColor;
+    private String name, type, description, size, material, weaving, colour, strap, strapLength, insert, insertColour;
     private int price, weight;
     private String sku;
     private List<String> features;
@@ -13,7 +13,7 @@ public class Item {
 
     }
 
-    public Item(String name, String type, String description, String size, String material, String weaving, String colour, String strap, String strapLength, String insert, String insertColor, int price, int weight, String sku, List<String> features, int quantity) {
+    public Item(String name, String type, String description, String size, String material, String weaving, String colour, String strap, String strapLength, String insert, String insertColour, int price, int weight, String sku, List<String> features, int quantity) {
         this.name = name;
         this.type = type;
         this.description = description;
@@ -24,7 +24,7 @@ public class Item {
         this.strap = strap;
         this.strapLength = strapLength;
         this.insert = insert;
-        this.insertColor = insertColor;
+        this.insertColour = insertColour;
         this.price = price;
         this.weight = weight;
         this.sku = sku;
@@ -96,32 +96,12 @@ public class Item {
         this.quantity = quantity;
     }
 
-    public String getInsertColor() {
-        return insertColor;
+    public String getInsertColour() {
+        return insertColour;
     }
 
-    public void setInsertColor(String insertColor) {
-        this.insertColor = insertColor;
-    }
-
-    public Item cloneItem() {
-        return new Item(
-                name,
-                type,
-                description,
-                size,
-                material,
-                weaving,
-                colour,
-                strap,
-                strapLength,
-                insert,
-                insertColor,
-                price,
-                weight,
-                sku,
-                features,
-                quantity);
+    public void setInsertColour(String insertColour) {
+        this.insertColour = insertColour;
     }
 
     public Item cloneItem(String insertColor) {

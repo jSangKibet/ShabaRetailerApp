@@ -60,7 +60,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         if (oid == null) {
             finish();
         } else {
-            DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("RetailOrders").child(oid);
+            DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Orders").child(oid);
             shabaRtDbRef.get().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     displayOrder(task.getResult().getValue(Order.class));

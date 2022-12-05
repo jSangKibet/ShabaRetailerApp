@@ -26,7 +26,7 @@ public class CartViewModel extends AndroidViewModel {
 
     public Item getItemFromCart(String sku, String insertColor) {
         for (Item itemInCart : cart.getValue()) {
-            if (itemInCart.getSku().equals(sku) && itemInCart.getInsertColor().equals(insertColor))
+            if (itemInCart.getSku().equals(sku) && itemInCart.getInsertColour().equals(insertColor))
                 return itemInCart;
         }
         return null;
@@ -49,7 +49,7 @@ public class CartViewModel extends AndroidViewModel {
     }
 
     public void setItem(Item item) {
-        Item itemInCart = getItemFromCart(item.getSku(), item.getInsertColor());
+        Item itemInCart = getItemFromCart(item.getSku(), item.getInsertColour());
         if (itemInCart == null) {
             cart.getValue().add(item);
         } else {

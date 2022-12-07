@@ -94,4 +94,17 @@
     <string name="mustard">Mustard</string>
     <string name="maroon">Maroon</string>
     <string name="dark_brown">Dark brown</string>
+    <string name="more">More</string>
+    <string name="less">Less</string>
+    <string name="description">Description</string>
+    <string name="size">Size:</string>
+    <string name="material">Material:</string>
+    <string name="weaving">Weaving:</string>
+    <string name="color">Color:</string>
+    <string name="strap">Strap:</string>
+    <string name="insert">Insert:</string>
+    <string name="features">Features</string>
+    <string name="bullet_item">\u2022 %s</string>
+    <string name="close">Close</string>
+    <string name="tap_description_for_more">Tap description for more</string>
 </resources>

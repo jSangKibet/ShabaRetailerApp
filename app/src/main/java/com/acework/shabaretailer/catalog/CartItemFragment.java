@@ -215,19 +215,20 @@ public class CartItemFragment extends Fragment {
     }
 
     private void done() {
-        cartViewModel.setItem(itemMustard);
-        cartViewModel.setItem(itemMaroon);
-        cartViewModel.setItem(itemDarkBrown);
+        if (itemMustard.getQuantity() > 0) cartViewModel.setItem(itemMustard);
+        if (itemMaroon.getQuantity() > 0) cartViewModel.setItem(itemMaroon);
+        if (itemDarkBrown.getQuantity() > 0) cartViewModel.setItem(itemDarkBrown);
+        cartViewModel.refresh();
         requireActivity().onBackPressed();
     }
 
     private void getItems(Item item) {
         itemMustard = cartViewModel.getItemFromCart(item.getSku(), "Mustard");
-        if (itemMustard == null) itemMustard = item.cloneItem("Mustard");
+        if (itemMustard == null) itemMustard = item.cloneItemWithZeroQuantity("Mustard");
         itemMaroon = cartViewModel.getItemFromCart(item.getSku(), "Maroon");
-        if (itemMaroon == null) itemMaroon = item.cloneItem("Maroon");
+        if (itemMaroon == null) itemMaroon = item.cloneItemWithZeroQuantity("Maroon");
         itemDarkBrown = cartViewModel.getItemFromCart(item.getSku(), "Dark brown");
-        if (itemDarkBrown == null) itemDarkBrown = item.cloneItem("Dark brown");
+        if (itemDarkBrown == null) itemDarkBrown = item.cloneItemWithZeroQuantity("Dark brown");
     }
 
     private void showDescription() {

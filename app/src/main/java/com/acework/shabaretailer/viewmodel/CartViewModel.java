@@ -38,6 +38,15 @@ public class CartViewModel extends AndroidViewModel {
     }
 
     public void refresh() {
+        List<Item> itemsToRemove = new ArrayList<>();
+        for (Item i : cart.getValue()) {
+            if (i.getQuantity() < 1) {
+                itemsToRemove.add(i);
+            }
+        }
+        for (Item i : itemsToRemove) {
+            cart.getValue().remove(i);
+        }
         cart.setValue(cart.getValue());
     }
 
@@ -59,6 +68,5 @@ public class CartViewModel extends AndroidViewModel {
                 itemInCart.setQuantity(item.getQuantity());
             }
         }
-        refresh();
     }
 }

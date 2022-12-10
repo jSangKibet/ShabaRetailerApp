@@ -113,7 +113,6 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (activeFragment == cartItemFragment) {
-            cartViewModel.refresh();
             if (fromCatalog) {
                 toCatalog();
             } else {

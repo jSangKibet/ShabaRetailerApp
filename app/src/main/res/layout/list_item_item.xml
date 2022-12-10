@@ -48,6 +48,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add"
             android:layout_width="match_parent"
+            style="@style/Button"
             android:layout_height="wrap_content"
             android:fontFamily="@font/work_sans_bold"
             android:text="@string/add"
@@ -74,6 +75,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/edit"
+                style="@style/Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minWidth="0dp"

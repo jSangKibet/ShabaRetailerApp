@@ -109,17 +109,26 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/est_transport_label" />
 
+        <ImageView
+            android:layout_width="match_parent"
+            android:importantForAccessibility="no"
+            android:layout_height="2dp"
+            android:layout_marginTop="4dp"
+            app:layout_constraintTop_toBottomOf="@id/est_total_label"
+            android:id="@+id/divider"
+            android:src="@drawable/dotted_line"/>
+
         <TextView
             android:id="@+id/recipient_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/work_sans_regular"
             android:text="@string/recipient_information"
             android:textColor="?attr/colorPrimary"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/est_total_label" />
+            app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <TextView
             android:id="@+id/name_label"
@@ -294,6 +303,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/confirm"
             android:layout_width="match_parent"
+            style="@style/Button"
             android:layout_height="wrap_content"
             android:fontFamily="@font/work_sans_bold"
             android:text="@string/confirm_order"

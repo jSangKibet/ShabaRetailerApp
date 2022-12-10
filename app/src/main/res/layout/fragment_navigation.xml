@@ -51,6 +51,7 @@
     <com.google.android.material.button.MaterialButton
         android:id="@+id/to_my_orders"
         android:layout_width="match_parent"
+        style="@style/Button"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/work_sans_bold"
@@ -79,6 +80,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logout"
+        style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fontFamily="@font/work_sans_bold"

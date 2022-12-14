@@ -104,7 +104,7 @@ public class Item {
         this.insertColour = insertColour;
     }
 
-    public Item cloneItem(String insertColor) {
+    public Item cloneItemWithZeroQuantity(String insertColor) {
         return new Item(
                 name,
                 type,
@@ -121,6 +121,6 @@ public class Item {
                 weight,
                 sku,
                 features,
-                quantity);
+                0);
     }
 }

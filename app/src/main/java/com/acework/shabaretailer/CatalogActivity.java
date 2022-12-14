@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.acework.shabaretailer.catalog.CartFragment;
@@ -69,6 +68,13 @@ public class CatalogActivity extends AppCompatActivity {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference();
         shabaRtDbRef.child("Retailers").child(uid).get().addOnCompleteListener(task -> retailer = task.getResult().getValue(Retailer.class));
+        cartViewModel.getCart().observe(this, items -> {
+            if (items.size() == 0) {
+                if (activeFragment == cartFragment) {
+                    onBackPressed();
+                }
+            }
+        });
     }
 
     private void initializeFragments() {
@@ -107,7 +113,6 @@ public class CatalogActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (activeFragment == cartItemFragment) {
-            cartViewModel.refresh();
             if (fromCatalog) {
                 toCatalog();
             } else {

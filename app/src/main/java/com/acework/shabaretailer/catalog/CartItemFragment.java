@@ -5,10 +5,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
@@ -18,6 +20,7 @@ import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -28,7 +31,14 @@ public class CartItemFragment extends Fragment {
     private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
     private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
     private ImageView imageView;
+
+    private TextView description, size, material, weaving, color, strap, insert, weight, sku, strapLength;
+    private LinearLayout features;
+    private MaterialButton more, less;
+    private ConstraintLayout moreLayout;
+
     private CartViewModel cartViewModel;
+    private LayoutInflater layoutInflater;
 
     public CartItemFragment() {
     }
@@ -48,6 +58,7 @@ public class CartItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        layoutInflater = LayoutInflater.from(requireContext());
         bindViews(view);
         setListeners();
     }
@@ -74,6 +85,20 @@ public class CartItemFragment extends Fragment {
         darkBrownMinus5 = view.findViewById(R.id.dark_brown_minus_5);
         darkBrownPlus = view.findViewById(R.id.dark_brown_plus);
         darkBrownPlus5 = view.findViewById(R.id.dark_brown_plus_5);
+        description = view.findViewById(R.id.description);
+        size = view.findViewById(R.id.size);
+        material = view.findViewById(R.id.material);
+        weaving = view.findViewById(R.id.weaving);
+        color = view.findViewById(R.id.color);
+        strap = view.findViewById(R.id.strap);
+        insert = view.findViewById(R.id.insert);
+        weight = view.findViewById(R.id.weight);
+        sku = view.findViewById(R.id.sku);
+        strapLength = view.findViewById(R.id.strap_length);
+        features = view.findViewById(R.id.features);
+        more = view.findViewById(R.id.more);
+        less = view.findViewById(R.id.less);
+        moreLayout = view.findViewById(R.id.more_layout);
     }
 
     private void setValues() {
@@ -83,6 +108,7 @@ public class CartItemFragment extends Fragment {
         quantityMaroon.setText(String.valueOf(itemMaroon.getQuantity()));
         quantityDarkBrown.setText(String.valueOf(itemDarkBrown.getQuantity()));
         setTotal();
+        setItemDetails();
     }
 
     private void setTotal() {
@@ -90,6 +116,29 @@ public class CartItemFragment extends Fragment {
         totalInt += (itemMaroon.getPrice() * itemMaroon.getQuantity());
         totalInt += (itemDarkBrown.getPrice() * itemDarkBrown.getQuantity());
         total.setText(getString(R.string.total, totalInt));
+    }
+
+    private void setItemDetails() {
+        description.setText(item.getDescription());
+        size.setText(item.getSize());
+        material.setText(item.getMaterial());
+        weaving.setText(item.getWeaving());
+        color.setText(item.getColour());
+        strap.setText(item.getStrap());
+        insert.setText(item.getInsert());
+        weight.setText(getString(R.string.weight_formatted, item.getWeight()));
+        sku.setText(item.getSku());
+        strapLength.setText(item.getStrapLength());
+        setFeatures();
+    }
+
+    private void setFeatures() {
+        features.removeAllViews();
+        for (String feature : item.getFeatures()) {
+            TextView textView = (TextView) layoutInflater.inflate(R.layout.view_textview, null);
+            textView.setText(getString(R.string.bullet_item, feature));
+            features.addView(textView);
+        }
     }
 
     private void setListeners() {
@@ -107,6 +156,9 @@ public class CartItemFragment extends Fragment {
         darkBrownMinus5.setOnClickListener(v -> decrementByFive(itemDarkBrown));
         darkBrownPlus.setOnClickListener(v -> incrementByOne(itemDarkBrown));
         darkBrownPlus5.setOnClickListener(v -> incrementByFive(itemDarkBrown));
+        more.setOnClickListener(v -> moreLayout.setVisibility(View.VISIBLE));
+        less.setOnClickListener(v -> moreLayout.setVisibility(View.GONE));
+        description.setOnClickListener(v -> showDescription());
     }
 
     private void decrementByOne(Item itemToDecrement) {
@@ -143,6 +195,7 @@ public class CartItemFragment extends Fragment {
 
     public void setItem(Item item) {
         this.item = item;
+        moreLayout.setVisibility(View.GONE);
         loadImage();
         getItems(item);
         setValues();
@@ -162,18 +215,23 @@ public class CartItemFragment extends Fragment {
     }
 
     private void done() {
-        cartViewModel.setItem(itemMustard);
-        cartViewModel.setItem(itemMaroon);
-        cartViewModel.setItem(itemDarkBrown);
+        if (itemMustard.getQuantity() > 0) cartViewModel.setItem(itemMustard);
+        if (itemMaroon.getQuantity() > 0) cartViewModel.setItem(itemMaroon);
+        if (itemDarkBrown.getQuantity() > 0) cartViewModel.setItem(itemDarkBrown);
+        cartViewModel.refresh();
         requireActivity().onBackPressed();
     }
 
     private void getItems(Item item) {
         itemMustard = cartViewModel.getItemFromCart(item.getSku(), "Mustard");
-        if (itemMustard == null) itemMustard = item.cloneItem("Mustard");
+        if (itemMustard == null) itemMustard = item.cloneItemWithZeroQuantity("Mustard");
         itemMaroon = cartViewModel.getItemFromCart(item.getSku(), "Maroon");
-        if (itemMaroon == null) itemMaroon = item.cloneItem("Maroon");
+        if (itemMaroon == null) itemMaroon = item.cloneItemWithZeroQuantity("Maroon");
         itemDarkBrown = cartViewModel.getItemFromCart(item.getSku(), "Dark brown");
-        if (itemDarkBrown == null) itemDarkBrown = item.cloneItem("Dark brown");
+        if (itemDarkBrown == null) itemDarkBrown = item.cloneItemWithZeroQuantity("Dark brown");
+    }
+
+    private void showDescription() {
+        new MaterialAlertDialogBuilder(requireContext()).setTitle("Description").setMessage(item.getDescription()).setPositiveButton("Close", null).show();
     }
 }

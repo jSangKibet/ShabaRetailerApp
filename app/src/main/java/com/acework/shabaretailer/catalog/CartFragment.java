@@ -70,7 +70,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     private void loadData() {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
-            adapter.setItems(getItemsInCart(itemsInCart));
+            adapter.setItems(itemsInCart);
             computeTotals(itemsInCart);
         });
     }
@@ -106,16 +106,6 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
             transport.setText(getString(R.string.transport, finalTransCost));
             estimatedTotal.setText(getString(R.string.total, totalPrice + finalTransCost));
         }
-    }
-
-    private List<Item> getItemsInCart(List<Item> cart) {
-        List<Item> itemsInCart = new ArrayList<>();
-        for (Item itemInCart : cart) {
-            if (itemInCart.getQuantity() > 0) {
-                itemsInCart.add(itemInCart);
-            }
-        }
-        return itemsInCart;
     }
 
     @Override

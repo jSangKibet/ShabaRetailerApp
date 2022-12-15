@@ -35,4 +35,9 @@
         <item name="cornerRadius">0dp</item>
         <item name="android:padding">12dp</item>
     </style>
+
+    <style name="WindowAnimationUpDown" parent="@android:style/Animation.Activity">
+        <item name="android:windowEnterAnimation">@anim/slide_in_upwards</item>
+        <item name="android:windowExitAnimation">@anim/slide_out_downwards</item>
+    </style>
 </resources>

@@ -107,4 +107,5 @@
     <string name="bullet_item">\u2022 %s</string>
     <string name="close">Close</string>
     <string name="tap_description_for_more">Tap description for more</string>
+    <string name="okay">Okay</string>
 </resources>

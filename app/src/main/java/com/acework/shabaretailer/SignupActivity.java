@@ -31,6 +31,7 @@ public class SignupActivity extends AppCompatActivity {
     private TextInputLayout businessName, name, email, password, confirmPassword, county, street;
     private CheckBox tc;
     private ScrollView scrollView;
+    private StatusDialog statusDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,9 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void join() {
         if (validate()) {
-            join.setEnabled(false);
+            statusDialog = StatusDialog.newInstance(R.raw.loading, "Attempting to sign you up", false, () -> {
+            });
+            statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
             Retailer retailer = getRetailer();
             firebaseAuth.fetchSignInMethodsForEmail(retailer.getEmail()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -75,16 +78,16 @@ public class SignupActivity extends AppCompatActivity {
                             if (task1.isSuccessful()) {
                                 createRetailer(retailer);
                             } else {
-                                join.setEnabled(true);
+                                statusDialog.dismiss();
                                 Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                             }
                         });
                     } else {
-                        join.setEnabled(true);
+                        statusDialog.dismiss();
                         Snackbar.make(back, "The provided email address is already in use.", Snackbar.LENGTH_LONG).show();
                     }
                 } else {
-                    join.setEnabled(true);
+                    statusDialog.dismiss();
                     Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 }
             });
@@ -221,10 +224,10 @@ public class SignupActivity extends AppCompatActivity {
         retailer.setPassword("-");
         String uid = firebaseAuth.getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference().child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
+            statusDialog.dismiss();
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());
             } else {
-                join.setEnabled(true);
                 Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 FirebaseAuth.getInstance().getCurrentUser().delete();
             }

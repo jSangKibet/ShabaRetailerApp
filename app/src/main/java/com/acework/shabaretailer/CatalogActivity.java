@@ -61,6 +61,7 @@ public class CatalogActivity extends AppCompatActivity {
     public void toConfirmOrder() {
         getSupportFragmentManager().beginTransaction().hide(activeFragment).show(confirmOrderFragment).commit();
         activeFragment = confirmOrderFragment;
+        confirmOrderFragment.uncheckTC();
     }
 
     @SuppressWarnings("ConstantConditions")

@@ -201,4 +201,8 @@ public class ConfirmOrderFragment extends Fragment {
             Snackbar.make(requireView(), "You must accept the terms and conditions before confirming an order", Snackbar.LENGTH_LONG).show();
         }
     }
+
+    public void uncheckTC() {
+        tc.setChecked(false);
+    }
 }

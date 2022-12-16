@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.StatusDialog;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
@@ -187,11 +188,15 @@ public class ConfirmOrderFragment extends Fragment {
 
     private void confirmOrder() {
         if (tc.isChecked()) {
+            StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
+            statusDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
             DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Orders");
             shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
+                statusDialog.dismiss();
                 if (task.isSuccessful()) {
-                    ((CatalogActivity) requireActivity()).orderCompleted();
+                    StatusDialog statusDialog2 = StatusDialog.newInstance(R.raw.success, "Order placed!", true, () -> ((CatalogActivity) requireActivity()).orderCompleted());
+                    statusDialog2.show(getChildFragmentManager(), StatusDialog.TAG);
                 } else {
                     Snackbar.make(requireView(), "Your order could not be placed at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
                     task.getException().printStackTrace();

@@ -3,11 +3,8 @@ package com.acework.shabaretailer;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -38,7 +35,9 @@ public class AccountVerificationActivity extends AppCompatActivity {
     }
 
     private void resendEmail() {
+        resendEmail.setEnabled(false);
         FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task -> {
+            resendEmail.setEnabled(true);
             if (task.isSuccessful()) {
                 Snackbar.make(resendEmail, "Email sent. Check your inbox or spam folder.", Snackbar.LENGTH_SHORT).show();
             } else {
@@ -48,13 +47,15 @@ public class AccountVerificationActivity extends AppCompatActivity {
     }
 
     private void checkVerification() {
+        checkVerification.setEnabled(false);
         FirebaseAuth.getInstance().getCurrentUser().reload().addOnCompleteListener(task -> {
+            checkVerification.setEnabled(true);
             if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-                Snackbar.make(resendEmail, "Account verified", Snackbar.LENGTH_SHORT).show();
-                resendEmail.postDelayed(() -> {
+                StatusDialog statusDialog = StatusDialog.newInstance(R.raw.success, "Account verified! Welcome to Shaba Retailer.", true, () -> {
                     startActivity(new Intent(AccountVerificationActivity.this, CatalogActivity.class));
                     finish();
-                }, 1000);
+                });
+                statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
             } else {
                 Snackbar.make(resendEmail, "Your account has not yet been verified", Snackbar.LENGTH_SHORT).show();
             }

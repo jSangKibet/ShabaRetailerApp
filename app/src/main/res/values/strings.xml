@@ -108,4 +108,7 @@
     <string name="close">Close</string>
     <string name="tap_description_for_more">Tap description for more</string>
     <string name="okay">Okay</string>
+    <string name="order_total_label">Order total:</string>
+    <string name="order_status">Order status:</string>
+    <string name="kes_est">KES %,d (estimated)</string>
 </resources>

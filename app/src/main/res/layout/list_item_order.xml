@@ -9,35 +9,83 @@
     android:padding="8dp">
 
     <TextView
-        android:id="@+id/order_number"
+        android:id="@+id/order_num_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/work_sans_regular"
+        android:fontFamily="@font/work_sans_bold"
+        android:text="@string/order_number"
         android:textColor="?attr/colorPrimary"
-        android:textSize="14sp"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/order_number"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/work_sans_regular"
+        android:maxLines="2"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@id/copy"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_num_label" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/copy"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        app:icon="@drawable/copy_24"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/order_total_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/work_sans_bold"
+        android:text="@string/order_total_label"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_number" />
 
     <TextView
         android:id="@+id/order_total"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:fontFamily="@font/work_sans_regular"
         android:textColor="?attr/colorPrimary"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_number" />
+        app:layout_constraintTop_toBottomOf="@id/order_total_label" />
+
+    <TextView
+        android:id="@+id/order_status_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/work_sans_bold"
+        android:text="@string/order_status"
+        android:textColor="?attr/colorPrimary"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_total" />
 
     <TextView
         android:id="@+id/order_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/work_sans_bold"
+        android:layout_marginTop="4dp"
+        android:fontFamily="@font/work_sans_regular"
         android:textColor="?attr/colorPrimary"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/order_total" />
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/order_status_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

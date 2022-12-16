@@ -2,7 +2,6 @@ package com.acework.shabaretailer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -56,9 +55,12 @@ public class MyOrdersActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void loadOrders() {
+        StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching your orders...", false, null);
+        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Orders");
         shabaRtDbRef.orderByChild("retailerId").equalTo(uid).get().addOnCompleteListener(task -> {
+            statusDialog.dismiss();
             if (task.isSuccessful()) {
                 List<Order> retrievedOrders = new ArrayList<>();
                 for (DataSnapshot child : task.getResult().getChildren()) {

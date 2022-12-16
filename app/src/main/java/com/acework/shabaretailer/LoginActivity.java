@@ -19,6 +19,7 @@ public class LoginActivity extends AppCompatActivity {
     private TextInputLayout usernameLayout, passwordLayout;
     private TextInputEditText usernameField, passwordField;
     private MaterialButton loginButton, forgotPasswordButton, signUpButton;
+    private StatusDialog statusDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +47,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private void login() {
         if (validateInput()) {
+            statusDialog = StatusDialog.newInstance(R.raw.loading, "Logging you in...", false, null);
+            statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+
             FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
             firebaseAuth.signInWithEmailAndPassword(usernameField.getText().toString().trim(), passwordField.getText().toString()).addOnCompleteListener(task -> {
+                statusDialog.dismiss();
                 if (task.isSuccessful()) {
                     if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                        startActivity(new Intent(this, CatalogActivity.class));
+                        statusDialog = StatusDialog.newInstance(R.raw.success, "Welcome back!", true, () -> startActivity(new Intent(LoginActivity.this, CatalogActivity.class)));
+                        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
                     } else {
-                        startActivity(new Intent(this, AccountVerificationActivity.class));
+                        statusDialog = StatusDialog.newInstance(R.raw.next, "Welcome back! We notice that you haven't verified your email. Please do so in the next screen.", true, () -> startActivity(new Intent(LoginActivity.this, AccountVerificationActivity.class)));
+                        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
                     }
                 } else {
                     Snackbar.make(usernameLayout, "Could not log you in. Check your credentials and try again.", Snackbar.LENGTH_LONG).show();

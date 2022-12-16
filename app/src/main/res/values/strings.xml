@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Shaba Retailer</string>
     <string name="login_title">Welcome to Shaba Retailer Application</string>
-    <string name="username_hint">Email address or telephone number</string>
+    <string name="username_hint">Email address</string>
     <string name="password">Password</string>
     <string name="login">Log in</string>
     <string name="forgot_password_question">Forgot password?</string>

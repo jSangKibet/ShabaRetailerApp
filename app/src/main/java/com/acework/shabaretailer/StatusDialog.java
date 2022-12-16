@@ -59,6 +59,9 @@ public class StatusDialog extends DialogFragment {
         setValues();
         setListeners();
         setCancelable(false);
+        if (dismissible) {
+            animation.setRepeatCount(0);
+        }
         animation.playAnimation();
     }
 
@@ -88,7 +91,7 @@ public class StatusDialog extends DialogFragment {
     private void setListeners() {
         okay.setOnClickListener(v -> {
             dismiss();
-            dismissListener.dialogDismissed();
+            if (dismissListener != null) dismissListener.dialogDismissed();
         });
     }
 

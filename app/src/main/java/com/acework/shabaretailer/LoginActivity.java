@@ -55,10 +55,16 @@ public class LoginActivity extends AppCompatActivity {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
                     if (firebaseAuth.getCurrentUser().isEmailVerified()) {
-                        statusDialog = StatusDialog.newInstance(R.raw.success, "Welcome back!", true, () -> startActivity(new Intent(LoginActivity.this, CatalogActivity.class)));
+                        statusDialog = StatusDialog.newInstance(R.raw.success, "Welcome back!", true, () -> {
+                            startActivity(new Intent(LoginActivity.this, CatalogActivity.class));
+                            finish();
+                        });
                         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
                     } else {
-                        statusDialog = StatusDialog.newInstance(R.raw.next, "Welcome back! We notice that you haven't verified your email. Please do so in the next screen.", true, () -> startActivity(new Intent(LoginActivity.this, AccountVerificationActivity.class)));
+                        statusDialog = StatusDialog.newInstance(R.raw.next, "Welcome back! We notice that you haven't verified your email. Please do so in the next screen.", true, () -> {
+                            startActivity(new Intent(LoginActivity.this, AccountVerificationActivity.class));
+                            finish();
+                        });
                         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
                     }
                 } else {
@@ -66,6 +72,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
             });
         }
+
     }
 
     private void forgotPassword() {

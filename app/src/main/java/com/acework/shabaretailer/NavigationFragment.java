@@ -1,5 +1,6 @@
 package com.acework.shabaretailer;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -21,7 +24,12 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class NavigationFragment extends Fragment {
     private TextView name, businessName, telephone;
-    private MaterialButton toMyOrders, viewTc, logout, setNumber;
+    private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == Activity.RESULT_OK) {
+            loadUser();
+        }
+    });
+    private MaterialButton toMyOrders, viewTc, logout, setNumber, edit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +58,7 @@ public class NavigationFragment extends Fragment {
         viewTc = view.findViewById(R.id.view_tc);
         logout = view.findViewById(R.id.logout);
         setNumber = view.findViewById(R.id.set_number);
+        edit = view.findViewById(R.id.edit);
     }
 
     private void setListeners() {
@@ -57,6 +66,7 @@ public class NavigationFragment extends Fragment {
         viewTc.setOnClickListener(v -> viewTc());
         logout.setOnClickListener(v -> logoutButtonClicked());
         setNumber.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangeNumberActivity.class)));
+        edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
     }
 
     @SuppressWarnings("ConstantConditions")

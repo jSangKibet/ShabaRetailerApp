@@ -40,6 +40,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/business_name" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/edit"
+        style="@style/Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="0dp"
+        app:icon="@drawable/edit_24"
+        app:iconPadding="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
@@ -50,8 +61,8 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/to_my_orders"
-        android:layout_width="match_parent"
         style="@style/Button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:fontFamily="@font/work_sans_bold"

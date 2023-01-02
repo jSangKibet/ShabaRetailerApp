@@ -113,4 +113,6 @@
     <string name="kes_est">KES %,d (estimated)</string>
     <string name="edit_retailer">Edit retailer</string>
     <string name="save_changes">Save changes</string>
+    <string name="delivery_location">Delivery location:</string>
+    <string name="delivery_point">%s, %s</string>
 </resources>

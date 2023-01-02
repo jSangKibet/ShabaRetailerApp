@@ -20,7 +20,7 @@ import java.util.Locale;
 
 public class OrderInformationActivity extends AppCompatActivity {
     private MaterialButton back;
-    private TextView id, date, total, status, transport;
+    private TextView id, date, total, status, transport, deliveryPoint;
     private RecyclerView items;
     private ItemInOrderAdapter adapter;
 
@@ -42,6 +42,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         status = findViewById(R.id.order_status);
         items = findViewById(R.id.item_list);
         transport = findViewById(R.id.transport);
+        deliveryPoint = findViewById(R.id.delivery_point);
     }
 
     private void setListeners() {
@@ -93,6 +94,8 @@ public class OrderInformationActivity extends AppCompatActivity {
         } else {
             transport.setText(getString(R.string.est_total, order.getEstimatedTransportCost()));
         }
+
+        deliveryPoint.setText(getString(R.string.delivery_point, order.getCounty(), order.getStreet()));
 
         adapter.setItems(order.getOrderItems());
     }

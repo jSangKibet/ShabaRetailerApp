@@ -14,11 +14,12 @@ public class Order {
     private int finalTransportCost;
     private String county;
     private String street;
+    private String type;
 
     public Order() {
     }
 
-    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street) {
+    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, String type) {
         this.id = id;
         this.retailerId = retailerId;
         this.timestamp = timestamp;
@@ -30,6 +31,7 @@ public class Order {
         this.finalTransportCost = finalTransportCost;
         this.county = county;
         this.street = street;
+        this.type = type;
     }
 
     public String getId() {
@@ -100,11 +102,31 @@ public class Order {
         return finalTransportCost;
     }
 
+    public void setFinalTransportCost(int finalTransportCost) {
+        this.finalTransportCost = finalTransportCost;
+    }
+
     public String getCounty() {
         return county;
     }
 
+    public void setCounty(String county) {
+        this.county = county;
+    }
+
     public String getStreet() {
         return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

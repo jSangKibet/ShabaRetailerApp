@@ -2,7 +2,6 @@ package com.acework.shabaretailer.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = filteredItems.get(position);
         holder.name.setText(item.getName());
-        holder.price.setText(context.getString(R.string.price, item.getPrice()));
+        holder.price.setText(context.getString(R.string.price, item.getPriceWholesale()));
         holder.quantity.setText(context.getString(R.string.qty, item.getQuantity()));
         holder.add.setOnClickListener(v -> itemActionListener.itemSelected(item));
         holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));

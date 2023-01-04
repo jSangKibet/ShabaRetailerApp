@@ -63,7 +63,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         } else {
             StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching order information...", false, null);
             statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
-            DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Orders").child(oid);
+            DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV2").child(oid);
             shabaRtDbRef.get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {

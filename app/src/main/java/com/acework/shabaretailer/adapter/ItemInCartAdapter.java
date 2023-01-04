@@ -42,9 +42,9 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemsInCart.get(position);
-        int total = item.getPrice() * item.getQuantity();
+        int total = item.getPriceWholesale() * item.getQuantity();
         holder.name.setText(item.getName());
-        holder.total.setText(context.getString(R.string.total_in_cart, item.getPrice(), item.getQuantity(), total));
+        holder.total.setText(context.getString(R.string.total_in_cart, item.getPriceWholesale(), item.getQuantity(), total));
         holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
         holder.delete.setOnClickListener(v -> itemActionListener.itemRemoved(item));
         if(item.getInsertColour().equals("Dark brown")){

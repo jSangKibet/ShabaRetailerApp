@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Item {
     private String name, type, description, size, material, weaving, colour, strap, strapLength, insert, insertColour;
-    private int price, weight;
+    private int priceWholesale, priceConsignment, priceShaba, weight;
     private String sku;
     private List<String> features;
     private int quantity;
@@ -13,7 +13,7 @@ public class Item {
 
     }
 
-    public Item(String name, String type, String description, String size, String material, String weaving, String colour, String strap, String strapLength, String insert, String insertColour, int price, int weight, String sku, List<String> features, int quantity) {
+    public Item(String name, String type, String description, String size, String material, String weaving, String colour, String strap, String strapLength, String insert, String insertColour, int priceWholesale, int priceConsignment, int priceShaba, int weight, String sku, List<String> features, int quantity) {
         this.name = name;
         this.type = type;
         this.description = description;
@@ -25,7 +25,9 @@ public class Item {
         this.strapLength = strapLength;
         this.insert = insert;
         this.insertColour = insertColour;
-        this.price = price;
+        this.priceWholesale = priceWholesale;
+        this.priceConsignment = priceConsignment;
+        this.priceShaba = priceShaba;
         this.weight = weight;
         this.sku = sku;
         this.features = features;
@@ -36,56 +38,128 @@ public class Item {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getType() {
         return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getSize() {
         return size;
+    }
+
+    public void setSize(String size) {
+        this.size = size;
     }
 
     public String getMaterial() {
         return material;
     }
 
+    public void setMaterial(String material) {
+        this.material = material;
+    }
+
     public String getWeaving() {
         return weaving;
+    }
+
+    public void setWeaving(String weaving) {
+        this.weaving = weaving;
     }
 
     public String getColour() {
         return colour;
     }
 
+    public void setColour(String colour) {
+        this.colour = colour;
+    }
+
     public String getStrap() {
         return strap;
+    }
+
+    public void setStrap(String strap) {
+        this.strap = strap;
     }
 
     public String getStrapLength() {
         return strapLength;
     }
 
+    public void setStrapLength(String strapLength) {
+        this.strapLength = strapLength;
+    }
+
     public String getInsert() {
         return insert;
     }
 
-    public int getPrice() {
-        return price;
+    public void setInsert(String insert) {
+        this.insert = insert;
+    }
+
+    public int getPriceWholesale() {
+        return priceWholesale;
+    }
+
+    public void setPriceWholesale(int priceWholesale) {
+        this.priceWholesale = priceWholesale;
+    }
+
+    public int getPriceConsignment() {
+        return priceConsignment;
+    }
+
+    public void setPriceConsignment(int priceConsignment) {
+        this.priceConsignment = priceConsignment;
+    }
+
+    public int getPriceShaba() {
+        return priceShaba;
+    }
+
+    public void setPriceShaba(int priceShaba) {
+        this.priceShaba = priceShaba;
     }
 
     public int getWeight() {
         return weight;
     }
 
+    public void setWeight(int weight) {
+        this.weight = weight;
+    }
+
     public String getSku() {
         return sku;
     }
 
+    public void setSku(String sku) {
+        this.sku = sku;
+    }
+
     public List<String> getFeatures() {
         return features;
+    }
+
+    public void setFeatures(List<String> features) {
+        this.features = features;
     }
 
     public int getQuantity() {
@@ -117,7 +191,9 @@ public class Item {
                 strapLength,
                 insert,
                 insertColor,
-                price,
+                priceWholesale,
+                priceConsignment,
+                priceShaba,
                 weight,
                 sku,
                 features,

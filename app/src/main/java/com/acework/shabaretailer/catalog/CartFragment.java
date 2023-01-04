@@ -21,7 +21,6 @@ import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActionListener {
@@ -86,7 +85,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
 
         for (Item itemInCart : itemsInCart) {
             if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
+                totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
                 totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }

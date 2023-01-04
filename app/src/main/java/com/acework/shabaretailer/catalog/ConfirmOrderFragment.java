@@ -105,7 +105,7 @@ public class ConfirmOrderFragment extends Fragment {
 
         for (Item itemInCart : itemsInCart) {
             if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
+                totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
                 totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
@@ -148,7 +148,7 @@ public class ConfirmOrderFragment extends Fragment {
 
         for (Item itemInCart : itemsInCart) {
             if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
+                totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
                 totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
@@ -175,7 +175,9 @@ public class ConfirmOrderFragment extends Fragment {
                 0,
                 0,
                 currentRetailer == null ? "" : currentRetailer.getCounty(),
-                currentRetailer == null ? "" : currentRetailer.getStreet());
+                currentRetailer == null ? "" : currentRetailer.getStreet(),
+                "Wholesale");
+
     }
 
     private List<Item> getItemsInCart() {
@@ -191,7 +193,7 @@ public class ConfirmOrderFragment extends Fragment {
             StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
             statusDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
-            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Orders");
+            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV2");
             shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {

@@ -103,7 +103,7 @@ public class CartItemFragment extends Fragment {
 
     private void setValues() {
         itemName.setText(item.getName());
-        price.setText(getString(R.string.price, item.getPrice()));
+        price.setText(getString(R.string.price, item.getPriceWholesale()));
         quantityMustard.setText(String.valueOf(itemMustard.getQuantity()));
         quantityMaroon.setText(String.valueOf(itemMaroon.getQuantity()));
         quantityDarkBrown.setText(String.valueOf(itemDarkBrown.getQuantity()));
@@ -112,9 +112,9 @@ public class CartItemFragment extends Fragment {
     }
 
     private void setTotal() {
-        int totalInt = itemMustard.getPrice() * itemMustard.getQuantity();
-        totalInt += (itemMaroon.getPrice() * itemMaroon.getQuantity());
-        totalInt += (itemDarkBrown.getPrice() * itemDarkBrown.getQuantity());
+        int totalInt = itemMustard.getPriceWholesale() * itemMustard.getQuantity();
+        totalInt += (itemMaroon.getPriceWholesale() * itemMaroon.getQuantity());
+        totalInt += (itemDarkBrown.getPriceWholesale() * itemDarkBrown.getQuantity());
         total.setText(getString(R.string.total, totalInt));
     }
 

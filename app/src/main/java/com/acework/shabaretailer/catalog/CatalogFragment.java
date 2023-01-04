@@ -117,7 +117,7 @@ public class CatalogFragment extends Fragment {
 
         for (Item itemInCart : itemsInCart) {
             count += itemInCart.getQuantity();
-            totalPrice += (itemInCart.getQuantity() * itemInCart.getPrice());
+            totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
         }
 
         if (count > 0) {
@@ -134,7 +134,7 @@ public class CatalogFragment extends Fragment {
     }
 
     private void fetchItems() {
-        FirebaseDatabase.getInstance().getReference().child("Items").get().addOnCompleteListener(task -> {
+        FirebaseDatabase.getInstance().getReference().child("ItemsV2").get().addOnCompleteListener(task -> {
             hideAnimation();
             if (task.isSuccessful()) {
                 List<Item> itemsFromDatabase = new ArrayList<>();

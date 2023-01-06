@@ -13,15 +13,29 @@ import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class CartViewModel extends AndroidViewModel {
+    public static final int ORDER_TYPE_WHOLESALE = 0;
+    public static final int ORDER_TYPE_CONSIGNMENT = 1;
+    public static final int ORDER_TYPE_COMMISSION = 2;
     private final MutableLiveData<List<Item>> cart;
+    private final MutableLiveData<Integer> orderType;
 
     public CartViewModel(@NonNull Application application) {
         super(application);
         cart = new MutableLiveData<>(new ArrayList<>());
+        orderType = new MutableLiveData<>(ORDER_TYPE_WHOLESALE);
     }
 
     public MutableLiveData<List<Item>> getCart() {
         return cart;
+    }
+
+    public MutableLiveData<Integer> getOrderType() {
+        return orderType;
+    }
+
+    public void setOrderType(int newOrderType) {
+        orderType.setValue(newOrderType);
+        refresh();
     }
 
     public Item getItemFromCart(String sku, String insertColor) {
@@ -48,6 +62,7 @@ public class CartViewModel extends AndroidViewModel {
             cart.getValue().remove(i);
         }
         cart.setValue(cart.getValue());
+        orderType.setValue(orderType.getValue());
     }
 
     public void resetCart() {

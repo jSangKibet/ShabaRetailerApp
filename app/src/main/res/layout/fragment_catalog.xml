@@ -43,23 +43,17 @@
             app:layout_constraintStart_toEndOf="@id/menu_button"
             app:layout_constraintTop_toTopOf="@id/menu_button" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/search"
-            style="@style/SearchBox"
-            android:layout_width="match_parent"
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/set_order_type"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            app:endIconMode="clear_text"
-            app:layout_constraintTop_toBottomOf="@id/menu_button">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/search_field"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/work_sans_regular"
-                android:hint="@string/search_name"
-                android:inputType="text" />
-        </com.google.android.material.textfield.TextInputLayout>
+            android:minHeight="0dp"
+            android:textAllCaps="false"
+            app:icon="@drawable/expand_more_24"
+            app:iconGravity="end"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/menu_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
@@ -129,8 +123,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/complete_order"
-            android:layout_width="match_parent"
             style="@style/Button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/work_sans_bold"
             android:text="@string/complete_order"

@@ -1,8 +1,6 @@
 package com.acework.shabaretailer.catalog;
 
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +22,6 @@ import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -33,11 +30,10 @@ import java.util.HashMap;
 import java.util.List;
 
 public class CatalogFragment extends Fragment {
-    private TextInputEditText searchField;
     private ItemAdapter adapter;
     private ConstraintLayout summary;
     private TextView totalQuantity, total, errorMessage;
-    private MaterialButton complete, menuBtn;
+    private MaterialButton complete, menuBtn, setOrderType;
     private RecyclerView itemList;
     private CartViewModel cartViewModel;
     private LottieAnimationView loadingAnim;
@@ -58,15 +54,14 @@ public class CatalogFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         bindViews(view);
         initializeList();
-        setSearchFunctionality();
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         setListeners();
         fetchItems();
+        observeOrderType();
     }
 
     private void bindViews(View view) {
         itemList = view.findViewById(R.id.item_list);
-        searchField = view.findViewById(R.id.search_field);
         summary = view.findViewById(R.id.summary_layout);
         totalQuantity = view.findViewById(R.id.total_quantity);
         total = view.findViewById(R.id.total);
@@ -74,6 +69,7 @@ public class CatalogFragment extends Fragment {
         menuBtn = view.findViewById(R.id.menu_button);
         loadingAnim = view.findViewById(R.id.loading_anim);
         errorMessage = view.findViewById(R.id.error_message);
+        setOrderType = view.findViewById(R.id.set_order_type);
     }
 
     private void initializeList() {
@@ -86,29 +82,11 @@ public class CatalogFragment extends Fragment {
     private void setListeners() {
         complete.setOnClickListener(v -> toCart());
         menuBtn.setOnClickListener(v -> ((CatalogActivity) requireActivity()).openDrawer());
+        setOrderType.setOnClickListener(v -> setOrderType());
     }
 
     private void itemSelected(Item item) {
         ((CatalogActivity) requireActivity()).toCartItem(item);
-    }
-
-    private void setSearchFunctionality() {
-        searchField.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                adapter.filter(s.toString());
-            }
-        });
     }
 
     private void computeTotals(List<Item> itemsInCart) {
@@ -174,5 +152,25 @@ public class CatalogFragment extends Fragment {
             }
         }
         adapter.updateQuantities(itemQuantities);
+    }
+
+    private void observeOrderType() {
+        cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> {
+            switch (orderType) {
+                case 2:
+                    setOrderType.setText(R.string.commission);
+                    break;
+                case 1:
+                    setOrderType.setText(R.string.consignment);
+                    break;
+                default:
+                    setOrderType.setText(R.string.wholesale);
+            }
+        });
+    }
+
+    private void setOrderType() {
+        SetOrderTypeDialog dialog = SetOrderTypeDialog.newInstance(cartViewModel);
+        dialog.show(getChildFragmentManager(), SetOrderTypeDialog.TAG);
     }
 }

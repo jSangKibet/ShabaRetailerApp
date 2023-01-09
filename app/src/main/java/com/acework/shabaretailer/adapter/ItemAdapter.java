@@ -31,6 +31,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private final StorageReference shabaItemImagesCloudStorageRef;
     private List<Item> allItems;
     private List<Item> filteredItems;
+    private int orderType = 0;
 
     public ItemAdapter(Context context, ItemActionListener itemActionListener) {
         this.context = context;
@@ -53,7 +54,6 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = filteredItems.get(position);
         holder.name.setText(item.getName());
-        holder.price.setText(context.getString(R.string.price, item.getPriceWholesale()));
         holder.quantity.setText(context.getString(R.string.qty, item.getQuantity()));
         holder.add.setOnClickListener(v -> itemActionListener.itemSelected(item));
         holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
@@ -64,6 +64,18 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         } else {
             holder.editLayout.setVisibility(View.GONE);
             holder.add.setVisibility(View.VISIBLE);
+        }
+
+        switch (orderType){
+            case 2:
+                holder.price.setText(context.getString(R.string.price, item.getPriceShaba()));
+                break;
+            case 1:
+                holder.price.setText(context.getString(R.string.price, item.getPriceConsignment()));
+                break;
+            default:
+                holder.price.setText(context.getString(R.string.price, item.getPriceWholesale()));
+
         }
     }
 
@@ -109,6 +121,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             Integer itemQty = itemQuantities.get(item.getSku());
             item.setQuantity(itemQty == null ? 0 : itemQty);
         }
+        notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setOrderType(int orderType) {
+        this.orderType = orderType;
         notifyDataSetChanged();
     }
 

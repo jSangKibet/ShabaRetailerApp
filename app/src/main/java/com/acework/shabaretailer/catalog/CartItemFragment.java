@@ -39,6 +39,7 @@ public class CartItemFragment extends Fragment {
 
     private CartViewModel cartViewModel;
     private LayoutInflater layoutInflater;
+    private int orderType = 0;
 
     public CartItemFragment() {
     }
@@ -61,6 +62,7 @@ public class CartItemFragment extends Fragment {
         layoutInflater = LayoutInflater.from(requireContext());
         bindViews(view);
         setListeners();
+        cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> this.orderType = orderType);
     }
 
     private void bindViews(View view) {
@@ -103,18 +105,29 @@ public class CartItemFragment extends Fragment {
 
     private void setValues() {
         itemName.setText(item.getName());
-        price.setText(getString(R.string.price, item.getPriceWholesale()));
         quantityMustard.setText(String.valueOf(itemMustard.getQuantity()));
         quantityMaroon.setText(String.valueOf(itemMaroon.getQuantity()));
         quantityDarkBrown.setText(String.valueOf(itemDarkBrown.getQuantity()));
         setTotal();
         setItemDetails();
+
+        switch (orderType) {
+            case 2:
+                price.setText(getString(R.string.price, item.getPriceShaba()));
+                break;
+            case 1:
+                price.setText(getString(R.string.price, item.getPriceConsignment()));
+                break;
+            default:
+                price.setText(getString(R.string.price, item.getPriceWholesale()));
+
+        }
     }
 
     private void setTotal() {
-        int totalInt = itemMustard.getPriceWholesale() * itemMustard.getQuantity();
-        totalInt += (itemMaroon.getPriceWholesale() * itemMaroon.getQuantity());
-        totalInt += (itemDarkBrown.getPriceWholesale() * itemDarkBrown.getQuantity());
+        int totalInt = getItemPrice(itemMustard) * itemMustard.getQuantity();
+        totalInt += (getItemPrice(itemMaroon) * itemMaroon.getQuantity());
+        totalInt += (getItemPrice(itemDarkBrown) * itemDarkBrown.getQuantity());
         total.setText(getString(R.string.total, totalInt));
     }
 
@@ -233,5 +246,12 @@ public class CartItemFragment extends Fragment {
 
     private void showDescription() {
         new MaterialAlertDialogBuilder(requireContext()).setTitle("Description").setMessage(item.getDescription()).setPositiveButton("Close", null).show();
+    }
+
+    private int getItemPrice(Item item) {
+        int price = item.getPriceWholesale();
+        if (orderType == 2) price = item.getPriceShaba();
+        if (orderType == 1) price = item.getPriceConsignment();
+        return price;
     }
 }

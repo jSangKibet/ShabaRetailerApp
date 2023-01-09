@@ -37,6 +37,7 @@ public class CatalogFragment extends Fragment {
     private RecyclerView itemList;
     private CartViewModel cartViewModel;
     private LottieAnimationView loadingAnim;
+    private int orderType=0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,12 @@ public class CatalogFragment extends Fragment {
 
         for (Item itemInCart : itemsInCart) {
             count += itemInCart.getQuantity();
-            totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
+
+            int priceToUse=itemInCart.getPriceWholesale();
+            if(orderType==2) priceToUse=itemInCart.getPriceShaba();
+            if(orderType==1) priceToUse=itemInCart.getPriceConsignment();
+
+            totalPrice += (itemInCart.getQuantity() * priceToUse);
         }
 
         if (count > 0) {
@@ -156,6 +162,7 @@ public class CatalogFragment extends Fragment {
 
     private void observeOrderType() {
         cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> {
+            this.orderType=orderType;
             switch (orderType) {
                 case 2:
                     setOrderType.setText(R.string.commission);

@@ -71,8 +71,31 @@
             android:textColor="?attr/colorPrimary"
             android:textSize="12sp"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@id/type_label"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/type_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/order_type_label"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@id/date_label"
             app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/date_label"
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <TextView
             android:id="@+id/date_label"

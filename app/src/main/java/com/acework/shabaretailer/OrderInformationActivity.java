@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.adapter.ItemInOrderAdapter;
 import com.acework.shabaretailer.model.Order;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +21,7 @@ import java.util.Locale;
 
 public class OrderInformationActivity extends AppCompatActivity {
     private MaterialButton back;
-    private TextView id, date, total, status, transport, deliveryPoint;
+    private TextView id, date, total, status, transport, deliveryPoint, type;
     private RecyclerView items;
     private ItemInOrderAdapter adapter;
 
@@ -43,6 +44,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         items = findViewById(R.id.item_list);
         transport = findViewById(R.id.transport);
         deliveryPoint = findViewById(R.id.delivery_point);
+        type = findViewById(R.id.type);
     }
 
     private void setListeners() {
@@ -80,6 +82,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         String formattedDate = dateFormatter.format(new Date(order.getTimestamp()));
 
         id.setText(getString(R.string.order_num, order.getId()));
+        type.setText(CartViewModel.getOrderTypeAsString(order.getType()));
         date.setText(formattedDate);
         status.setText(order.getStatus());
 
@@ -97,6 +100,6 @@ public class OrderInformationActivity extends AppCompatActivity {
 
         deliveryPoint.setText(getString(R.string.delivery_point, order.getCounty(), order.getStreet()));
 
-        adapter.setItems(order.getOrderItems());
+        adapter.setItems(order.getOrderItems(), order.getType());
     }
 }

@@ -194,7 +194,7 @@ public class ConfirmOrderFragment extends Fragment {
                 0,
                 currentRetailer == null ? "" : currentRetailer.getCounty(),
                 currentRetailer == null ? "" : currentRetailer.getStreet(),
-                cartViewModel.getOrderTypeAsString());
+                cartViewModel.getOrderType());
 
     }
 

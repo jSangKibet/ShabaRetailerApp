@@ -122,6 +122,7 @@
     <string name="consignment">Consignment</string>
     <string name="wholesale">Wholesale</string>
     <string name="order_type_label">Order type:</string>
+    <string name="order_type_ph">Order type: %s</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

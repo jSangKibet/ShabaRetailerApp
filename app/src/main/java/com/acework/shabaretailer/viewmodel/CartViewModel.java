@@ -80,10 +80,10 @@ public class CartViewModel extends AndroidViewModel {
         }
     }
 
-    public String getOrderTypeAsString() {
-        if (cart.getValue().getOrderType() == 2) {
+    public static String getOrderTypeAsString(int orderType) {
+        if (orderType == 2) {
             return "Commission";
-        } else if (cart.getValue().getOrderType() == 1) {
+        } else if (orderType == 1) {
             return "Consignment";
         } else {
             return "Wholesale";

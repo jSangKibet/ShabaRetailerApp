@@ -14,12 +14,12 @@ public class Order {
     private int finalTransportCost;
     private String county;
     private String street;
-    private String type;
+    private int type;
 
     public Order() {
     }
 
-    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, String type) {
+    public Order(String id, String retailerId, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, int type) {
         this.id = id;
         this.retailerId = retailerId;
         this.timestamp = timestamp;
@@ -122,11 +122,11 @@ public class Order {
         this.street = street;
     }
 
-    public String getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(int type) {
         this.type = type;
     }
 }

@@ -95,6 +95,6 @@ public class SetOrderTypeDialog extends DialogFragment {
     private void initializeOrderTypes() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.order_types));
         ((AutoCompleteTextView) orderTypeLayout.getEditText()).setAdapter(adapter);
-        ((AutoCompleteTextView) orderTypeLayout.getEditText()).setText(cartViewModel.getOrderTypeAsString(), false);
+        ((AutoCompleteTextView) orderTypeLayout.getEditText()).setText(CartViewModel.getOrderTypeAsString(cartViewModel.getOrderType()), false);
     }
 }

@@ -22,11 +22,9 @@ import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.List;
-
 public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActionListener {
     private ItemInCartAdapter adapter;
-    private TextView total, weight, transport, estimatedTotal;
+    private TextView type, total, weight, transport, estimatedTotal;
     private MaterialButton complete, back;
     private RecyclerView itemList;
     private CartViewModel cartViewModel;
@@ -59,6 +57,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         transport = view.findViewById(R.id.transport);
         estimatedTotal = view.findViewById(R.id.estimated_total);
         back = view.findViewById(R.id.back_button);
+        type = view.findViewById(R.id.type);
     }
 
     private void initializeList() {
@@ -99,6 +98,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         weight.setText(getString(R.string.weight_total, totalWeight));
         transport.setText(getString(R.string.transport, 0));
         estimatedTotal.setText(getString(R.string.total, totalPrice));
+        type.setText(getString(R.string.order_type_ph, CartViewModel.getOrderTypeAsString(cart.getOrderType())));
 
         Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
         if (currentRetailer != null) {

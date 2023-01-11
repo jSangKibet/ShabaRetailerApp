@@ -137,7 +137,7 @@ public class CatalogFragment extends Fragment {
         cartViewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
             computeTotals(cart);
             calculateQuantities(cart.getItems());
-            setOrderType.setText(cartViewModel.getOrderTypeAsString());
+            setOrderType.setText(CartViewModel.getOrderTypeAsString(cart.getOrderType()));
         });
     }
 

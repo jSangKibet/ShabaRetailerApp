@@ -21,12 +21,13 @@ import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 public class CartItemFragment extends Fragment {
     private Item item, itemMustard, itemMaroon, itemDarkBrown;
-    private TextView itemName, price, quantityMustard, quantityMaroon, quantityDarkBrown, total;
+    private TextView itemName, price, quantityMustard, quantityMaroon, quantityDarkBrown, total, totalQuantity;
     private MaterialButton back, done, mustardMinus5, mustardMinus, mustardPlus, mustardPlus5;
     private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
     private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
@@ -99,6 +100,7 @@ public class CartItemFragment extends Fragment {
         more = view.findViewById(R.id.more);
         less = view.findViewById(R.id.less);
         moreLayout = view.findViewById(R.id.more_layout);
+        totalQuantity = view.findViewById(R.id.total_quantity);
     }
 
     private void setValues() {
@@ -106,6 +108,7 @@ public class CartItemFragment extends Fragment {
         quantityMustard.setText(String.valueOf(itemMustard.getQuantity()));
         quantityMaroon.setText(String.valueOf(itemMaroon.getQuantity()));
         quantityDarkBrown.setText(String.valueOf(itemDarkBrown.getQuantity()));
+        totalQuantity.setText(getString(R.string.quantity_ph, getTotalQuantity()));
         setTotal();
         setItemDetails();
 
@@ -188,18 +191,25 @@ public class CartItemFragment extends Fragment {
         setValues();
     }
 
-    private void incrementByOne(Item itemToDecrement) {
-        if (itemToDecrement.getQuantity() < 30) {
-            itemToDecrement.setQuantity(itemToDecrement.getQuantity() + 1);
+    private void incrementByOne(Item itemToIncrement) {
+        if (getTotalQuantity() < 30) {
+            itemToIncrement.setQuantity(itemToIncrement.getQuantity() + 1);
+        } else {
+            Snackbar.make(requireView(), "You can only purchase a maximum of 30 bags of one type at a time", Snackbar.LENGTH_SHORT).show();
         }
         setValues();
     }
 
-    private void incrementByFive(Item itemToDecrement) {
-        if (itemToDecrement.getQuantity() < 30) {
-            int newQuantity = itemToDecrement.getQuantity() + 5;
-            if (newQuantity > 30) newQuantity = 30;
-            itemToDecrement.setQuantity(newQuantity);
+    private void incrementByFive(Item itemToIncrement) {
+        if (getTotalQuantity() < 30) {
+            int newTotalQuantity = getTotalQuantity() + 5;
+            if (newTotalQuantity <= 30) {
+                itemToIncrement.setQuantity(itemToIncrement.getQuantity() + 5);
+            } else {
+                Snackbar.make(requireView(), "You can only purchase a maximum of 30 bags of one type at a time", Snackbar.LENGTH_SHORT).show();
+            }
+        } else {
+            Snackbar.make(requireView(), "You can only purchase a maximum of 30 bags of one type at a time", Snackbar.LENGTH_SHORT).show();
         }
         setValues();
     }
@@ -251,5 +261,9 @@ public class CartItemFragment extends Fragment {
         if (cartViewModel.getOrderType() == 2) price = item.getPriceShaba();
         if (cartViewModel.getOrderType() == 1) price = item.getPriceConsignment();
         return price;
+    }
+
+    private int getTotalQuantity() {
+        return itemDarkBrown.getQuantity() + itemMaroon.getQuantity() + itemMustard.getQuantity();
     }
 }

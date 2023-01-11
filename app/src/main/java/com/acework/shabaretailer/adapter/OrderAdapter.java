@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.model.Order;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -50,6 +51,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHold
         } else {
             holder.total.setText(context.getString(R.string.kes, order.getFinalTotal()));
         }
+        holder.type.setText(CartViewModel.getOrderTypeAsString(order.getType()));
         holder.status.setText(order.getStatus());
         holder.container.setOnClickListener(v -> orderActionListener.orderSelected(order));
         holder.copy.setOnClickListener(v -> {
@@ -77,7 +79,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHold
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final TextView number, total, status;
+        private final TextView number, total, status, type;
         private final ConstraintLayout container;
         private final MaterialButton copy;
 
@@ -88,6 +90,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHold
             status = itemView.findViewById(R.id.order_status);
             container = itemView.findViewById(R.id.container);
             copy = itemView.findViewById(R.id.copy);
+            type = itemView.findViewById(R.id.order_type);
         }
     }
 }

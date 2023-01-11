@@ -29,6 +29,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     private MaterialButton complete, back;
     private RecyclerView itemList;
     private CartViewModel cartViewModel;
+    private int orderType = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,6 +73,10 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
             adapter.setItems(itemsInCart);
             computeTotals(itemsInCart);
         });
+        cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> {
+            this.orderType = orderType;
+            adapter.setOrderType(orderType);
+        });
     }
 
     private void setListeners() {
@@ -84,8 +89,12 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         int totalWeight = 0;
 
         for (Item itemInCart : itemsInCart) {
+            int priceToUse = itemInCart.getPriceWholesale();
+            if (orderType == 1) priceToUse = itemInCart.getPriceConsignment();
+            if (orderType == 2) priceToUse = itemInCart.getPriceShaba();
+
             if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
+                totalPrice += (itemInCart.getQuantity() * priceToUse);
                 totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }

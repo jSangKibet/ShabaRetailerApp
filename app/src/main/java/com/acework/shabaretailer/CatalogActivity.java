@@ -15,7 +15,6 @@ import com.acework.shabaretailer.catalog.ConfirmOrderFragment;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -69,8 +68,8 @@ public class CatalogActivity extends AppCompatActivity {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference();
         shabaRtDbRef.child("Retailers").child(uid).get().addOnCompleteListener(task -> retailer = task.getResult().getValue(Retailer.class));
-        cartViewModel.getCart().observe(this, items -> {
-            if (items.size() == 0) {
+        cartViewModel.getCart().observe(this, cart -> {
+            if (cart.getItems().size() == 0) {
                 if (activeFragment == cartFragment) {
                     onBackPressed();
                 }

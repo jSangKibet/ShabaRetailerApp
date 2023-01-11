@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.StatusDialog;
+import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
@@ -30,12 +31,11 @@ import java.util.List;
 
 @SuppressWarnings("ConstantConditions")
 public class ConfirmOrderFragment extends Fragment {
-    private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email;
+    private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email, orderType;
     private CheckBox tc;
     private MaterialButton confirm, back;
     private CartViewModel cartViewModel;
     private String uid;
-
 
     public ConfirmOrderFragment() {
     }
@@ -79,6 +79,7 @@ public class ConfirmOrderFragment extends Fragment {
         tc = view.findViewById(R.id.tc_checkbox);
         confirm = view.findViewById(R.id.confirm);
         back = view.findViewById(R.id.back_button);
+        orderType = view.findViewById(R.id.order_type);
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -99,13 +100,18 @@ public class ConfirmOrderFragment extends Fragment {
         });
     }
 
-    private void computeValues(List<Item> itemsInCart) {
+    private void computeValues(Cart cart) {
         int totalPrice = 0;
         int totalWeight = 0;
+        int orderTypeInt = cart.getOrderType();
 
-        for (Item itemInCart : itemsInCart) {
+        for (Item itemInCart : cart.getItems()) {
+            int priceToUse = itemInCart.getPriceWholesale();
+            if (orderTypeInt == 1) priceToUse = itemInCart.getPriceConsignment();
+            if (orderTypeInt == 2) priceToUse = itemInCart.getPriceShaba();
+
             if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
+                totalPrice += (itemInCart.getQuantity() * priceToUse);
                 totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
@@ -114,6 +120,14 @@ public class ConfirmOrderFragment extends Fragment {
         estWeight.setText(getString(R.string.weight_formatted, totalWeight));
         estTrans.setText(getString(R.string.kes, 0));
         estTotal.setText(getString(R.string.kes, totalPrice));
+
+        if (orderTypeInt == 2) {
+            this.orderType.setText(R.string.commission);
+        } else if (orderTypeInt == 1) {
+            this.orderType.setText(R.string.consignment);
+        } else {
+            this.orderType.setText(R.string.wholesale);
+        }
 
         Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
         if (currentRetailer != null) {
@@ -147,8 +161,12 @@ public class ConfirmOrderFragment extends Fragment {
         List<Item> itemsInCart = getItemsInCart();
 
         for (Item itemInCart : itemsInCart) {
+            int priceToUse = itemInCart.getPriceWholesale();
+            if (cartViewModel.getOrderType() == 1) priceToUse = itemInCart.getPriceConsignment();
+            if (cartViewModel.getOrderType() == 2) priceToUse = itemInCart.getPriceShaba();
+
             if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * itemInCart.getPriceWholesale());
+                totalPrice += (itemInCart.getQuantity() * priceToUse);
                 totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
             }
         }
@@ -176,13 +194,13 @@ public class ConfirmOrderFragment extends Fragment {
                 0,
                 currentRetailer == null ? "" : currentRetailer.getCounty(),
                 currentRetailer == null ? "" : currentRetailer.getStreet(),
-                "Wholesale");
+                cartViewModel.getOrderTypeAsString());
 
     }
 
     private List<Item> getItemsInCart() {
         List<Item> itemsInCart = new ArrayList<>();
-        for (Item item : cartViewModel.getCart().getValue()) {
+        for (Item item : cartViewModel.getItemsInCart()) {
             if (item.getQuantity() > 0) itemsInCart.add(item);
         }
         return itemsInCart;

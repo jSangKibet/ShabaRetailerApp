@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.ItemInCartAdapter;
+import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
@@ -29,7 +30,6 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     private MaterialButton complete, back;
     private RecyclerView itemList;
     private CartViewModel cartViewModel;
-    private int orderType = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,13 +69,9 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
 
     private void loadData() {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
-            adapter.setItems(itemsInCart);
-            computeTotals(itemsInCart);
-        });
-        cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> {
-            this.orderType = orderType;
-            adapter.setOrderType(orderType);
+        cartViewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
+            adapter.setItems(cart);
+            computeTotals(cart);
         });
     }
 
@@ -84,14 +80,14 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         complete.setOnClickListener(v -> toConfirmOrder());
     }
 
-    private void computeTotals(List<Item> itemsInCart) {
+    private void computeTotals(Cart cart) {
         int totalPrice = 0;
         int totalWeight = 0;
 
-        for (Item itemInCart : itemsInCart) {
+        for (Item itemInCart : cart.getItems()) {
             int priceToUse = itemInCart.getPriceWholesale();
-            if (orderType == 1) priceToUse = itemInCart.getPriceConsignment();
-            if (orderType == 2) priceToUse = itemInCart.getPriceShaba();
+            if (cart.getOrderType() == 1) priceToUse = itemInCart.getPriceConsignment();
+            if (cart.getOrderType() == 2) priceToUse = itemInCart.getPriceShaba();
 
             if (itemInCart.getQuantity() > 0) {
                 totalPrice += (itemInCart.getQuantity() * priceToUse);

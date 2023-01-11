@@ -18,6 +18,7 @@ import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.ItemAdapter;
 import com.acework.shabaretailer.custom.GridSpacingItemDecoration;
+import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.airbnb.lottie.LottieAnimationView;
@@ -37,7 +38,6 @@ public class CatalogFragment extends Fragment {
     private RecyclerView itemList;
     private CartViewModel cartViewModel;
     private LottieAnimationView loadingAnim;
-    private int orderType = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,6 @@ public class CatalogFragment extends Fragment {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         setListeners();
         fetchItems();
-        observeOrderType();
     }
 
     private void bindViews(View view) {
@@ -90,16 +89,16 @@ public class CatalogFragment extends Fragment {
         ((CatalogActivity) requireActivity()).toCartItem(item);
     }
 
-    private void computeTotals(List<Item> itemsInCart) {
+    private void computeTotals(Cart cart) {
         int count = 0;
         int totalPrice = 0;
 
-        for (Item itemInCart : itemsInCart) {
+        for (Item itemInCart : cart.getItems()) {
             count += itemInCart.getQuantity();
 
             int priceToUse = itemInCart.getPriceWholesale();
-            if (orderType == 2) priceToUse = itemInCart.getPriceShaba();
-            if (orderType == 1) priceToUse = itemInCart.getPriceConsignment();
+            if (cart.getOrderType() == 2) priceToUse = itemInCart.getPriceShaba();
+            if (cart.getOrderType() == 1) priceToUse = itemInCart.getPriceConsignment();
 
             totalPrice += (itemInCart.getQuantity() * priceToUse);
         }
@@ -135,9 +134,10 @@ public class CatalogFragment extends Fragment {
     }
 
     private void setQuantityObserver() {
-        cartViewModel.getCart().observe(getViewLifecycleOwner(), itemsInCart -> {
-            computeTotals(itemsInCart);
-            calculateQuantities(itemsInCart);
+        cartViewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
+            computeTotals(cart);
+            calculateQuantities(cart.getItems());
+            setOrderType.setText(cartViewModel.getOrderTypeAsString());
         });
     }
 
@@ -158,23 +158,6 @@ public class CatalogFragment extends Fragment {
             }
         }
         adapter.updateQuantities(itemQuantities);
-    }
-
-    private void observeOrderType() {
-        cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> {
-            this.orderType = orderType;
-            switch (orderType) {
-                case 2:
-                    setOrderType.setText(R.string.commission);
-                    break;
-                case 1:
-                    setOrderType.setText(R.string.consignment);
-                    break;
-                default:
-                    setOrderType.setText(R.string.wholesale);
-            }
-            adapter.setOrderType(orderType);
-        });
     }
 
     private void setOrderType() {

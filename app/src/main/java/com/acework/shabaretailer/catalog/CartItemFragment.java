@@ -39,7 +39,6 @@ public class CartItemFragment extends Fragment {
 
     private CartViewModel cartViewModel;
     private LayoutInflater layoutInflater;
-    private int orderType = 0;
 
     public CartItemFragment() {
     }
@@ -62,7 +61,6 @@ public class CartItemFragment extends Fragment {
         layoutInflater = LayoutInflater.from(requireContext());
         bindViews(view);
         setListeners();
-        cartViewModel.getOrderType().observe(getViewLifecycleOwner(), orderType -> this.orderType = orderType);
     }
 
     private void bindViews(View view) {
@@ -111,7 +109,7 @@ public class CartItemFragment extends Fragment {
         setTotal();
         setItemDetails();
 
-        switch (orderType) {
+        switch (cartViewModel.getOrderType()) {
             case 2:
                 price.setText(getString(R.string.price, item.getPriceShaba()));
                 break;
@@ -250,8 +248,8 @@ public class CartItemFragment extends Fragment {
 
     private int getItemPrice(Item item) {
         int price = item.getPriceWholesale();
-        if (orderType == 2) price = item.getPriceShaba();
-        if (orderType == 1) price = item.getPriceConsignment();
+        if (cartViewModel.getOrderType() == 2) price = item.getPriceShaba();
+        if (cartViewModel.getOrderType() == 1) price = item.getPriceConsignment();
         return price;
     }
 }

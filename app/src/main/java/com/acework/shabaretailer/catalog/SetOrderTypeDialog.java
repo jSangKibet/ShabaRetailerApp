@@ -80,13 +80,13 @@ public class SetOrderTypeDialog extends DialogFragment {
     }
 
     private void setOrderType() {
-        int orderType = CartViewModel.ORDER_TYPE_WHOLESALE;
+        int orderType = 0;
         String selectedType = orderTypeLayout.getEditText().getText().toString();
         if (selectedType.equals("Consignment")) {
-            orderType = CartViewModel.ORDER_TYPE_CONSIGNMENT;
+            orderType = 1;
         }
         if (selectedType.equals("Commission")) {
-            orderType = CartViewModel.ORDER_TYPE_COMMISSION;
+            orderType = 2;
         }
         cartViewModel.setOrderType(orderType);
         dismiss();
@@ -95,17 +95,6 @@ public class SetOrderTypeDialog extends DialogFragment {
     private void initializeOrderTypes() {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.order_types));
         ((AutoCompleteTextView) orderTypeLayout.getEditText()).setAdapter(adapter);
-        ((AutoCompleteTextView) orderTypeLayout.getEditText()).setText(getCurrentOrderType(), false);
-    }
-
-    private String getCurrentOrderType() {
-        switch (cartViewModel.getOrderType().getValue()) {
-            case 2:
-                return "Commission";
-            case 1:
-                return "Consignment";
-            default:
-                return "Wholesale";
-        }
+        ((AutoCompleteTextView) orderTypeLayout.getEditText()).setText(cartViewModel.getOrderTypeAsString(), false);
     }
 }

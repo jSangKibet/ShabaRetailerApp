@@ -121,6 +121,7 @@
     <string name="commission">Commission</string>
     <string name="consignment">Consignment</string>
     <string name="wholesale">Wholesale</string>
+    <string name="order_type_label">Order type:</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

@@ -124,6 +124,8 @@
     <string name="order_type_label">Order type:</string>
     <string name="order_type_ph">Order type: %s</string>
     <string name="quantity_ph">Quantity (%d)</string>
+    <string name="reset_your_password">Reset your password</string>
+    <string name="reset">Reset</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

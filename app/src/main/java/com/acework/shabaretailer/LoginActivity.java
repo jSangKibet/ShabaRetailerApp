@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void forgotPassword() {
-        Snackbar.make(usernameLayout, "Coming soon", Snackbar.LENGTH_LONG).show();
+        startActivity(new Intent(this, ForgotPasswordActivity.class));
     }
 
     private void signUp() {

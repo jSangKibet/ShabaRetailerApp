@@ -89,12 +89,16 @@ public class AutoScrollImageView extends ConstraintLayout {
         String image2Link = sku + "_02.jpg";
         String image3Link = sku + "_03.jpg";
 
+        image1.setImageResource(R.drawable.image_loading);
+        image2.setImageResource(R.drawable.image_loading);
+        image3.setImageResource(R.drawable.image_loading);
+
         FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
         StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
 
         shabaCSR.child(image1Link).getDownloadUrl().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Glide.with(image1).load(task.getResult()).placeholder(R.drawable.image_loading).into(image1);
+                Glide.with(image1).load(task.getResult()).error(R.drawable.image_not_found).into(image1);
             } else {
                 image1.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.image_not_found));
             }
@@ -102,7 +106,7 @@ public class AutoScrollImageView extends ConstraintLayout {
 
         shabaCSR.child(image2Link).getDownloadUrl().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Glide.with(image2).load(task.getResult()).placeholder(R.drawable.image_loading).into(image2);
+                Glide.with(image2).load(task.getResult()).error(R.drawable.image_not_found).into(image2);
             } else {
                 image2.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.image_not_found));
             }
@@ -110,7 +114,7 @@ public class AutoScrollImageView extends ConstraintLayout {
 
         shabaCSR.child(image3Link).getDownloadUrl().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Glide.with(image3).load(task.getResult()).placeholder(R.drawable.image_loading).into(image3);
+                Glide.with(image3).load(task.getResult()).error(R.drawable.image_not_found).into(image3);
             } else {
                 image3.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.image_not_found));
             }

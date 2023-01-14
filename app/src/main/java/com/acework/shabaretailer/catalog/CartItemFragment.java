@@ -1,29 +1,26 @@
 package com.acework.shabaretailer.catalog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.custom.AutoScrollImageView;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 public class CartItemFragment extends Fragment {
     private Item item, itemMustard, itemMaroon, itemDarkBrown;
@@ -31,7 +28,7 @@ public class CartItemFragment extends Fragment {
     private MaterialButton back, done, mustardMinus5, mustardMinus, mustardPlus, mustardPlus5;
     private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
     private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
-    private ImageView imageView;
+    private AutoScrollImageView images;
 
     private TextView description, size, material, weaving, color, strap, insert, weight, sku, strapLength;
     private LinearLayout features;
@@ -73,7 +70,7 @@ public class CartItemFragment extends Fragment {
         quantityDarkBrown = view.findViewById(R.id.dark_brown_qty);
         total = view.findViewById(R.id.total);
         done = view.findViewById(R.id.done);
-        imageView = view.findViewById(R.id.image);
+        images = view.findViewById(R.id.images);
         mustardMinus = view.findViewById(R.id.mustard_minus);
         mustardMinus5 = view.findViewById(R.id.mustard_minus_5);
         mustardPlus = view.findViewById(R.id.mustard_plus);
@@ -149,6 +146,7 @@ public class CartItemFragment extends Fragment {
     private void setFeatures() {
         features.removeAllViews();
         for (String feature : item.getFeatures()) {
+            @SuppressLint("InflateParams")
             TextView textView = (TextView) layoutInflater.inflate(R.layout.view_textview, null);
             textView.setText(getString(R.string.bullet_item, feature));
             features.addView(textView);
@@ -217,22 +215,13 @@ public class CartItemFragment extends Fragment {
     public void setItem(Item item) {
         this.item = item;
         moreLayout.setVisibility(View.GONE);
-        loadImage();
+        loadImages();
         getItems(item);
         setValues();
     }
 
-    private void loadImage() {
-        String imageName = item.getSku() + "_01.jpg";
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
-        shabaCSR.child(imageName).getDownloadUrl().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Glide.with(imageView).load(task.getResult()).placeholder(R.drawable.image_96).into(imageView);
-            } else {
-                imageView.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.image_96));
-            }
-        });
+    private void loadImages() {
+        images.loadImages(item.getSku());
     }
 
     private void done() {

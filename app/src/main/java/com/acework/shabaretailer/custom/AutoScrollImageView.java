@@ -22,6 +22,9 @@ public class AutoScrollImageView extends ConstraintLayout {
     private final ImageView image1, image2, image3;
     private final MaterialButton scrollLeft, scrollRight;
     private final ConstraintLayout root;
+    private int currentImage = 1;
+    private boolean autoScroll = false;
+    private boolean autoScrolling = false;
 
     public AutoScrollImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -40,12 +43,16 @@ public class AutoScrollImageView extends ConstraintLayout {
         scroll(R.layout.layout_auto_scroll_image_view_2);
         scrollRight.setOnClickListener(v -> scroll23());
         scrollLeft.setOnClickListener(v -> scroll21());
+        currentImage = 2;
+        autoScroll();
     }
 
     private void scroll13() {
         scroll(R.layout.layout_auto_scroll_image_view_3);
         scrollRight.setOnClickListener(v -> scroll31());
         scrollLeft.setOnClickListener(v -> scroll32());
+        currentImage = 3;
+        autoScroll();
     }
 
 
@@ -53,18 +60,24 @@ public class AutoScrollImageView extends ConstraintLayout {
         scroll(R.layout.layout_auto_scroll_image_view_3);
         scrollRight.setOnClickListener(v -> scroll31());
         scrollLeft.setOnClickListener(v -> scroll32());
+        currentImage = 3;
+        autoScroll();
     }
 
     private void scroll21() {
         scroll(R.layout.layout_auto_scroll_image_view_1);
         scrollRight.setOnClickListener(v -> scroll12());
         scrollLeft.setOnClickListener(v -> scroll13());
+        currentImage = 1;
+        autoScroll();
     }
 
     private void scroll31() {
         scroll(R.layout.layout_auto_scroll_image_view_1);
         scrollRight.setOnClickListener(v -> scroll12());
         scrollLeft.setOnClickListener(v -> scroll13());
+        currentImage = 1;
+        autoScroll();
     }
 
 
@@ -72,6 +85,8 @@ public class AutoScrollImageView extends ConstraintLayout {
         scroll(R.layout.layout_auto_scroll_image_view_2);
         scrollRight.setOnClickListener(v -> scroll23());
         scrollLeft.setOnClickListener(v -> scroll21());
+        currentImage = 2;
+        autoScroll();
     }
 
 
@@ -119,7 +134,30 @@ public class AutoScrollImageView extends ConstraintLayout {
                 image3.setImageDrawable(ContextCompat.getDrawable(getContext(), R.drawable.image_not_found));
             }
         });
+
+        autoScroll = true;
+        autoScroll();
     }
 
+    public void setAutoScroll(boolean autoScroll) {
+        this.autoScroll = autoScroll;
+    }
 
+    public void autoScroll() {
+        if (autoScroll) {
+            if (!autoScrolling) {
+                autoScrolling = true;
+                image1.postDelayed(() -> {
+                    if (currentImage == 1) {
+                        scroll12();
+                    } else if (currentImage == 2) {
+                        scroll23();
+                    } else {
+                        scroll31();
+                    }
+                    autoScrolling = false;
+                }, 3000);
+            }
+        }
+    }
 }

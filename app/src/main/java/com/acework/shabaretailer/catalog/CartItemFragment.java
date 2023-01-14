@@ -154,7 +154,10 @@ public class CartItemFragment extends Fragment {
     }
 
     private void setListeners() {
-        back.setOnClickListener(v -> requireActivity().onBackPressed());
+        back.setOnClickListener(v -> {
+            images.setAutoScroll(false);
+            requireActivity().onBackPressed();
+        });
         done.setOnClickListener(v -> done());
         mustardMinus.setOnClickListener(v -> decrementByOne(itemMustard));
         mustardMinus5.setOnClickListener(v -> decrementByFive(itemMustard));
@@ -225,6 +228,7 @@ public class CartItemFragment extends Fragment {
     }
 
     private void done() {
+        images.setAutoScroll(false);
         if (itemMustard.getQuantity() > 0) cartViewModel.setItem(itemMustard);
         if (itemMaroon.getQuantity() > 0) cartViewModel.setItem(itemMaroon);
         if (itemDarkBrown.getQuantity() > 0) cartViewModel.setItem(itemDarkBrown);

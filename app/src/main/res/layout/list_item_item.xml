@@ -18,13 +18,11 @@
         app:layout_constraintBottom_toTopOf="@id/image"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
+    <com.acework.shabaretailer.custom.AutoScrollThumbView
         android:id="@+id/image"
         android:layout_width="140dp"
         android:layout_height="140dp"
         android:layout_marginBottom="8dp"
-        android:adjustViewBounds="true"
-        android:importantForAccessibility="no"
         app:layout_constraintBottom_toTopOf="@id/price"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -47,8 +45,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/add"
-            android:layout_width="match_parent"
             style="@style/Button"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/work_sans_bold"
             android:text="@string/add"

@@ -138,6 +138,7 @@ public class CatalogFragment extends Fragment {
             computeTotals(cart);
             calculateQuantities(cart.getItems());
             setOrderType.setText(CartViewModel.getOrderTypeAsString(cart.getOrderType()));
+            adapter.setOrderType(cart.getOrderType());
         });
     }
 

@@ -97,6 +97,7 @@ public class AutoScrollImageView extends ConstraintLayout {
         set2.clone(getContext(), constraintLayoutId);
         TransitionManager.beginDelayedTransition(root);
         set2.applyTo(root);
+        autoScrolling = false;
     }
 
     public void loadImages(String sku) {
@@ -155,7 +156,6 @@ public class AutoScrollImageView extends ConstraintLayout {
                     } else {
                         scroll31();
                     }
-                    autoScrolling = false;
                 }, 3000);
             }
         }

@@ -30,7 +30,7 @@
         app:layout_constraintTop_toBottomOf="@id/name" />
 
     <TextView
-        android:id="@+id/telephone"
+        android:id="@+id/email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -57,7 +57,7 @@
         android:layout_height="1dp"
         android:layout_marginTop="8dp"
         android:background="?attr/colorPrimary"
-        app:layout_constraintTop_toBottomOf="@id/telephone" />
+        app:layout_constraintTop_toBottomOf="@id/email" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/to_my_orders"
@@ -88,16 +88,6 @@
         android:fontFamily="@font/work_sans_regular"
         android:text="@string/terms_amp_conditions"
         app:layout_constraintTop_toBottomOf="@id/set_number" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/change_password"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/work_sans_regular"
-        android:text="@string/change_password"
-        app:layout_constraintTop_toBottomOf="@id/view_tc" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/logout"

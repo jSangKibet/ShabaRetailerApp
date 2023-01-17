@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, LoginActivity.class));
         } else {
             if (user.isEmailVerified()) {
+                user.reload();
                 startActivity(new Intent(this, CatalogActivity.class));
             } else {
                 startActivity(new Intent(this, AccountVerificationActivity.class));

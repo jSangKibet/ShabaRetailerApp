@@ -19,17 +19,18 @@ import com.acework.shabaretailer.model.Retailer;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class NavigationFragment extends Fragment {
-    private TextView name, businessName, telephone;
+    private TextView name, businessName, email;
     private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == Activity.RESULT_OK) {
             loadUser();
         }
     });
-    private MaterialButton toMyOrders, viewTc, logout, setNumber, edit, changePassword;
+    private MaterialButton toMyOrders, viewTc, logout, setNumber, edit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,13 +54,12 @@ public class NavigationFragment extends Fragment {
     private void bindViews(View view) {
         name = view.findViewById(R.id.name);
         businessName = view.findViewById(R.id.business_name);
-        telephone = view.findViewById(R.id.telephone);
+        email = view.findViewById(R.id.email);
         toMyOrders = view.findViewById(R.id.to_my_orders);
         viewTc = view.findViewById(R.id.view_tc);
         logout = view.findViewById(R.id.logout);
         setNumber = view.findViewById(R.id.set_number);
         edit = view.findViewById(R.id.edit);
-        changePassword = view.findViewById(R.id.change_password);
     }
 
     private void setListeners() {
@@ -68,13 +68,13 @@ public class NavigationFragment extends Fragment {
         logout.setOnClickListener(v -> logoutButtonClicked());
         setNumber.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangeNumberActivity.class)));
         edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
-        changePassword.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangePasswordActivity.class)));
     }
 
     @SuppressWarnings("ConstantConditions")
     private void loadUser() {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Retailers/" + uid);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        email.setText(user.getEmail());
+        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Retailers/" + user.getUid());
         shabaRtDbRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Retailer retailer = task.getResult().getValue(Retailer.class);
@@ -88,7 +88,6 @@ public class NavigationFragment extends Fragment {
     private void setValues(Retailer retailer) {
         name.setText(retailer.getName());
         businessName.setText(retailer.getBusinessName());
-        telephone.setText(retailer.getTelephone());
     }
 
     private void viewTc() {

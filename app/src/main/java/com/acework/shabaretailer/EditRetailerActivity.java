@@ -1,6 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
@@ -22,7 +23,7 @@ import java.util.List;
 @SuppressWarnings("ConstantConditions")
 public class EditRetailerActivity extends AppCompatActivity {
     private TextInputLayout name, bizName, county, street;
-    private MaterialButton saveChanges;
+    private MaterialButton saveChanges, changePassword, changeEmail, back;
     private Retailer currentRetailer;
     private StatusDialog statusDialog;
     private FirebaseUser user;
@@ -32,6 +33,7 @@ public class EditRetailerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_retailer);
         bindViews();
+        setListeners();
         initializeCounties();
         loadRetailer();
     }
@@ -43,9 +45,15 @@ public class EditRetailerActivity extends AppCompatActivity {
         street = findViewById(R.id.street);
         saveChanges = findViewById(R.id.save_changes);
         saveChanges.setOnClickListener(v -> saveChanges());
+        back = findViewById(R.id.back_button);
+        changePassword = findViewById(R.id.change_password);
+        changeEmail = findViewById(R.id.change_email);
+    }
 
-        MaterialButton back = findViewById(R.id.back_button);
+    private void setListeners() {
         back.setOnClickListener(v -> finish());
+        changePassword.setOnClickListener(v -> startActivity(new Intent(this, ChangePasswordActivity.class)));
+        changeEmail.setOnClickListener(v -> startActivity(new Intent(this, ChangeEmailActivity.class)));
     }
 
     private void initializeCounties() {

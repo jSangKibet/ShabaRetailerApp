@@ -132,6 +132,9 @@
     <string name="change_your_password">Change your password</string>
     <string name="your_current_password">Your current password</string>
     <string name="your_new_password">Your new password</string>
+    <string name="change_your_email">Change your email</string>
+    <string name="your_new_email">Your new email address</string>
+    <string name="change_email_address">Change email address</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

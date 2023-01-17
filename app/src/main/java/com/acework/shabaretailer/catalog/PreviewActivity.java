@@ -3,9 +3,9 @@ package com.acework.shabaretailer.catalog;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -16,17 +16,20 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.ortiz.touchview.TouchImageView;
 
 public class PreviewActivity extends AppCompatActivity {
     private MaterialButton back, close;
     private TextView title;
-    private ImageView image;
     private LottieAnimationView animation;
+    private TouchImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +65,7 @@ public class PreviewActivity extends AppCompatActivity {
 
             shabaCSR.child(link).getDownloadUrl().addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
-                    Glide.with(image).load(task.getResult()).error(R.drawable.image_not_found).listener(new RequestListener<Drawable>() {
+                    Glide.with(this).load(task.getResult()).error(R.drawable.image_not_found).listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             hideAnimation(true);
@@ -74,7 +77,18 @@ public class PreviewActivity extends AppCompatActivity {
                             hideAnimation(false);
                             return false;
                         }
-                    }).into(image);
+                    }).into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            image.setImageDrawable(resource);
+
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                        }
+                    });
                 } else {
                     hideAnimation(true);
                     image.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.image_not_found));

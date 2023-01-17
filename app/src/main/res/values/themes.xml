@@ -29,6 +29,7 @@
     <style name="Button" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">0dp</item>
         <item name="android:padding">12dp</item>
+        <item name="fontFamily">@font/work_sans_regular</item>
     </style>
 
     <style name="SmallerIconButton" parent="Widget.MaterialComponents.Button">

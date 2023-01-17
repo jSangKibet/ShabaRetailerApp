@@ -1,6 +1,7 @@
 package com.acework.shabaretailer.catalog;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -174,6 +175,7 @@ public class CartItemFragment extends Fragment {
         more.setOnClickListener(v -> moreLayout.setVisibility(View.VISIBLE));
         less.setOnClickListener(v -> moreLayout.setVisibility(View.GONE));
         description.setOnClickListener(v -> showDescription());
+        images.setImageClickListener(this::imageClicked);
     }
 
     private void decrementByOne(Item itemToDecrement) {
@@ -258,5 +260,13 @@ public class CartItemFragment extends Fragment {
 
     private int getTotalQuantity() {
         return itemDarkBrown.getQuantity() + itemMaroon.getQuantity() + itemMustard.getQuantity();
+    }
+
+    private void imageClicked(int imageNumber) {
+        String imageLink = item.getSku() + "_0" + imageNumber + "_f.jpg";
+        Intent intent = new Intent(requireContext(), PreviewActivity.class);
+        intent.putExtra("itemName", item.getName());
+        intent.putExtra("link", imageLink);
+        startActivity(intent);
     }
 }

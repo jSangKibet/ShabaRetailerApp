@@ -25,6 +25,7 @@ public class AutoScrollImageView extends ConstraintLayout {
     private int currentImage = 1;
     private boolean autoScroll = false;
     private boolean autoScrolling = false;
+    private ImageClickListener imageClickListener;
 
     public AutoScrollImageView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -37,6 +38,20 @@ public class AutoScrollImageView extends ConstraintLayout {
         root = findViewById(R.id.root);
         scrollLeft.setOnClickListener(v -> scroll31());
         scrollRight.setOnClickListener(v -> scroll12());
+        setImageClickListeners();
+    }
+
+    private void setImageClickListeners() {
+        image1.setOnClickListener(v -> {
+            if (imageClickListener != null) imageClickListener.imageClicked(1);
+        });
+        image2.setOnClickListener(v -> {
+            if (imageClickListener != null) imageClickListener.imageClicked(2);
+        });
+        image3.setOnClickListener(v -> {
+            if (imageClickListener != null) imageClickListener.imageClicked(3);
+        });
+
     }
 
     private void scroll12() {
@@ -144,6 +159,10 @@ public class AutoScrollImageView extends ConstraintLayout {
         this.autoScroll = autoScroll;
     }
 
+    public void setImageClickListener(ImageClickListener imageClickListener) {
+        this.imageClickListener = imageClickListener;
+    }
+
     public void autoScroll() {
         if (autoScroll) {
             if (!autoScrolling) {
@@ -159,5 +178,9 @@ public class AutoScrollImageView extends ConstraintLayout {
                 }, 3000);
             }
         }
+    }
+
+    public interface ImageClickListener {
+        void imageClicked(int currentImage);
     }
 }

@@ -126,6 +126,7 @@
     <string name="quantity_ph">Quantity (%d)</string>
     <string name="reset_your_password">Reset your password</string>
     <string name="reset">Reset</string>
+    <string name="loading_full_image">Loading full resolution image. Please wait…</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

@@ -164,10 +164,10 @@ public class AutoScrollImageView extends ConstraintLayout {
     }
 
     public void autoScroll() {
-        if (autoScroll) {
-            if (!autoScrolling) {
-                autoScrolling = true;
-                image1.postDelayed(() -> {
+        image1.postDelayed(() -> {
+            if (autoScroll) {
+                if (!autoScrolling) {
+                    autoScrolling = true;
                     if (currentImage == 1) {
                         scroll12();
                     } else if (currentImage == 2) {
@@ -175,9 +175,9 @@ public class AutoScrollImageView extends ConstraintLayout {
                     } else {
                         scroll31();
                     }
-                }, 3000);
+                }
             }
-        }
+        }, 3000);
     }
 
     public interface ImageClickListener {

@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -30,12 +32,14 @@ public class CartItemFragment extends Fragment {
     private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
     private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
     private AutoScrollImageView images;
-
+    private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        images.setAutoScroll(true);
+        images.autoScroll();
+    });
     private TextView description, size, material, weaving, color, strap, insert, weight, sku, strapLength;
     private LinearLayout features;
     private MaterialButton more, less;
     private ConstraintLayout moreLayout;
-
     private CartViewModel cartViewModel;
     private LayoutInflater layoutInflater;
 
@@ -267,6 +271,7 @@ public class CartItemFragment extends Fragment {
         Intent intent = new Intent(requireContext(), PreviewActivity.class);
         intent.putExtra("itemName", item.getName());
         intent.putExtra("link", imageLink);
-        startActivity(intent);
+        images.setAutoScroll(false);
+        startActivityForResult.launch(intent);
     }
 }

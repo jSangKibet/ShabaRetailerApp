@@ -8,6 +8,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.acework.shabaretailer.R;
@@ -30,6 +31,7 @@ public class PreviewActivity extends AppCompatActivity {
     private TextView title;
     private LottieAnimationView animation;
     private TouchImageView image;
+    private ConstraintLayout loadingLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,7 @@ public class PreviewActivity extends AppCompatActivity {
         title = findViewById(R.id.title);
         image = findViewById(R.id.image);
         animation = findViewById(R.id.animation);
+        loadingLayout = findViewById(R.id.loading_layout);
     }
 
     private void setListeners() {
@@ -81,7 +84,7 @@ public class PreviewActivity extends AppCompatActivity {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                             image.setImageDrawable(resource);
-
+                            Snackbar.make(back, "Pinch to zoom in and out", Snackbar.LENGTH_LONG).setAnchorView(close).show();
                         }
 
                         @Override
@@ -99,9 +102,9 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void hideAnimation(boolean failed) {
         animation.pauseAnimation();
-        animation.setVisibility(View.GONE);
+        loadingLayout.setVisibility(View.GONE);
         if (failed) {
-            Snackbar.make(back, "There was an error loading the image. Try again later.", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(back, "There was an error loading the image. Try again later.", Snackbar.LENGTH_LONG).setAnchorView(close).show();
         }
     }
 }

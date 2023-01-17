@@ -2,6 +2,8 @@ package com.acework.shabaretailer.catalog;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +79,7 @@ public class SetOrderTypeDialog extends DialogFragment {
     private void setListeners() {
         okay.setOnClickListener(v -> setOrderType());
         cancel.setOnClickListener(v -> dismiss());
+        setOrderTypeListener();
     }
 
     private void setOrderType() {
@@ -96,5 +99,24 @@ public class SetOrderTypeDialog extends DialogFragment {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, getResources().getStringArray(R.array.order_types));
         ((AutoCompleteTextView) orderTypeLayout.getEditText()).setAdapter(adapter);
         ((AutoCompleteTextView) orderTypeLayout.getEditText()).setText(CartViewModel.getOrderTypeAsString(cartViewModel.getOrderType()), false);
+    }
+
+    private void setOrderTypeListener() {
+        orderTypeLayout.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                okay.setEnabled(!s.toString().equals("Please set an order type"));
+            }
+        });
     }
 }

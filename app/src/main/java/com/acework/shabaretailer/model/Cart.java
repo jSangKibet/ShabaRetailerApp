@@ -4,23 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Cart {
-    private int orderType;
     private final List<Item> items;
+    private int orderType;
 
-    public Cart(){
-        orderType=0;
-        items=new ArrayList<>();
+    public Cart() {
+        orderType = -1;
+        items = new ArrayList<>();
     }
 
     public int getOrderType() {
         return orderType;
     }
 
-    public List<Item> getItems() {
-        return items;
-    }
-
     public void setOrderType(int orderType) {
         this.orderType = orderType;
+    }
+
+    public List<Item> getItems() {
+        return items;
     }
 }

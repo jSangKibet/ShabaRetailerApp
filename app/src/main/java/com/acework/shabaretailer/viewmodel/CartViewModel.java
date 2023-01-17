@@ -21,6 +21,19 @@ public class CartViewModel extends AndroidViewModel {
         cart = new MutableLiveData<>(new Cart());
     }
 
+    public static String getOrderTypeAsString(int orderType) {
+        switch (orderType) {
+            case 2:
+                return "Commission";
+            case 1:
+                return "Consignment";
+            case 0:
+                return "Wholesale";
+            default:
+                return "Please set an order type";
+        }
+    }
+
     public MutableLiveData<Cart> getCart() {
         return cart;
     }
@@ -77,16 +90,6 @@ public class CartViewModel extends AndroidViewModel {
             } else {
                 itemInCart.setQuantity(item.getQuantity());
             }
-        }
-    }
-
-    public static String getOrderTypeAsString(int orderType) {
-        if (orderType == 2) {
-            return "Commission";
-        } else if (orderType == 1) {
-            return "Consignment";
-        } else {
-            return "Wholesale";
         }
     }
 

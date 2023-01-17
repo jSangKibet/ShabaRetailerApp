@@ -26,7 +26,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     private final ItemActionListener itemActionListener;
     private List<Item> allItems;
     private List<Item> filteredItems;
-    private int orderType = 0;
+    private int orderType = -1;
 
     public ItemAdapter(Context context, ItemActionListener itemActionListener) {
         this.context = context;
@@ -62,12 +62,19 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         switch (orderType) {
             case 2:
                 holder.price.setText(context.getString(R.string.price, item.getPriceShaba()));
+                holder.add.setEnabled(true);
                 break;
             case 1:
                 holder.price.setText(context.getString(R.string.price, item.getPriceConsignment()));
+                holder.add.setEnabled(true);
+                break;
+            case 0:
+                holder.price.setText(context.getString(R.string.price, item.getPriceWholesale()));
+                holder.add.setEnabled(true);
                 break;
             default:
-                holder.price.setText(context.getString(R.string.price, item.getPriceWholesale()));
+                holder.price.setText("-");
+                holder.add.setEnabled(false);
 
         }
     }

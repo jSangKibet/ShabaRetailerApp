@@ -73,7 +73,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 holder.add.setEnabled(true);
                 break;
             default:
-                holder.price.setText("-");
+                holder.price.setText(R.string.order_type_not_set);
                 holder.add.setEnabled(false);
 
         }

@@ -29,7 +29,7 @@ public class NavigationFragment extends Fragment {
             loadUser();
         }
     });
-    private MaterialButton toMyOrders, viewTc, logout, setNumber, edit;
+    private MaterialButton toMyOrders, viewTc, logout, setNumber, edit, changePassword;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,7 @@ public class NavigationFragment extends Fragment {
         logout = view.findViewById(R.id.logout);
         setNumber = view.findViewById(R.id.set_number);
         edit = view.findViewById(R.id.edit);
+        changePassword = view.findViewById(R.id.change_password);
     }
 
     private void setListeners() {
@@ -67,6 +68,7 @@ public class NavigationFragment extends Fragment {
         logout.setOnClickListener(v -> logoutButtonClicked());
         setNumber.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangeNumberActivity.class)));
         edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
+        changePassword.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangePasswordActivity.class)));
     }
 
     @SuppressWarnings("ConstantConditions")

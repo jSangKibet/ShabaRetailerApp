@@ -128,6 +128,7 @@
     <string name="reset">Reset</string>
     <string name="loading_full_image">Loading full resolution image. Please wait…</string>
     <string name="order_type_not_set">Order type not set</string>
+    <string name="change_password">Change password</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

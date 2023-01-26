@@ -6,21 +6,23 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.acework.shabaretailer.model.EmailChangeRequest;
 import com.acework.shabaretailer.model.Retailer;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("ConstantConditions")
 public class EditRetailerActivity extends AppCompatActivity {
     private TextInputLayout name, bizName, county, street;
     private MaterialButton saveChanges, changePassword, changeEmail, back;
@@ -53,9 +55,10 @@ public class EditRetailerActivity extends AppCompatActivity {
     private void setListeners() {
         back.setOnClickListener(v -> finish());
         changePassword.setOnClickListener(v -> startActivity(new Intent(this, ChangePasswordActivity.class)));
-        changeEmail.setOnClickListener(v -> startActivity(new Intent(this, ChangeEmailActivity.class)));
+        changeEmail.setOnClickListener(v -> changeEmailClicked());
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void initializeCounties() {
         List<String> countyList = new ArrayList<>();
         countyList.add("Baringo");
@@ -158,6 +161,7 @@ public class EditRetailerActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     private boolean validate() {
         clearErrors();
         hideKeyboard();
@@ -185,6 +189,7 @@ public class EditRetailerActivity extends AppCompatActivity {
         return true;
     }
 
+    @SuppressWarnings("ConstantConditions")
     private void setValues() {
         name.getEditText().setText(currentRetailer.getName());
         bizName.getEditText().setText(currentRetailer.getBusinessName());
@@ -193,6 +198,7 @@ public class EditRetailerActivity extends AppCompatActivity {
         saveChanges.setEnabled(true);
     }
 
+    @SuppressWarnings("ConstantConditions")
     private Retailer getRetailer() {
         return new Retailer(
                 name.getEditText().getText().toString().trim(),
@@ -221,5 +227,44 @@ public class EditRetailerActivity extends AppCompatActivity {
         bizName.setError(null);
         county.setError(null);
         street.setError(null);
+    }
+
+    private void changeEmailClicked() {
+        downloadLatestECR();
+    }
+
+    private void downloadLatestECR() {
+        statusDialog = StatusDialog.newInstance(R.raw.loading, "Checking your requests", false, null);
+        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+
+        String uid = FirebaseAuth.getInstance().getUid();
+
+        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
+        shabaRtDbRef.orderByChild("uid").equalTo(uid).limitToLast(1).get().addOnCompleteListener(task -> {
+            statusDialog.dismiss();
+            if (task.isSuccessful()) {
+                if (task.getResult().getChildrenCount() > 0) {
+                    EmailChangeRequest emailChangeRequest = task.getResult().getValue(EmailChangeRequest.class);
+                    if (emailChangeRequest == null) {
+                        Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
+                    } else {
+                        if (emailChangeRequest.getStatus().equals("Denied")) {
+                            Toast.makeText(this, "TODO: Display denial message & update Firebase", Toast.LENGTH_SHORT).show();
+                        } else if (emailChangeRequest.getStatus().equals("Pending")) {
+                            Toast.makeText(this, "TODO: Display option to enter a code or cancel request", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(this, "TODO: Show option to request an email change", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                } else {
+                    Toast.makeText(this, "TODO: Show option to request an email change", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
+                if (task.getException() != null) {
+                    task.getException().printStackTrace();
+                }
+            }
+        });
     }
 }

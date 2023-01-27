@@ -135,6 +135,9 @@
     <string name="change_your_email">Change your email</string>
     <string name="your_new_email">Your new email address</string>
     <string name="change_email_address">Change email address</string>
+    <string name="request_change_email">Request change of email</string>
+    <string name="request">Request</string>
+    <string name="submit">Submit</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

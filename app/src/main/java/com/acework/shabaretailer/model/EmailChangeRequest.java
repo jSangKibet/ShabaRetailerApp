@@ -1,7 +1,25 @@
 package com.acework.shabaretailer.model;
 
 public class EmailChangeRequest {
-    private String uid, email, status, code, reason, timestamp;
+    private String id, uid, email, status, code, reason;
+    private long timestamp;
+
+    public EmailChangeRequest() {
+    }
+
+    public EmailChangeRequest(String uid, String email, String status, String code, String reason, long timestamp) {
+        this.uid = uid;
+        this.email = email;
+        this.status = status;
+        this.code = code;
+        this.reason = reason;
+        this.timestamp = timestamp;
+        id = uid + timestamp;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public String getUid() {
         return uid;
@@ -21,5 +39,9 @@ public class EmailChangeRequest {
 
     public String getReason() {
         return reason;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }

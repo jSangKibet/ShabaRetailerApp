@@ -245,13 +245,13 @@ public class EditRetailerActivity extends AppCompatActivity {
             statusDialog.dismiss();
             if (task.isSuccessful()) {
                 if (task.getResult().getChildrenCount() > 0) {
-                    EmailChangeRequest emailChangeRequest = task.getResult().getValue(EmailChangeRequest.class);
-                    if (emailChangeRequest == null) {
+                    EmailChangeRequest ecr = task.getResult().getChildren().iterator().next().getValue(EmailChangeRequest.class);
+                    if (ecr == null) {
                         Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
                     } else {
-                        if (emailChangeRequest.getStatus().equals("Denied")) {
+                        if (ecr.getStatus().equals("Denied")) {
                             Toast.makeText(this, "TODO: Display denial message & update Firebase", Toast.LENGTH_SHORT).show();
-                        } else if (emailChangeRequest.getStatus().equals("Pending")) {
+                        } else if (ecr.getStatus().equals("Pending")) {
                             Toast.makeText(this, "TODO: Display option to enter a code or cancel request", Toast.LENGTH_SHORT).show();
                         } else {
                             showECRRequestDialog();
@@ -273,11 +273,7 @@ public class EditRetailerActivity extends AppCompatActivity {
         new MaterialAlertDialogBuilder(this)
                 .setTitle("Request email change").
                 setMessage("Would you like to change your email address? If so, please press 'request' to submit a request for your email to be updated.").
-                setPositiveButton("Request", (dialog, which) -> toRequestChangeOfEmail()).
+                setPositiveButton("Request", (dialog, which) -> startActivity(new Intent(this, RequestEmailChangeActivity.class))).
                 setNegativeButton("Cancel", null).show();
-    }
-
-    private void toRequestChangeOfEmail() {
-
     }
 }

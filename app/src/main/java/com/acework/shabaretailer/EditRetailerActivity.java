@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.acework.shabaretailer.model.EmailChangeRequest;
 import com.acework.shabaretailer.model.Retailer;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -253,11 +254,11 @@ public class EditRetailerActivity extends AppCompatActivity {
                         } else if (emailChangeRequest.getStatus().equals("Pending")) {
                             Toast.makeText(this, "TODO: Display option to enter a code or cancel request", Toast.LENGTH_SHORT).show();
                         } else {
-                            Toast.makeText(this, "TODO: Show option to request an email change", Toast.LENGTH_SHORT).show();
+                            showECRRequestDialog();
                         }
                     }
                 } else {
-                    Toast.makeText(this, "TODO: Show option to request an email change", Toast.LENGTH_SHORT).show();
+                    showECRRequestDialog();
                 }
             } else {
                 Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
@@ -266,5 +267,17 @@ public class EditRetailerActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showECRRequestDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Request email change").
+                setMessage("Would you like to change your email address? If so, please press 'request' to submit a request for your email to be updated.").
+                setPositiveButton("Request", (dialog, which) -> toRequestChangeOfEmail()).
+                setNegativeButton("Cancel", null).show();
+    }
+
+    private void toRequestChangeOfEmail() {
+
     }
 }

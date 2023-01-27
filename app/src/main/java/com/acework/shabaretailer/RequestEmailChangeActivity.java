@@ -43,7 +43,7 @@ public class RequestEmailChangeActivity extends AppCompatActivity {
         if (validateInput()) {
             new MaterialAlertDialogBuilder(this)
                     .setTitle("Confirm email change request").
-                    setMessage("Would you like to submitClicked a request to change your email to the one you have provided?").
+                    setMessage("Would you like to submit a request to change your email to the one you have provided?").
                     setPositiveButton("Yes", (dialog, which) -> submitRequest()).
                     setNegativeButton("Cancel", null).show();
         }

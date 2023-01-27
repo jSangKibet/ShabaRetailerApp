@@ -138,6 +138,7 @@
     <string name="request_change_email">Request change of email</string>
     <string name="request">Request</string>
     <string name="submit">Submit</string>
+    <string name="confirm_change_email">Confirm change of email</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

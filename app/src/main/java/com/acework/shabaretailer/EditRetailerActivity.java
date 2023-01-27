@@ -252,7 +252,11 @@ public class EditRetailerActivity extends AppCompatActivity {
                         if (ecr.getStatus().equals("Denied")) {
                             showDenialDialog(ecr);
                         } else if (ecr.getStatus().equals("Pending")) {
-                            Toast.makeText(this, "TODO: Display option to enter a code or cancel request", Toast.LENGTH_SHORT).show();
+                            if (ecr.getCode().isEmpty()) {
+                                showNotYetApprovedDialog(ecr);
+                            } else {
+                                showConfirmOrCancelDialog(ecr);
+                            }
                         } else {
                             showECRRequestDialog();
                         }
@@ -300,5 +304,17 @@ public class EditRetailerActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showNotYetApprovedDialog(EmailChangeRequest ecr) {
+        Toast.makeText(this, "TODO: display not yet approved message, with option to cancel", Toast.LENGTH_SHORT).show();
+    }
+
+    private void cancelRequest(EmailChangeRequest ecr) {
+
+    }
+
+    private void showConfirmOrCancelDialog(EmailChangeRequest ecr) {
+        Toast.makeText(this, "TODO: display option to change or cancel", Toast.LENGTH_SHORT).show();
     }
 }

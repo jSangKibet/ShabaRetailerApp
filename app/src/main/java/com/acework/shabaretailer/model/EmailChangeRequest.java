@@ -44,4 +44,8 @@ public class EmailChangeRequest {
     public long getTimestamp() {
         return timestamp;
     }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 }

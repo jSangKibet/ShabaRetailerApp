@@ -250,7 +250,7 @@ public class EditRetailerActivity extends AppCompatActivity {
                         Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
                     } else {
                         if (ecr.getStatus().equals("Denied")) {
-                            Toast.makeText(this, "TODO: Display denial message & update Firebase", Toast.LENGTH_SHORT).show();
+                            showDenialDialog(ecr);
                         } else if (ecr.getStatus().equals("Pending")) {
                             Toast.makeText(this, "TODO: Display option to enter a code or cancel request", Toast.LENGTH_SHORT).show();
                         } else {
@@ -275,5 +275,30 @@ public class EditRetailerActivity extends AppCompatActivity {
                 setMessage("Would you like to change your email address? If so, please press 'request' to submit a request for your email to be updated.").
                 setPositiveButton("Request", (dialog, which) -> startActivity(new Intent(this, RequestEmailChangeActivity.class))).
                 setNegativeButton("Cancel", null).show();
+    }
+
+    private void showDenialDialog(EmailChangeRequest ecr) {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Email change request denied").
+                setMessage("Your request to change your email address was denied because of:\n" + ecr.getReason() + "\nYou may contact support for more options.").
+                setPositiveButton("Okay", null)
+                .setOnDismissListener(dialog -> denialShown(ecr))
+                .show();
+    }
+
+    private void denialShown(EmailChangeRequest ecr) {
+        StatusDialog sd = StatusDialog.newInstance(R.raw.loading, "Updating", false, null);
+        sd.show(getSupportFragmentManager(), StatusDialog.TAG);
+
+        ecr.setStatus("Denial-shown");
+        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
+        shabaRealtimeDbRef.child(ecr.getId()).setValue(ecr).addOnCompleteListener(task -> {
+            sd.dismiss();
+            if (!task.isSuccessful()) {
+                if (task.getException() != null) {
+                    task.getException().printStackTrace();
+                }
+            }
+        });
     }
 }

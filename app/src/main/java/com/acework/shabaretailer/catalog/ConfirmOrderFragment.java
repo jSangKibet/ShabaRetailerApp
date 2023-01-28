@@ -23,6 +23,7 @@ import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -82,16 +83,15 @@ public class ConfirmOrderFragment extends Fragment {
         orderType = view.findViewById(R.id.order_type);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void setValues() {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         cartViewModel.getCart().observe(getViewLifecycleOwner(), this::computeValues);
-        uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Retailers/" + uid);
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Retailers/" + u.getUid());
         shabaRealtimeDbRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Retailer retailer = task.getResult().getValue(Retailer.class);
-                setUserInfo(retailer);
+                setUserInfo(retailer, u.getEmail());
             } else {
                 Snackbar.make(requireView(), task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
                 confirm.setEnabled(false);
@@ -141,12 +141,12 @@ public class ConfirmOrderFragment extends Fragment {
         }
     }
 
-    private void setUserInfo(Retailer retailer) {
+    private void setUserInfo(Retailer retailer, String emailString) {
         name.setText(retailer.getName());
         county.setText(retailer.getCounty());
         street.setText(retailer.getStreet());
         telephone.setText(retailer.getTelephone());
-        email.setText(retailer.getEmail());
+        email.setText(emailString);
     }
 
     private void setListeners() {

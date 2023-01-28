@@ -1,17 +1,17 @@
 package com.acework.shabaretailer.model;
 
 public class Retailer {
-    private String name, businessName, telephone, email, county, street, password;
-    public Retailer(){}
+    private String name, businessName, telephone, county, street;
 
-    public Retailer(String name, String businessName, String telephone, String email, String county, String street, String password) {
+    public Retailer() {
+    }
+
+    public Retailer(String name, String businessName, String telephone, String county, String street) {
         this.name = name;
         this.businessName = businessName;
         this.telephone = telephone;
-        this.email = email;
         this.county = county;
         this.street = street;
-        this.password = password;
     }
 
     public String getName() {
@@ -26,20 +26,12 @@ public class Retailer {
         return telephone;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
     public String getCounty() {
         return county;
     }
 
     public String getStreet() {
         return street;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public void setName(String name) {
@@ -54,19 +46,11 @@ public class Retailer {
         this.telephone = telephone;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public void setCounty(String county) {
         this.county = county;
     }
 
     public void setStreet(String street) {
         this.street = street;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

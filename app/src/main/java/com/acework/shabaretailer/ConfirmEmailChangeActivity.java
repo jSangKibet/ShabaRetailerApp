@@ -117,4 +117,8 @@ public class ConfirmEmailChangeActivity extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finishAffinity();
     }
+
+    private void updateRetailer(){
+
+    }
 }

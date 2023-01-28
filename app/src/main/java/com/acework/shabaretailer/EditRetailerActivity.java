@@ -205,10 +205,8 @@ public class EditRetailerActivity extends AppCompatActivity {
                 name.getEditText().getText().toString().trim(),
                 bizName.getEditText().getText().toString().trim(),
                 currentRetailer.getTelephone(),
-                user.getEmail(),
                 county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim(),
-                "-");
+                street.getEditText().getText().toString().trim());
     }
 
     private boolean areSimilar(Retailer retailer) {

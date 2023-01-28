@@ -67,14 +67,17 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void join() {
         if (validate()) {
-            statusDialog = StatusDialog.newInstance(R.raw.loading, "Attempting to sign you up", false, () -> {
-            });
+            statusDialog = StatusDialog.newInstance(R.raw.loading, "Attempting to sign you up", false, null);
             statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+
             Retailer retailer = getRetailer();
-            firebaseAuth.fetchSignInMethodsForEmail(retailer.getEmail()).addOnCompleteListener(task -> {
+            String emailString = email.getEditText().getText().toString().trim();
+            String passwordString = password.getEditText().getText().toString().trim();
+
+            firebaseAuth.fetchSignInMethodsForEmail(emailString).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     if (task.getResult().getSignInMethods().isEmpty()) {
-                        firebaseAuth.createUserWithEmailAndPassword(retailer.getEmail(), retailer.getPassword()).addOnCompleteListener(task1 -> {
+                        firebaseAuth.createUserWithEmailAndPassword(emailString, passwordString).addOnCompleteListener(task1 -> {
                             if (task1.isSuccessful()) {
                                 createRetailer(retailer);
                             } else {
@@ -213,15 +216,12 @@ public class SignupActivity extends AppCompatActivity {
                 name.getEditText().getText().toString().trim(),
                 businessName.getEditText().getText().toString().trim(),
                 "-",
-                email.getEditText().getText().toString().trim(),
                 county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim(),
-                password.getEditText().getText().toString().trim());
+                street.getEditText().getText().toString().trim());
     }
 
     @SuppressWarnings("ConstantConditions")
     private void createRetailer(Retailer retailer) {
-        retailer.setPassword("-");
         String uid = firebaseAuth.getCurrentUser().getUid();
         FirebaseDatabase.getInstance().getReference().child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
             statusDialog.dismiss();

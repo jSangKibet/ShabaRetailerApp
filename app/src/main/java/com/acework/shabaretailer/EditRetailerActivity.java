@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -251,7 +251,7 @@ public class EditRetailerActivity extends AppCompatActivity {
                             showDenialDialog(ecr);
                         } else if (ecr.getStatus().equals("Pending")) {
                             if (ecr.getCode().isEmpty()) {
-                                showNotYetApprovedDialog(ecr);
+                                showNotYetApprovedDialog();
                             } else {
                                 showConfirmOrCancelDialog(ecr);
                             }
@@ -304,15 +304,52 @@ public class EditRetailerActivity extends AppCompatActivity {
         });
     }
 
-    private void showNotYetApprovedDialog(EmailChangeRequest ecr) {
-        Toast.makeText(this, "TODO: display not yet approved message, with option to cancel", Toast.LENGTH_SHORT).show();
-    }
-
-    private void cancelRequest(EmailChangeRequest ecr) {
-
+    private void showNotYetApprovedDialog() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Email change request pending").
+                setMessage("Your request to change your email address has not been approved yet. If it has been more than 48 hours since you submitted your request, you may contact support for more options.").
+                setPositiveButton("Okay", null)
+                .show();
     }
 
     private void showConfirmOrCancelDialog(EmailChangeRequest ecr) {
-        Toast.makeText(this, "TODO: display option to change or cancel", Toast.LENGTH_SHORT).show();
+        String[] options = new String[]{"Confirm change", "Cancel request"};
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Your email change request has been approved")
+                .setItems(options, (dialog, which) -> {
+                    if (which == 0) {
+                        confirmRequest(ecr);
+                    } else {
+                        cancelRequest(ecr);
+                    }
+                })
+                .show();
+    }
+
+    private void confirmRequest(EmailChangeRequest ecr) {
+        String ecrJson = new Gson().toJson(ecr);
+        Intent i = new Intent(this, ConfirmEmailChangeActivity.class);
+        i.putExtra("ecr", ecrJson);
+        startActivity(i);
+    }
+
+    private void cancelRequest(EmailChangeRequest ecr) {
+        statusDialog = StatusDialog.newInstance(R.raw.loading, "Canceling your request", false, null);
+        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+
+        ecr.setStatus("Canceled");
+        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
+        shabaRealtimeDbRef.child(ecr.getId()).setValue(ecr).addOnCompleteListener(task -> {
+            statusDialog.dismiss();
+            if (task.isSuccessful()) {
+                statusDialog = StatusDialog.newInstance(R.raw.success, "Your request was canceled", true, null);
+                statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+            } else {
+                Snackbar.make(back, "Could not cancel your request at this time. Try again later.", Snackbar.LENGTH_LONG).show();
+                if (task.getException() != null) {
+                    task.getException().printStackTrace();
+                }
+            }
+        });
     }
 }

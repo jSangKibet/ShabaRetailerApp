@@ -62,6 +62,7 @@ public class SignupActivity extends AppCompatActivity {
         back.setOnClickListener(v -> finish());
         join.setOnClickListener(v -> join());
         viewTc.setOnClickListener(v -> viewTc());
+        tc.setOnCheckedChangeListener((buttonView, isChecked) -> hideKeyboard());
     }
 
     @SuppressWarnings("ConstantConditions")

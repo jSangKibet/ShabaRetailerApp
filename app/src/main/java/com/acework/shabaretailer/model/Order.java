@@ -4,6 +4,7 @@ import java.util.List;
 
 public class Order {
     private String id;
+    private String retailerId;
     private Retailer retailer;
     private long timestamp;
     private String status;
@@ -19,8 +20,9 @@ public class Order {
     public Order() {
     }
 
-    public Order(String id, Retailer retailer, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, int type) {
+    public Order(String id, String retailerId, Retailer retailer, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, int type) {
         this.id = id;
+        this.retailerId=retailerId;
         this.retailer = retailer;
         this.timestamp = timestamp;
         this.status = status;
@@ -128,5 +130,13 @@ public class Order {
 
     public void setRetailer(Retailer retailer) {
         this.retailer = retailer;
+    }
+
+    public String getRetailerId() {
+        return retailerId;
+    }
+
+    public void setRetailerId(String retailerId) {
+        this.retailerId = retailerId;
     }
 }

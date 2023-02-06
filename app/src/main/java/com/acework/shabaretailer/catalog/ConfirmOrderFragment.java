@@ -37,7 +37,6 @@ public class ConfirmOrderFragment extends Fragment {
     private MaterialButton confirm, back;
     private CartViewModel cartViewModel;
     private String uid;
-    private Retailer retailer;
 
     public ConfirmOrderFragment() {
     }
@@ -89,20 +88,10 @@ public class ConfirmOrderFragment extends Fragment {
         cartViewModel.getCart().observe(getViewLifecycleOwner(), this::computeValues);
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         this.uid = u.getUid();
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("RetailersV2/" + uid);
-        shabaRealtimeDbRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Retailer retailer = task.getResult().getValue(Retailer.class);
-                setUserInfo(retailer, u.getEmail());
-            } else {
-                Snackbar.make(requireView(), task.getException().getMessage(), Snackbar.LENGTH_LONG).show();
-                confirm.setEnabled(false);
-                task.getException().printStackTrace();
-            }
-        });
     }
 
     private void computeValues(Cart cart) {
+        setUserInfo(cart.getRetailer());
         int totalPrice = 0;
         int totalWeight = 0;
         int orderTypeInt = cart.getOrderType();
@@ -132,21 +121,27 @@ public class ConfirmOrderFragment extends Fragment {
         }
 
         int transPerKg = 500;
-        if (retailer.getCounty().equals("Nairobi")) {
-            transPerKg = 250;
+        if (cart.getRetailer() != null) {
+            if (cart.getRetailer().getCounty().equals("Nairobi")) {
+                transPerKg = 250;
+            }
+            int finalTransCost = getTransportCost(totalWeight, transPerKg);
+            estTrans.setText(getString(R.string.kes, finalTransCost));
+            estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
         }
-        int finalTransCost = getTransportCost(totalWeight, transPerKg);
-        estTrans.setText(getString(R.string.kes, finalTransCost));
-        estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
     }
 
-    private void setUserInfo(Retailer retailer, String emailString) {
-        this.retailer = retailer;
-        name.setText(retailer.getName());
-        county.setText(retailer.getCounty());
-        street.setText(retailer.getStreet());
-        telephone.setText(retailer.getTelephone());
-        email.setText(emailString);
+    private void setUserInfo(Retailer retailer) {
+        if (retailer == null) {
+            confirm.setEnabled(false);
+        } else {
+            name.setText(retailer.getName());
+            county.setText(retailer.getCounty());
+            street.setText(retailer.getStreet());
+            telephone.setText(retailer.getTelephone());
+            email.setText(retailer.getEmail());
+            confirm.setEnabled(true);
+        }
     }
 
     private void setListeners() {
@@ -171,6 +166,7 @@ public class ConfirmOrderFragment extends Fragment {
             }
         }
 
+        Retailer retailer = cartViewModel.getCart().getValue().getRetailer();
         int transPerKg = 500;
         if (retailer.getCounty().equals("Nairobi")) {
             transPerKg = 250;
@@ -181,6 +177,7 @@ public class ConfirmOrderFragment extends Fragment {
 
         return new Order(
                 uid + timestamp,
+                uid,
                 retailer,
                 timestamp,
                 "Pending",

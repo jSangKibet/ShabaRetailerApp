@@ -100,10 +100,9 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         estimatedTotal.setText(getString(R.string.total, totalPrice));
         type.setText(getString(R.string.order_type_ph, CartViewModel.getOrderTypeAsString(cart.getOrderType())));
 
-        Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
-        if (currentRetailer != null) {
+        if (cart.getRetailer() != null) {
             int transPerKg = 500;
-            if (currentRetailer.getCounty().equals("Nairobi")) {
+            if (cart.getRetailer().getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
             int finalTransCost = ConfirmOrderFragment.getTransportCost(totalWeight, transPerKg);

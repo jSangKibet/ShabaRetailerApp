@@ -8,6 +8,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
+import com.acework.shabaretailer.model.Retailer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,5 +96,10 @@ public class CartViewModel extends AndroidViewModel {
 
     public List<Item> getItemsInCart() {
         return cart.getValue().getItems();
+    }
+
+    public void setRetailer(Retailer retailer) {
+        cart.getValue().setRetailer(retailer);
+        refresh();
     }
 }

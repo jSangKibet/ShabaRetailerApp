@@ -6,6 +6,7 @@ import java.util.List;
 public class Cart {
     private final List<Item> items;
     private int orderType;
+    private Retailer retailer;
 
     public Cart() {
         orderType = -1;
@@ -22,5 +23,13 @@ public class Cart {
 
     public List<Item> getItems() {
         return items;
+    }
+
+    public void setRetailer(Retailer retailer) {
+        this.retailer = retailer;
+    }
+
+    public Retailer getRetailer() {
+        return retailer;
     }
 }

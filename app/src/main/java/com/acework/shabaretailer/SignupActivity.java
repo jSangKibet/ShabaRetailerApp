@@ -218,13 +218,14 @@ public class SignupActivity extends AppCompatActivity {
                 businessName.getEditText().getText().toString().trim(),
                 "-",
                 county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim());
+                street.getEditText().getText().toString().trim(),
+                email.getEditText().getText().toString().trim());
     }
 
     @SuppressWarnings("ConstantConditions")
     private void createRetailer(Retailer retailer) {
         String uid = firebaseAuth.getCurrentUser().getUid();
-        FirebaseDatabase.getInstance().getReference().child("Retailers").child(uid).setValue(retailer).addOnCompleteListener(task -> {
+        FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(uid).setValue(retailer).addOnCompleteListener(task -> {
             statusDialog.dismiss();
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());

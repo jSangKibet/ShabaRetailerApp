@@ -74,7 +74,7 @@ public class NavigationFragment extends Fragment {
     private void loadUser() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         email.setText(user.getEmail());
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("Retailers/" + user.getUid());
+        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("RetailersV2/" + user.getUid());
         shabaRtDbRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Retailer retailer = task.getResult().getValue(Retailer.class);

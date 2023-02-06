@@ -58,7 +58,7 @@ public class MyOrdersActivity extends AppCompatActivity {
         StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching your orders...", false, null);
         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV2");
+        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV3");
         shabaRtDbRef.orderByChild("retailerId").equalTo(uid).get().addOnCompleteListener(task -> {
             statusDialog.dismiss();
             if (task.isSuccessful()) {

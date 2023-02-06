@@ -37,6 +37,7 @@ public class ConfirmOrderFragment extends Fragment {
     private MaterialButton confirm, back;
     private CartViewModel cartViewModel;
     private String uid;
+    private Retailer retailer;
 
     public ConfirmOrderFragment() {
     }
@@ -87,7 +88,8 @@ public class ConfirmOrderFragment extends Fragment {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         cartViewModel.getCart().observe(getViewLifecycleOwner(), this::computeValues);
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("Retailers/" + u.getUid());
+        this.uid = u.getUid();
+        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("RetailersV2/" + uid);
         shabaRealtimeDbRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Retailer retailer = task.getResult().getValue(Retailer.class);
@@ -129,19 +131,17 @@ public class ConfirmOrderFragment extends Fragment {
             this.orderType.setText(R.string.wholesale);
         }
 
-        Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
-        if (currentRetailer != null) {
-            int transPerKg = 500;
-            if (currentRetailer.getCounty().equals("Nairobi")) {
-                transPerKg = 250;
-            }
-            int finalTransCost = getTransportCost(totalWeight, transPerKg);
-            estTrans.setText(getString(R.string.kes, finalTransCost));
-            estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
+        int transPerKg = 500;
+        if (retailer.getCounty().equals("Nairobi")) {
+            transPerKg = 250;
         }
+        int finalTransCost = getTransportCost(totalWeight, transPerKg);
+        estTrans.setText(getString(R.string.kes, finalTransCost));
+        estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
     }
 
     private void setUserInfo(Retailer retailer, String emailString) {
+        this.retailer = retailer;
         name.setText(retailer.getName());
         county.setText(retailer.getCounty());
         street.setText(retailer.getStreet());
@@ -157,7 +157,7 @@ public class ConfirmOrderFragment extends Fragment {
     private Order getOrder() {
         int totalPrice = 0;
         int totalWeight = 0;
-        int estTransCost = 0;
+        int estTransCost;
         List<Item> itemsInCart = getItemsInCart();
 
         for (Item itemInCart : itemsInCart) {
@@ -171,20 +171,17 @@ public class ConfirmOrderFragment extends Fragment {
             }
         }
 
-        Retailer currentRetailer = ((CatalogActivity) requireActivity()).getRetailer();
-        if (currentRetailer != null) {
-            int transPerKg = 500;
-            if (currentRetailer.getCounty().equals("Nairobi")) {
-                transPerKg = 250;
-            }
-            estTransCost = getTransportCost(totalWeight, transPerKg);
+        int transPerKg = 500;
+        if (retailer.getCounty().equals("Nairobi")) {
+            transPerKg = 250;
         }
+        estTransCost = getTransportCost(totalWeight, transPerKg);
 
         long timestamp = System.currentTimeMillis();
 
         return new Order(
                 uid + timestamp,
-                uid,
+                retailer,
                 timestamp,
                 "Pending",
                 itemsInCart,
@@ -192,8 +189,8 @@ public class ConfirmOrderFragment extends Fragment {
                 estTransCost,
                 0,
                 0,
-                currentRetailer == null ? "" : currentRetailer.getCounty(),
-                currentRetailer == null ? "" : currentRetailer.getStreet(),
+                retailer.getCounty(),
+                retailer.getStreet(),
                 cartViewModel.getOrderType());
 
     }
@@ -211,7 +208,7 @@ public class ConfirmOrderFragment extends Fragment {
             StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
             statusDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
-            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV2");
+            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV3");
             shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {

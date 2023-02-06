@@ -122,7 +122,7 @@ public class EditRetailerActivity extends AppCompatActivity {
             statusDialog.dismiss();
             Snackbar.make(name, "There was an error retrieving your information. Exit the application and try again.", Snackbar.LENGTH_LONG).show();
         } else {
-            FirebaseDatabase.getInstance().getReference().child("Retailers").child(user.getUid()).get().addOnCompleteListener(task -> {
+            FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(user.getUid()).get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
                     currentRetailer = task.getResult().getValue(Retailer.class);
@@ -145,7 +145,7 @@ public class EditRetailerActivity extends AppCompatActivity {
                 statusDialog = StatusDialog.newInstance(R.raw.loading, "Updating your information", false, null);
                 statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-                FirebaseDatabase.getInstance().getReference().child("Retailers").child(user.getUid()).setValue(retailer).addOnCompleteListener(task -> {
+                FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(user.getUid()).setValue(retailer).addOnCompleteListener(task -> {
                     statusDialog.dismiss();
                     if (task.isSuccessful()) {
                         statusDialog = StatusDialog.newInstance(R.raw.success, "Your information has been updated. You will see the changes the next time you launch the application.", true, () -> {
@@ -206,7 +206,8 @@ public class EditRetailerActivity extends AppCompatActivity {
                 bizName.getEditText().getText().toString().trim(),
                 currentRetailer.getTelephone(),
                 county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim());
+                street.getEditText().getText().toString().trim(),
+                currentRetailer.getEmail());
     }
 
     private boolean areSimilar(Retailer retailer) {

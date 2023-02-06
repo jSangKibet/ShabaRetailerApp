@@ -8,6 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.model.EmailChangeRequest;
+import com.acework.shabaretailer.model.Retailer;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -72,21 +73,52 @@ public class ConfirmEmailChangeActivity extends AppCompatActivity {
         FirebaseAuth.getInstance().signInWithEmailAndPassword(u.getEmail(), password.getEditText().getText().toString()).addOnCompleteListener(signInTask -> {
             if (signInTask.isSuccessful()) {
                 ecr.setStatus("Completed");
-                DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
-                shabaRealtimeDbRef.child(ecr.getId()).setValue(ecr).addOnCompleteListener(updateEcrTask -> {
+                DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference();
+                shabaRealtimeDbRef.child("ECR").child(ecr.getId()).setValue(ecr).addOnCompleteListener(updateEcrTask -> {
                     if (updateEcrTask.isSuccessful()) {
-                        u.updateEmail(ecr.getEmail()).addOnCompleteListener(updateEmailTask -> {
-                            sd.dismiss();
-                            if (updateEmailTask.isSuccessful()) {
-                                sd = StatusDialog.newInstance(R.raw.success, "Your email was changed successfully. Please log in with your new email.", true, this::emailUpdated);
-                                sd.show(getSupportFragmentManager(), StatusDialog.TAG);
+                        shabaRealtimeDbRef.child("RetailersV2").child(u.getUid()).get().addOnCompleteListener(getRetailerTask -> {
+                            if (getRetailerTask.isSuccessful()) {
+                                Retailer retailer = getRetailerTask.getResult().getValue(Retailer.class);
+                                if (retailer == null) {
+                                    sd.dismiss();
+                                    Snackbar.make(back, "Your email could not be updated at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
+                                    if (updateEcrTask.getException() != null) {
+                                        updateEcrTask.getException().printStackTrace();
+                                    }
+                                } else {
+                                    retailer.setEmail(ecr.getEmail());
+                                    shabaRealtimeDbRef.child("RetailersV2").child(u.getUid()).setValue(retailer).addOnCompleteListener(updateRetailerTask -> {
+                                        if (updateRetailerTask.isSuccessful()) {
+                                            u.updateEmail(ecr.getEmail()).addOnCompleteListener(updateEmailTask -> {
+                                                sd.dismiss();
+                                                if (updateEmailTask.isSuccessful()) {
+                                                    sd = StatusDialog.newInstance(R.raw.success, "Your email was changed successfully. Please log in with your new email.", true, this::emailUpdated);
+                                                    sd.show(getSupportFragmentManager(), StatusDialog.TAG);
+                                                } else {
+                                                    Snackbar.make(back, "Your email could not be updated at the moment. Please submit another request.", Snackbar.LENGTH_LONG).show();
+                                                    if (updateEmailTask.getException() != null) {
+                                                        updateEmailTask.getException().printStackTrace();
+                                                    }
+                                                }
+                                            });
+                                        } else {
+                                            sd.dismiss();
+                                            Snackbar.make(back, "Your email could not be updated at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
+                                            if (updateEcrTask.getException() != null) {
+                                                updateEcrTask.getException().printStackTrace();
+                                            }
+                                        }
+                                    });
+                                }
                             } else {
-                                Snackbar.make(back, "Your email could not be updated at the moment. Please submit another request.", Snackbar.LENGTH_LONG).show();
-                                if (updateEmailTask.getException() != null) {
-                                    updateEmailTask.getException().printStackTrace();
+                                sd.dismiss();
+                                Snackbar.make(back, "Your email could not be updated at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
+                                if (updateEcrTask.getException() != null) {
+                                    updateEcrTask.getException().printStackTrace();
                                 }
                             }
                         });
+
                     } else {
                         sd.dismiss();
                         Snackbar.make(back, "Your email could not be updated at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
@@ -104,6 +136,7 @@ public class ConfirmEmailChangeActivity extends AppCompatActivity {
             }
         });
     }
+
 
     @SuppressWarnings("ConstantConditions")
     private boolean validateInput() {

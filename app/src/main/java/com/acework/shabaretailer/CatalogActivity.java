@@ -67,7 +67,7 @@ public class CatalogActivity extends AppCompatActivity {
     private void loadItems() {
         String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference();
-        shabaRtDbRef.child("Retailers").child(uid).get().addOnCompleteListener(task -> retailer = task.getResult().getValue(Retailer.class));
+        shabaRtDbRef.child("RetailersV2").child(uid).get().addOnCompleteListener(task -> retailer = task.getResult().getValue(Retailer.class));
         cartViewModel.getCart().observe(this, cart -> {
             if (cart.getItems().size() == 0) {
                 if (activeFragment == cartFragment) {

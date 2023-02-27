@@ -70,7 +70,6 @@
             app:lottie_rawRes="@raw/loading" />
 
         <TextView
-            android:id="@+id/loading_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:elevation="1dp"

@@ -10,31 +10,10 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <style name="SearchBox" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="android:textColorHint">?attr/colorPrimary</item>
-        <item name="boxBackgroundColor">?attr/colorOnPrimary</item>
-        <item name="boxCornerRadiusBottomEnd">5dp</item>
-        <item name="boxCornerRadiusBottomStart">5dp</item>
-        <item name="boxStrokeWidth">0dp</item>
-        <item name="boxStrokeWidthFocused">0dp</item>
-        <item name="boxCornerRadiusTopEnd">5dp</item>
-        <item name="boxCornerRadiusTopStart">5dp</item>
-        <item name="hintEnabled">false</item>
-        <item name="startIconDrawable">@drawable/search_24</item>
-        <item name="startIconTint">?attr/colorPrimary</item>
-        <item name="endIconMode">clear_text</item>
-        <item name="endIconTint">?attr/colorPrimary</item>
-    </style>
-
     <style name="Button" parent="Widget.MaterialComponents.Button">
         <item name="cornerRadius">0dp</item>
         <item name="android:padding">12dp</item>
         <item name="fontFamily">@font/work_sans_regular</item>
-    </style>
-
-    <style name="SmallerIconButton" parent="Widget.MaterialComponents.Button">
-        <item name="cornerRadius">0dp</item>
-        <item name="android:padding">12dp</item>
     </style>
 
     <style name="WindowAnimationUpDown" parent="@android:style/Animation.Activity">

@@ -30,7 +30,7 @@ public class NavigationFragment extends Fragment {
             loadUser();
         }
     });
-    private MaterialButton toMyOrders, viewTc, logout, setNumber, edit;
+    private MaterialButton toMyOrders, viewTc, logout, edit;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +58,6 @@ public class NavigationFragment extends Fragment {
         toMyOrders = view.findViewById(R.id.to_my_orders);
         viewTc = view.findViewById(R.id.view_tc);
         logout = view.findViewById(R.id.logout);
-        setNumber = view.findViewById(R.id.set_number);
         edit = view.findViewById(R.id.edit);
     }
 
@@ -66,7 +65,6 @@ public class NavigationFragment extends Fragment {
         toMyOrders.setOnClickListener(v -> startActivity(new Intent(requireContext(), MyOrdersActivity.class)));
         viewTc.setOnClickListener(v -> viewTc());
         logout.setOnClickListener(v -> logoutButtonClicked());
-        setNumber.setOnClickListener(v -> startActivity(new Intent(requireContext(), ChangeNumberActivity.class)));
         edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
     }
 

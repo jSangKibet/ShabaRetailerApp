@@ -9,17 +9,13 @@ import android.widget.AutoCompleteTextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.model.EmailChangeRequest;
 import com.acework.shabaretailer.model.Retailer;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +52,7 @@ public class EditRetailerActivity extends AppCompatActivity {
     private void setListeners() {
         back.setOnClickListener(v -> finish());
         changePassword.setOnClickListener(v -> startActivity(new Intent(this, ChangePasswordActivity.class)));
-        changeEmail.setOnClickListener(v -> changeEmailClicked());
+        changeEmail.setOnClickListener(v -> startActivity(new Intent(this, ChangeEmailActivity.class)));
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -227,130 +223,5 @@ public class EditRetailerActivity extends AppCompatActivity {
         bizName.setError(null);
         county.setError(null);
         street.setError(null);
-    }
-
-    private void changeEmailClicked() {
-        downloadLatestECR();
-    }
-
-    private void downloadLatestECR() {
-        statusDialog = StatusDialog.newInstance(R.raw.loading, "Checking your requests", false, null);
-        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
-
-        String uid = FirebaseAuth.getInstance().getUid();
-
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
-        shabaRtDbRef.orderByChild("uid").equalTo(uid).limitToLast(1).get().addOnCompleteListener(task -> {
-            statusDialog.dismiss();
-            if (task.isSuccessful()) {
-                if (task.getResult().getChildrenCount() > 0) {
-                    EmailChangeRequest ecr = task.getResult().getChildren().iterator().next().getValue(EmailChangeRequest.class);
-                    if (ecr == null) {
-                        Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
-                    } else {
-                        if (ecr.getStatus().equals("Denied")) {
-                            showDenialDialog(ecr);
-                        } else if (ecr.getStatus().equals("Pending")) {
-                            if (ecr.getCode().isEmpty()) {
-                                showNotYetApprovedDialog();
-                            } else {
-                                showConfirmOrCancelDialog(ecr);
-                            }
-                        } else {
-                            showECRRequestDialog();
-                        }
-                    }
-                } else {
-                    showECRRequestDialog();
-                }
-            } else {
-                Snackbar.make(back, "Could not get your requests. Try again later.", Snackbar.LENGTH_LONG).show();
-                if (task.getException() != null) {
-                    task.getException().printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void showECRRequestDialog() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Request email change").
-                setMessage("Would you like to change your email address? If so, please press 'request' to submit a request for your email to be updated.").
-                setPositiveButton("Request", (dialog, which) -> startActivity(new Intent(this, RequestEmailChangeActivity.class))).
-                setNegativeButton("Cancel", null).show();
-    }
-
-    private void showDenialDialog(EmailChangeRequest ecr) {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Email change request denied").
-                setMessage("Your request to change your email address was denied because of:\n" + ecr.getReason() + "\nYou may contact support for more options.").
-                setPositiveButton("Okay", null)
-                .setOnDismissListener(dialog -> denialShown(ecr))
-                .show();
-    }
-
-    private void denialShown(EmailChangeRequest ecr) {
-        StatusDialog sd = StatusDialog.newInstance(R.raw.loading, "Updating", false, null);
-        sd.show(getSupportFragmentManager(), StatusDialog.TAG);
-
-        ecr.setStatus("Denial-shown");
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
-        shabaRealtimeDbRef.child(ecr.getId()).setValue(ecr).addOnCompleteListener(task -> {
-            sd.dismiss();
-            if (!task.isSuccessful()) {
-                if (task.getException() != null) {
-                    task.getException().printStackTrace();
-                }
-            }
-        });
-    }
-
-    private void showNotYetApprovedDialog() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Email change request pending").
-                setMessage("Your request to change your email address has not been approved yet. If it has been more than 48 hours since you submitted your request, you may contact support for more options.").
-                setPositiveButton("Okay", null)
-                .show();
-    }
-
-    private void showConfirmOrCancelDialog(EmailChangeRequest ecr) {
-        String[] options = new String[]{"Confirm change", "Cancel request"};
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Your email change request has been approved")
-                .setItems(options, (dialog, which) -> {
-                    if (which == 0) {
-                        confirmRequest(ecr);
-                    } else {
-                        cancelRequest(ecr);
-                    }
-                })
-                .show();
-    }
-
-    private void confirmRequest(EmailChangeRequest ecr) {
-        String ecrJson = new Gson().toJson(ecr);
-        Intent i = new Intent(this, ConfirmEmailChangeActivity.class);
-        i.putExtra("ecr", ecrJson);
-        startActivity(i);
-    }
-
-    private void cancelRequest(EmailChangeRequest ecr) {
-        statusDialog = StatusDialog.newInstance(R.raw.loading, "Canceling your request", false, null);
-        statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
-
-        ecr.setStatus("Canceled");
-        DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("ECR");
-        shabaRealtimeDbRef.child(ecr.getId()).setValue(ecr).addOnCompleteListener(task -> {
-            statusDialog.dismiss();
-            if (task.isSuccessful()) {
-                statusDialog = StatusDialog.newInstance(R.raw.success, "Your request was canceled", true, null);
-                statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
-            } else {
-                Snackbar.make(back, "Could not cancel your request at this time. Try again later.", Snackbar.LENGTH_LONG).show();
-                if (task.getException() != null) {
-                    task.getException().printStackTrace();
-                }
-            }
-        });
     }
 }

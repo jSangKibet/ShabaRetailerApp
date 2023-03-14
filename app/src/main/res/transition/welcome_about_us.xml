@@ -13,7 +13,7 @@
             <target android:targetId="@+id/about_us" />
         </targets>
     </fade>
-    <fade android:duration="1000">
+    <fade android:duration="500" android:startDelay="500">
         <targets>
             <target android:targetId="@+id/next" />
         </targets>

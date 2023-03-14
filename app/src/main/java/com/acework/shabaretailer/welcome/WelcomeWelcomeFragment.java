@@ -50,9 +50,11 @@ public class WelcomeWelcomeFragment extends Fragment {
     }
 
     private void initialize() {
-        MaterialButton s = requireView().findViewById(R.id.skip);
-        MaterialButton n = requireView().findViewById(R.id.next);
-        s.setOnClickListener(v -> ((WelcomeActivity) requireActivity()).toLogin());
-        n.setOnClickListener(v -> ((WelcomeActivity) requireActivity()).toAboutUs());
+        root.post(() -> {
+            MaterialButton s = root.findViewById(R.id.skip);
+            MaterialButton n = root.findViewById(R.id.next);
+            s.setOnClickListener(v -> ((WelcomeActivity) requireActivity()).toLogin());
+            n.setOnClickListener(v -> ((WelcomeActivity) requireActivity()).toAboutUs());
+        });
     }
 }

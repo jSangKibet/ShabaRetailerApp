@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:transitionOrdering="sequential">
+    <fade android:duration="500">
+        <targets>
+            <target android:targetId="@+id/icon" />
+        </targets>
+    </fade>
+    <fade android:duration="1000">
+        <targets>
+            <target android:targetId="@+id/about_us_title" />
+            <target android:targetId="@+id/about_us" />
+        </targets>
+    </fade>
+    <fade android:duration="1000">
+        <targets>
+            <target android:targetId="@+id/next" />
+        </targets>
+    </fade>
+</transitionSet>

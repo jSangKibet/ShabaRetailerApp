@@ -11,7 +11,8 @@
         android:layout_height="match_parent"
         android:importantForAccessibility="no"
         android:scaleType="centerCrop"
-        android:src="@drawable/yote" />
+        android:src="@drawable/yote"
+        android:visibility="invisible" />
 
     <ImageView
         android:id="@+id/icon"
@@ -21,6 +22,7 @@
         android:layout_marginTop="16dp"
         android:importantForAccessibility="no"
         android:src="@drawable/icon_transparent"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,6 +36,7 @@
         android:text="@string/skip"
         android:textAllCaps="false"
         android:textSize="24sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@id/icon"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/icon" />
@@ -46,6 +49,7 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/next"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -61,6 +65,7 @@
         android:textAlignment="center"
         android:textColor="@color/primaryColor"
         android:textSize="32sp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@id/next"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />

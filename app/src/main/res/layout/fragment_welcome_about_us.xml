@@ -8,7 +8,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.7"
         android:importantForAccessibility="no"
         android:scaleType="centerCrop"
         android:src="@drawable/wahura"
@@ -58,7 +57,9 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_white_cr_3_transparent"
         android:fontFamily="@font/work_sans_regular"
+        android:padding="4dp"
         android:text="@string/about_us_exp"
         android:textAlignment="textEnd"
         android:textColor="@color/primaryColor"

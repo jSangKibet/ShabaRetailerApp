@@ -1,6 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,6 +12,7 @@ import com.acework.shabaretailer.adapter.ItemInOrderAdapter;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,10 +22,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class OrderInformationActivity extends AppCompatActivity {
-    private MaterialButton back;
+    private MaterialButton back, cancel;
     private TextView id, date, total, status, transport, deliveryPoint, type;
     private RecyclerView items;
     private ItemInOrderAdapter adapter;
+    private String orderId;
+    private static boolean canceled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +37,10 @@ public class OrderInformationActivity extends AppCompatActivity {
         setListeners();
         initializeList();
         loadOrder();
+        if (canceled) {
+            setResult(RESULT_OK);
+            canceled = false;
+        }
     }
 
     private void bindViews() {
@@ -45,10 +53,12 @@ public class OrderInformationActivity extends AppCompatActivity {
         transport = findViewById(R.id.transport);
         deliveryPoint = findViewById(R.id.delivery_point);
         type = findViewById(R.id.type);
+        cancel = findViewById(R.id.cancel);
     }
 
     private void setListeners() {
         back.setOnClickListener(v -> finish());
+        cancel.setOnClickListener(v -> confirmCanceling());
     }
 
     private void initializeList() {
@@ -78,6 +88,7 @@ public class OrderInformationActivity extends AppCompatActivity {
     }
 
     private void displayOrder(Order order) {
+        orderId = order.getId();
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
         String formattedDate = dateFormatter.format(new Date(order.getTimestamp()));
 
@@ -101,5 +112,36 @@ public class OrderInformationActivity extends AppCompatActivity {
         deliveryPoint.setText(getString(R.string.delivery_point, order.getCounty(), order.getStreet()));
 
         adapter.setItems(order.getOrderItems(), order.getType());
+
+        if (order.getStatus().equals("Pending")) {
+            cancel.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void confirmCanceling() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Cancel order")
+                .setMessage("Are you sure you want to cancel this order? This action is irreversible.")
+                .setPositiveButton("Yes", (dialogInterface, i) -> cancel())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void cancel() {
+        StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Canceling order", false, null);
+        cd.show(getSupportFragmentManager(), StatusDialog.TAG);
+        FirebaseDatabase.getInstance().getReference().child("OrdersV3").child(orderId).child("status").setValue("Canceled").addOnCompleteListener(task -> {
+            cd.dismiss();
+            if (task.isSuccessful()) {
+                StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order canceled", true, () -> {
+                    canceled = true;
+                    recreate();
+                });
+                sd.show(getSupportFragmentManager(), StatusDialog.TAG);
+            } else {
+                Snackbar.make(back, "There was an error canceling the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                if (task.getException() != null) task.getException().printStackTrace();
+            }
+        });
     }
 }

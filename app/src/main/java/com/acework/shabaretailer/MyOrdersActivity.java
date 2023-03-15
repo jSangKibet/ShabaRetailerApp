@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -26,6 +28,12 @@ public class MyOrdersActivity extends AppCompatActivity {
     private RecyclerView orderList;
     private OrderAdapter orderAdapter;
     private TextView emptyList;
+
+    private final ActivityResultLauncher<Intent> oiaLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            loadOrders();
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +86,6 @@ public class MyOrdersActivity extends AppCompatActivity {
     private void orderSelected(Order order) {
         Intent orderInfoIntent = new Intent(this, OrderInformationActivity.class);
         orderInfoIntent.putExtra("oid", order.getId());
-        startActivity(orderInfoIntent);
+        oiaLauncher.launch(orderInfoIntent);
     }
 }

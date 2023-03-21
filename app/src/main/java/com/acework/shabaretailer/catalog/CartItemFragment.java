@@ -1,7 +1,6 @@
 package com.acework.shabaretailer.catalog;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +8,16 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.acework.shabaretailer.R;
-import com.acework.shabaretailer.custom.AutoScrollImageView;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
@@ -31,17 +30,14 @@ public class CartItemFragment extends Fragment {
     private MaterialButton back, done, mustardMinus5, mustardMinus, mustardPlus, mustardPlus5;
     private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
     private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
-    private AutoScrollImageView images;
-    private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        images.setAutoScroll(true);
-        images.autoScroll();
-    });
     private TextView description, size, material, weaving, color, strap, insert, weight, sku, strapLength;
     private LinearLayout features;
     private MaterialButton more, less;
     private ConstraintLayout moreLayout;
     private CartViewModel cartViewModel;
     private LayoutInflater layoutInflater;
+    private ViewPager2 pager;
+    private ImageFragmentAdapter adapter;
 
     public CartItemFragment() {
     }
@@ -75,7 +71,6 @@ public class CartItemFragment extends Fragment {
         quantityDarkBrown = view.findViewById(R.id.dark_brown_qty);
         total = view.findViewById(R.id.total);
         done = view.findViewById(R.id.done);
-        images = view.findViewById(R.id.images);
         mustardMinus = view.findViewById(R.id.mustard_minus);
         mustardMinus5 = view.findViewById(R.id.mustard_minus_5);
         mustardPlus = view.findViewById(R.id.mustard_plus);
@@ -103,6 +98,7 @@ public class CartItemFragment extends Fragment {
         less = view.findViewById(R.id.less);
         moreLayout = view.findViewById(R.id.more_layout);
         totalQuantity = view.findViewById(R.id.total_quantity);
+        pager = view.findViewById(R.id.pager);
     }
 
     private void setValues() {
@@ -159,10 +155,7 @@ public class CartItemFragment extends Fragment {
     }
 
     private void setListeners() {
-        back.setOnClickListener(v -> {
-            images.setAutoScroll(false);
-            requireActivity().onBackPressed();
-        });
+        back.setOnClickListener(v -> requireActivity().onBackPressed());
         done.setOnClickListener(v -> done());
         mustardMinus.setOnClickListener(v -> decrementByOne(itemMustard));
         mustardMinus5.setOnClickListener(v -> decrementByFive(itemMustard));
@@ -179,7 +172,6 @@ public class CartItemFragment extends Fragment {
         more.setOnClickListener(v -> moreLayout.setVisibility(View.VISIBLE));
         less.setOnClickListener(v -> moreLayout.setVisibility(View.GONE));
         description.setOnClickListener(v -> showDescription());
-        images.setImageClickListener(this::imageClicked);
     }
 
     private void decrementByOne(Item itemToDecrement) {
@@ -230,11 +222,14 @@ public class CartItemFragment extends Fragment {
     }
 
     private void loadImages() {
-        images.loadImages(item.getSku());
+        String sku = item.getSku();
+        if (adapter == null || !adapter.getSku().equals(sku)) {
+            adapter = new ImageFragmentAdapter(requireActivity(), sku, item.getName());
+            pager.setAdapter(adapter);
+        }
     }
 
     private void done() {
-        images.setAutoScroll(false);
         if (itemMustard.getQuantity() > 0) cartViewModel.setItem(itemMustard);
         if (itemMaroon.getQuantity() > 0) cartViewModel.setItem(itemMaroon);
         if (itemDarkBrown.getQuantity() > 0) cartViewModel.setItem(itemDarkBrown);
@@ -266,12 +261,35 @@ public class CartItemFragment extends Fragment {
         return itemDarkBrown.getQuantity() + itemMaroon.getQuantity() + itemMustard.getQuantity();
     }
 
-    private void imageClicked(int imageNumber) {
-        String imageLink = item.getSku() + "_0" + imageNumber + "_f.jpg";
-        Intent intent = new Intent(requireContext(), PreviewActivity.class);
-        intent.putExtra("itemName", item.getName());
-        intent.putExtra("link", imageLink);
-        images.setAutoScroll(false);
-        startActivityForResult.launch(intent);
+    private static class ImageFragmentAdapter extends FragmentStateAdapter {
+        private final String sku;
+        private final String name;
+
+        public ImageFragmentAdapter(FragmentActivity fa, String sku, String name) {
+            super(fa);
+            this.sku = sku;
+            this.name = name;
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            Bundle args = new Bundle();
+            args.putString("sku", sku);
+            args.putInt("pos", position + 1);
+            args.putString("name", name);
+            ImageFragment imgF = new ImageFragment();
+            imgF.setArguments(args);
+            return imgF;
+        }
+
+        @Override
+        public int getItemCount() {
+            return 3;
+        }
+
+        public String getSku() {
+            return sku;
+        }
     }
 }

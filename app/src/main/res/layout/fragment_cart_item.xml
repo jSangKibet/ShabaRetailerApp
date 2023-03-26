@@ -69,6 +69,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/swipe_animation"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:background="@drawable/bg_white_cr_3_transparent"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/price"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/name"
+        app:lottie_rawRes="@raw/swipe_left" />
+
     <TextView
         android:id="@+id/price"
         android:layout_width="wrap_content"

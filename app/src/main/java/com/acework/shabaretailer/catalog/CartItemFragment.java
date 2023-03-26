@@ -1,6 +1,8 @@
 package com.acework.shabaretailer.catalog;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -37,6 +40,7 @@ public class CartItemFragment extends Fragment {
     private CartViewModel cartViewModel;
     private LayoutInflater layoutInflater;
     private ViewPager2 pager;
+    private LottieAnimationView swipeAnim;
     private ImageFragmentAdapter adapter;
 
     public CartItemFragment() {
@@ -99,6 +103,7 @@ public class CartItemFragment extends Fragment {
         moreLayout = view.findViewById(R.id.more_layout);
         totalQuantity = view.findViewById(R.id.total_quantity);
         pager = view.findViewById(R.id.pager);
+        swipeAnim = view.findViewById(R.id.swipe_animation);
     }
 
     private void setValues() {
@@ -226,6 +231,7 @@ public class CartItemFragment extends Fragment {
         if (adapter == null || !adapter.getSku().equals(sku)) {
             adapter = new ImageFragmentAdapter(requireActivity(), sku, item.getName());
             pager.setAdapter(adapter);
+            checkIfSwipePromptHasBeenShownRecently();
         }
     }
 
@@ -291,5 +297,18 @@ public class CartItemFragment extends Fragment {
         public String getSku() {
             return sku;
         }
+    }
+
+    private void checkIfSwipePromptHasBeenShownRecently() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("shaba_retailers", Context.MODE_PRIVATE);
+        long lastShown = sp.getLong("swipe_prompt_last_shown", 0);
+        if (System.currentTimeMillis() - lastShown > 604800000L) showSwipePrompt(sp);
+    }
+
+    private void showSwipePrompt(SharedPreferences sp) {
+        swipeAnim.setVisibility(View.VISIBLE);
+        swipeAnim.playAnimation();
+        sp.edit().putLong("swipe_prompt_last_shown", System.currentTimeMillis()).apply();
+        pager.postDelayed(() -> swipeAnim.setVisibility(View.GONE), 3000);
     }
 }

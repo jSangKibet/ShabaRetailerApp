@@ -23,8 +23,8 @@ import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -117,7 +117,7 @@ public class CatalogFragment extends Fragment {
     }
 
     private void fetchItems() {
-        FirebaseDatabase.getInstance().getReference().child("ItemsV2").get().addOnCompleteListener(task -> {
+        /*FirebaseDatabase.getInstance().getReference().child("ItemsV2").get().addOnCompleteListener(task -> {
             hideAnimation();
             if (task.isSuccessful()) {
                 List<Item> itemsFromDatabase = new ArrayList<>();
@@ -129,6 +129,23 @@ public class CatalogFragment extends Fragment {
                 setQuantityObserver();
             } else {
                 errorMessage.setVisibility(View.VISIBLE);
+            }
+        });*/
+
+
+        FirebaseFirestore.getInstance().collection("items").get().addOnCompleteListener(task -> {
+            hideAnimation();
+            if (task.isSuccessful()) {
+                List<Item> itemsFromDb = new ArrayList<>();
+                for (QueryDocumentSnapshot qds : task.getResult()) {
+                    Item i = qds.toObject(Item.class);
+                    itemsFromDb.add(i);
+                }
+                adapter.setItems(itemsFromDb);
+                setQuantityObserver();
+            } else {
+                errorMessage.setVisibility(View.VISIBLE);
+                if (task.getException() != null) task.getException().printStackTrace();
             }
         });
     }

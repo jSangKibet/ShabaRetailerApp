@@ -2,6 +2,7 @@ package com.acework.shabaretailer.model;
 
 public class Retailer {
     private String name, businessName, telephone, county, street, email;
+    private int lookbook;
 
     public Retailer() {
     }
@@ -12,7 +13,8 @@ public class Retailer {
         this.telephone = telephone;
         this.county = county;
         this.street = street;
-        this.email=email;
+        this.email = email;
+        this.lookbook = 0;
     }
 
     public String getName() {
@@ -35,31 +37,15 @@ public class Retailer {
         return street;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
-    }
-
-    public void setTelephone(String telephone) {
-        this.telephone = telephone;
-    }
-
-    public void setCounty(String county) {
-        this.county = county;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public int getLookbook() {
+        return lookbook;
     }
 }

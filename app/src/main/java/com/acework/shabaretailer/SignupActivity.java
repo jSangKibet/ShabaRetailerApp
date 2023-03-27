@@ -20,7 +20,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +225,7 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void createRetailer(Retailer retailer) {
         String uid = firebaseAuth.getCurrentUser().getUid();
-        FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(uid).setValue(retailer).addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("retailers").document(uid).set(retailer).addOnCompleteListener(task -> {
             statusDialog.dismiss();
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());

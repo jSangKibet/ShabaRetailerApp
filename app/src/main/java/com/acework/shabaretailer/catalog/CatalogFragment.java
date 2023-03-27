@@ -117,22 +117,6 @@ public class CatalogFragment extends Fragment {
     }
 
     private void fetchItems() {
-        /*FirebaseDatabase.getInstance().getReference().child("ItemsV2").get().addOnCompleteListener(task -> {
-            hideAnimation();
-            if (task.isSuccessful()) {
-                List<Item> itemsFromDatabase = new ArrayList<>();
-                for (DataSnapshot childSnapshot : task.getResult().getChildren()) {
-                    Item coercedItem = childSnapshot.getValue(Item.class);
-                    itemsFromDatabase.add(coercedItem);
-                }
-                adapter.setItems(itemsFromDatabase);
-                setQuantityObserver();
-            } else {
-                errorMessage.setVisibility(View.VISIBLE);
-            }
-        });*/
-
-
         FirebaseFirestore.getInstance().collection("items").get().addOnCompleteListener(task -> {
             hideAnimation();
             if (task.isSuccessful()) {

@@ -24,6 +24,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -196,7 +197,9 @@ public class ConfirmOrderFragment extends Fragment {
             statusDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
 
-            FirebaseFirestore.getInstance().collection("orders").add(order).addOnCompleteListener(task -> {
+            DocumentReference newOrderRef = FirebaseFirestore.getInstance().collection("orders").document();
+            order.setId(newOrderRef.getId());
+            newOrderRef.set(order).addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
                     StatusDialog statusDialog2 = StatusDialog.newInstance(R.raw.success, "Order placed!", true, () -> ((CatalogActivity) requireActivity()).orderCompleted());

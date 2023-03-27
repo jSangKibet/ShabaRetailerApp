@@ -20,8 +20,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class NavigationFragment extends Fragment {
     private TextView name, businessName, email;
@@ -68,19 +67,19 @@ public class NavigationFragment extends Fragment {
         edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void loadUser() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        email.setText(user.getEmail());
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("RetailersV2/" + user.getUid());
-        shabaRtDbRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Retailer retailer = task.getResult().getValue(Retailer.class);
-                setValues(retailer);
-            } else {
-                task.getException().printStackTrace();
-            }
-        });
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        if (u != null) {
+            email.setText(u.getEmail());
+            FirebaseFirestore.getInstance().collection("retailers").document(u.getUid()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Retailer retailer = task.getResult().toObject(Retailer.class);
+                    if (retailer != null) setValues(retailer);
+                } else {
+                    if (task.getException() != null) task.getException().printStackTrace();
+                }
+            });
+        }
     }
 
     private void setValues(Retailer retailer) {

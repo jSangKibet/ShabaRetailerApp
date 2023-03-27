@@ -1,9 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.os.Bundle;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -18,11 +16,8 @@ import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class CatalogActivity extends AppCompatActivity {
     private CatalogFragment catalogFragment;
@@ -32,7 +27,6 @@ public class CatalogActivity extends AppCompatActivity {
     private Fragment activeFragment;
     private CartViewModel cartViewModel;
     private DrawerLayout navDrawer;
-    private Retailer retailer;
     private boolean fromCatalog;
 
     @Override
@@ -68,10 +62,7 @@ public class CatalogActivity extends AppCompatActivity {
         confirmOrderFragment.uncheckTC();
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void loadItems() {
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference();
         cartViewModel.getCart().observe(this, cart -> {
             if (cart.getItems().size() == 0) {
                 if (activeFragment == cartFragment) {
@@ -79,20 +70,18 @@ public class CatalogActivity extends AppCompatActivity {
                 }
             }
         });
-        shabaRtDbRef.child("RetailersV2").child(uid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Retailer fromDb = snapshot.getValue(Retailer.class);
-                if (fromDb != null) {
-                    cartViewModel.setRetailer(fromDb);
-                }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e("DE: ", error.getMessage());
-            }
-        });
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        if (u != null) {
+            FirebaseFirestore.getInstance().collection("items").document(u.getUid()).get().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Retailer r = task.getResult().toObject(Retailer.class);
+                    cartViewModel.setRetailer(r);
+                } else {
+                    if (task.getException() != null) task.getException().printStackTrace();
+                }
+            });
+        }
     }
 
     private void initializeFragments() {

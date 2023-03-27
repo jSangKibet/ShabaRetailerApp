@@ -16,13 +16,13 @@ public class Order {
     private String county;
     private String street;
     private int type;
+    private int lookbook;
 
     public Order() {
     }
 
-    public Order(String id, String retailerId, Retailer retailer, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, int type) {
-        this.id = id;
-        this.retailerId=retailerId;
+    public Order(String retailerId, Retailer retailer, long timestamp, String status, List<Item> orderItems, int estimatedTotal, int estimatedTransportCost, int finalTotal, int finalTransportCost, String county, String street, int type, int lookbook) {
+        this.retailerId = retailerId;
         this.retailer = retailer;
         this.timestamp = timestamp;
         this.status = status;
@@ -34,6 +34,7 @@ public class Order {
         this.county = county;
         this.street = street;
         this.type = type;
+        this.lookbook = lookbook;
     }
 
     public String getId() {
@@ -44,99 +45,55 @@ public class Order {
         this.id = id;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public List<Item> getOrderItems() {
-        return orderItems;
-    }
-
-    public void setOrderItems(List<Item> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    public int getEstimatedTotal() {
-        return estimatedTotal;
-    }
-
-    public void setEstimatedTotal(int estimatedTotal) {
-        this.estimatedTotal = estimatedTotal;
-    }
-
-    public int getEstimatedTransportCost() {
-        return estimatedTransportCost;
-    }
-
-    public void setEstimatedTransportCost(int estimatedTransportCost) {
-        this.estimatedTransportCost = estimatedTransportCost;
-    }
-
-    public int getFinalTotal() {
-        return finalTotal;
-    }
-
-    public void setFinalTotal(int finalTotal) {
-        this.finalTotal = finalTotal;
-    }
-
-    public int getFinalTransportCost() {
-        return finalTransportCost;
-    }
-
-    public void setFinalTransportCost(int finalTransportCost) {
-        this.finalTransportCost = finalTransportCost;
-    }
-
-    public String getCounty() {
-        return county;
-    }
-
-    public void setCounty(String county) {
-        this.county = county;
-    }
-
-    public String getStreet() {
-        return street;
-    }
-
-    public void setStreet(String street) {
-        this.street = street;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
+    public String getRetailerId() {
+        return retailerId;
     }
 
     public Retailer getRetailer() {
         return retailer;
     }
 
-    public void setRetailer(Retailer retailer) {
-        this.retailer = retailer;
+    public long getTimestamp() {
+        return timestamp;
     }
 
-    public String getRetailerId() {
-        return retailerId;
+    public String getStatus() {
+        return status;
     }
 
-    public void setRetailerId(String retailerId) {
-        this.retailerId = retailerId;
+    public List<Item> getOrderItems() {
+        return orderItems;
+    }
+
+    public int getEstimatedTotal() {
+        return estimatedTotal;
+    }
+
+    public int getEstimatedTransportCost() {
+        return estimatedTransportCost;
+    }
+
+    public int getFinalTotal() {
+        return finalTotal;
+    }
+
+    public int getFinalTransportCost() {
+        return finalTransportCost;
+    }
+
+    public String getCounty() {
+        return county;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public int getLookbook() {
+        return lookbook;
     }
 }

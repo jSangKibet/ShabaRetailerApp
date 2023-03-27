@@ -24,16 +24,15 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@SuppressWarnings("ConstantConditions")
 public class ConfirmOrderFragment extends Fragment {
     private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email, orderType;
-    private CheckBox tc;
+    private CheckBox tc, lb;
     private MaterialButton confirm, back;
     private CartViewModel cartViewModel;
     private String uid;
@@ -54,8 +53,7 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_confirm_order, container, false);
     }
 
@@ -81,12 +79,14 @@ public class ConfirmOrderFragment extends Fragment {
         confirm = view.findViewById(R.id.confirm);
         back = view.findViewById(R.id.back_button);
         orderType = view.findViewById(R.id.order_type);
+        lb = view.findViewById(R.id.lb_checkbox);
     }
 
     private void setValues() {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         cartViewModel.getCart().observe(getViewLifecycleOwner(), this::computeValues);
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        assert u != null;
         this.uid = u.getUid();
     }
 
@@ -141,6 +141,9 @@ public class ConfirmOrderFragment extends Fragment {
             telephone.setText(retailer.getTelephone());
             email.setText(retailer.getEmail());
             confirm.setEnabled(true);
+            if (retailer.getLookbook() == 0) {
+                lb.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -166,7 +169,7 @@ public class ConfirmOrderFragment extends Fragment {
             }
         }
 
-        Retailer retailer = cartViewModel.getCart().getValue().getRetailer();
+        Retailer retailer = Objects.requireNonNull(cartViewModel.getCart().getValue()).getRetailer();
         int transPerKg = 500;
         if (retailer.getCounty().equals("Nairobi")) {
             transPerKg = 250;
@@ -175,20 +178,7 @@ public class ConfirmOrderFragment extends Fragment {
 
         long timestamp = System.currentTimeMillis();
 
-        return new Order(
-                uid + timestamp,
-                uid,
-                retailer,
-                timestamp,
-                "Pending",
-                itemsInCart,
-                totalPrice + estTransCost,
-                estTransCost,
-                0,
-                0,
-                retailer.getCounty(),
-                retailer.getStreet(),
-                cartViewModel.getOrderType());
+        return new Order(uid, retailer, timestamp, "Pending", itemsInCart, totalPrice + estTransCost, estTransCost, 0, 0, retailer.getCounty(), retailer.getStreet(), cartViewModel.getOrderType(), lb.isChecked() ? 1 : 0);
 
     }
 
@@ -205,15 +195,16 @@ public class ConfirmOrderFragment extends Fragment {
             StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
             statusDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
-            DatabaseReference shabaRealtimeDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV3");
-            shabaRealtimeDbRef.child(order.getId()).setValue(order).addOnCompleteListener(task -> {
+
+            FirebaseFirestore.getInstance().collection("orders").add(order).addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
                     StatusDialog statusDialog2 = StatusDialog.newInstance(R.raw.success, "Order placed!", true, () -> ((CatalogActivity) requireActivity()).orderCompleted());
                     statusDialog2.show(getChildFragmentManager(), StatusDialog.TAG);
+                    setLookbookOrdered();
                 } else {
                     Snackbar.make(requireView(), "Your order could not be placed at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
-                    task.getException().printStackTrace();
+                    if (task.getException() != null) task.getException().printStackTrace();
                 }
             });
         } else {
@@ -223,5 +214,21 @@ public class ConfirmOrderFragment extends Fragment {
 
     public void uncheckTC() {
         tc.setChecked(false);
+    }
+
+    private void setLookbookOrdered() {
+        if (lb.isChecked()) {
+            lb.setChecked(false);
+            Cart c = cartViewModel.getCart().getValue();
+            if (c != null) {
+                Retailer r = c.getRetailer();
+                r.setLookbook(1);
+                FirebaseFirestore.getInstance().collection("retailers").document(uid).set(r).addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        if (task.getException() != null) task.getException().printStackTrace();
+                    }
+                });
+            }
+        }
     }
 }

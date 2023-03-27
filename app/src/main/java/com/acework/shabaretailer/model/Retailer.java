@@ -48,4 +48,8 @@ public class Retailer {
     public int getLookbook() {
         return lookbook;
     }
+
+    public void setLookbook(int lookbook) {
+        this.lookbook = lookbook;
+    }
 }

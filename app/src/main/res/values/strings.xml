@@ -122,6 +122,7 @@
     <string name="shaba_retailer">Shaba Retailer</string>
     <string name="shaba_retailer_exp">This application will allow you to place orders from Shaba and track your orders.</string>
     <string name="get_started">Get started</string>
+    <string name="include_lookbook">Include Lookbook in this order</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

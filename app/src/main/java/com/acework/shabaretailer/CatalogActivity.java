@@ -1,6 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -73,12 +74,16 @@ public class CatalogActivity extends AppCompatActivity {
 
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         if (u != null) {
-            FirebaseFirestore.getInstance().collection("items").document(u.getUid()).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Retailer r = task.getResult().toObject(Retailer.class);
+            FirebaseFirestore.getInstance().collection("retailers").document(u.getUid()).addSnapshotListener((snapshot, e) -> {
+                if (e != null) {
+                    Log.w("C/FS", "Listen failed.", e);
+                    return;
+                }
+                if (snapshot != null && snapshot.exists()) {
+                    Retailer r = snapshot.toObject(Retailer.class);
                     cartViewModel.setRetailer(r);
                 } else {
-                    if (task.getException() != null) task.getException().printStackTrace();
+                    Log.d("C/FS", "Retailer not found");
                 }
             });
         }
@@ -89,17 +94,7 @@ public class CatalogActivity extends AppCompatActivity {
         cartItemFragment = new CartItemFragment();
         cartFragment = new CartFragment();
         confirmOrderFragment = new ConfirmOrderFragment();
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.fragment_container, catalogFragment)
-                .add(R.id.fragment_container, cartItemFragment)
-                .add(R.id.fragment_container, cartFragment)
-                .add(R.id.fragment_container, confirmOrderFragment)
-                .hide(cartItemFragment)
-                .hide(cartFragment)
-                .hide(confirmOrderFragment)
-                .show(catalogFragment)
-                .commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, catalogFragment).add(R.id.fragment_container, cartItemFragment).add(R.id.fragment_container, cartFragment).add(R.id.fragment_container, confirmOrderFragment).hide(cartItemFragment).hide(cartFragment).hide(confirmOrderFragment).show(catalogFragment).commit();
         activeFragment = catalogFragment;
     }
 

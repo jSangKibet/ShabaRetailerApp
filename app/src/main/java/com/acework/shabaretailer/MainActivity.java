@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.acework.shabaretailer.model.Retailer;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,23 +33,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getRetailer(FirebaseUser u) {
-        FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(u.getUid()).get().addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("retailers").document(u.getUid()).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Retailer r = task.getResult().getValue(Retailer.class);
+                Retailer r = task.getResult().toObject(Retailer.class);
                 if (r != null) {
                     if (r.getEmail().equals(u.getEmail())) {
                         Log.i("UserEmail", "Sync not necessary");
                     } else {
                         r.setEmail(u.getEmail());
-                        updateRetailer(u.getUid(), r);
+                        updateRetailer(u.getUid(), u.getEmail());
                     }
                 }
             }
         });
     }
 
-    private void updateRetailer(String uid, Retailer r) {
-        FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(uid).setValue(r).addOnCompleteListener(task -> {
+    private void updateRetailer(String uid, String email) {
+        FirebaseFirestore.getInstance().collection("retailers").document(uid).update("email", email).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Log.i("UserEmail", "Updated!");
             } else {

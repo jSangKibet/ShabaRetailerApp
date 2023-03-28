@@ -1,6 +1,7 @@
 package com.acework.shabaretailer;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,8 +15,7 @@ import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -67,7 +67,6 @@ public class OrderInformationActivity extends AppCompatActivity {
         items.setAdapter(adapter);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void loadOrder() {
         String oid = getIntent().getStringExtra("oid");
         if (oid == null) {
@@ -75,13 +74,20 @@ public class OrderInformationActivity extends AppCompatActivity {
         } else {
             StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching order information...", false, null);
             statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
-            DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV3").child(oid);
-            shabaRtDbRef.get().addOnCompleteListener(task -> {
+
+            FirebaseFirestore.getInstance().collection("orders").document(oid).get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
-                    displayOrder(task.getResult().getValue(Order.class));
+                    Order o = task.getResult().toObject(Order.class);
+                    if (o == null) {
+                        Snackbar.make(back, "There was an error loading the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                        Log.e("NPE", "Retrieved order " + oid + " is null");
+                    } else {
+                        displayOrder(o);
+                    }
                 } else {
                     Snackbar.make(back, "There was an error loading the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    if (task.getException() != null) task.getException().printStackTrace();
                 }
             });
         }
@@ -130,7 +136,8 @@ public class OrderInformationActivity extends AppCompatActivity {
     private void cancel() {
         StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Canceling order", false, null);
         cd.show(getSupportFragmentManager(), StatusDialog.TAG);
-        FirebaseDatabase.getInstance().getReference().child("OrdersV3").child(orderId).child("status").setValue("Canceled").addOnCompleteListener(task -> {
+
+        FirebaseFirestore.getInstance().collection("orders").document(orderId).update("status", "Canceled").addOnCompleteListener(task -> {
             cd.dismiss();
             if (task.isSuccessful()) {
                 StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order canceled", true, () -> {

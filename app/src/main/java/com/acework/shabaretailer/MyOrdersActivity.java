@@ -16,9 +16,9 @@ import com.acework.shabaretailer.model.Order;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,26 +61,27 @@ public class MyOrdersActivity extends AppCompatActivity {
         orderList.setAdapter(orderAdapter);
     }
 
-    @SuppressWarnings("ConstantConditions")
     private void loadOrders() {
         StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching your orders...", false, null);
         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
-        String uid = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference shabaRtDbRef = FirebaseDatabase.getInstance().getReference().child("OrdersV3");
-        shabaRtDbRef.orderByChild("retailerId").equalTo(uid).get().addOnCompleteListener(task -> {
-            statusDialog.dismiss();
-            if (task.isSuccessful()) {
-                List<Order> retrievedOrders = new ArrayList<>();
-                for (DataSnapshot child : task.getResult().getChildren()) {
-                    retrievedOrders.add(child.getValue(Order.class));
+
+        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
+        if (u != null) {
+            FirebaseFirestore.getInstance().collection("orders").whereEqualTo("retailerId", u.getUid()).get().addOnCompleteListener(task -> {
+                statusDialog.dismiss();
+                if (task.isSuccessful()) {
+                    List<Order> retrievedOrders = new ArrayList<>();
+                    for (QueryDocumentSnapshot qds : task.getResult()) {
+                        retrievedOrders.add(qds.toObject(Order.class));
+                    }
+                    orderAdapter.setItems(retrievedOrders);
+                    if (retrievedOrders.size() < 1) emptyList.setVisibility(View.VISIBLE);
+                } else {
+                    Snackbar.make(back, "There was a problem fetching your orders. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    if (task.getException() != null) task.getException().printStackTrace();
                 }
-                orderAdapter.setItems(retrievedOrders);
-                if (retrievedOrders.size() < 1) emptyList.setVisibility(View.VISIBLE);
-            } else {
-                task.getException().printStackTrace();
-                Snackbar.make(back, "There was a problem fetching your orders. Please try again later.", Snackbar.LENGTH_LONG).show();
-            }
-        });
+            });
+        }
     }
 
     private void orderSelected(Order order) {

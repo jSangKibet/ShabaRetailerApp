@@ -3,6 +3,7 @@ package com.acework.shabaretailer;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -15,7 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -110,7 +111,7 @@ public class EditRetailerActivity extends AppCompatActivity {
     }
 
     private void loadRetailer() {
-        statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching our information", false, null);
+        statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching your information", false, null);
         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -118,11 +119,17 @@ public class EditRetailerActivity extends AppCompatActivity {
             statusDialog.dismiss();
             Snackbar.make(name, "There was an error retrieving your information. Exit the application and try again.", Snackbar.LENGTH_LONG).show();
         } else {
-            FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(user.getUid()).get().addOnCompleteListener(task -> {
+            FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
-                    currentRetailer = task.getResult().getValue(Retailer.class);
-                    setValues();
+                    Retailer r = task.getResult().toObject(Retailer.class);
+                    if (r == null) {
+                        Snackbar.make(name, "There was an error retrieving your information. Please try again later.", Snackbar.LENGTH_LONG).show();
+                        Log.e("NPE", "Retrieved retailer " + user.getUid() + " is null");
+                    } else {
+                        currentRetailer = r;
+                        setValues();
+                    }
                 } else {
                     Snackbar.make(name, "There was an error retrieving your information. Exit the application and try again.", Snackbar.LENGTH_LONG).show();
                     if (task.getException() != null) task.getException().printStackTrace();
@@ -141,7 +148,7 @@ public class EditRetailerActivity extends AppCompatActivity {
                 statusDialog = StatusDialog.newInstance(R.raw.loading, "Updating your information", false, null);
                 statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-                FirebaseDatabase.getInstance().getReference().child("RetailersV2").child(user.getUid()).setValue(retailer).addOnCompleteListener(task -> {
+                FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).set(retailer).addOnCompleteListener(task -> {
                     statusDialog.dismiss();
                     if (task.isSuccessful()) {
                         statusDialog = StatusDialog.newInstance(R.raw.success, "Your information has been updated. You will see the changes the next time you launch the application.", true, () -> {
@@ -150,7 +157,7 @@ public class EditRetailerActivity extends AppCompatActivity {
                         });
                         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
                     } else {
-                        Snackbar.make(name, "There was an error updating your information. Exit the application and try again.", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(name, "There was an error updating your information. Please try again later.", Snackbar.LENGTH_LONG).show();
                         if (task.getException() != null) task.getException().printStackTrace();
                     }
                 });

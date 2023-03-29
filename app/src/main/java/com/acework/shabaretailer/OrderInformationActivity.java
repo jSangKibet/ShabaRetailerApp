@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,12 +23,12 @@ import java.util.Date;
 import java.util.Locale;
 
 public class OrderInformationActivity extends AppCompatActivity {
-    private MaterialButton back, cancel;
+    private static boolean modified = false;
     private TextView id, date, total, status, transport, deliveryPoint, type;
     private RecyclerView items;
     private ItemInOrderAdapter adapter;
     private String orderId;
-    private static boolean canceled = false;
+    private MaterialButton back, cancel, received, download;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,9 +38,8 @@ public class OrderInformationActivity extends AppCompatActivity {
         setListeners();
         initializeList();
         loadOrder();
-        if (canceled) {
+        if (modified) {
             setResult(RESULT_OK);
-            canceled = false;
         }
     }
 
@@ -54,11 +54,15 @@ public class OrderInformationActivity extends AppCompatActivity {
         deliveryPoint = findViewById(R.id.delivery_point);
         type = findViewById(R.id.type);
         cancel = findViewById(R.id.cancel);
+        received = findViewById(R.id.received);
+        download = findViewById(R.id.download);
     }
 
     private void setListeners() {
         back.setOnClickListener(v -> finish());
         cancel.setOnClickListener(v -> confirmCanceling());
+        received.setOnClickListener(v -> confirmReceived());
+        download.setOnClickListener(v -> confirmDownloadingNote());
     }
 
     private void initializeList() {
@@ -122,6 +126,14 @@ public class OrderInformationActivity extends AppCompatActivity {
         if (order.getStatus().equals("Pending")) {
             cancel.setVisibility(View.VISIBLE);
         }
+        if (order.getStatus().equals("Dispatched")) {
+            received.setVisibility(View.VISIBLE);
+        }
+        if (order.getStatus().equals("Received")) {
+            download.setVisibility(View.VISIBLE);
+            if (modified) confirmDownloadingNote();
+        }
+        modified = false;
     }
 
     private void confirmCanceling() {
@@ -129,6 +141,15 @@ public class OrderInformationActivity extends AppCompatActivity {
                 .setTitle("Cancel order")
                 .setMessage("Are you sure you want to cancel this order? This action is irreversible.")
                 .setPositiveButton("Yes", (dialogInterface, i) -> cancel())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void confirmReceived() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Order received")
+                .setMessage("Have the items in the order been delivered to you?")
+                .setPositiveButton("Yes", (dialogInterface, i) -> received())
                 .setNegativeButton("No", null)
                 .show();
     }
@@ -141,7 +162,7 @@ public class OrderInformationActivity extends AppCompatActivity {
             cd.dismiss();
             if (task.isSuccessful()) {
                 StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order canceled", true, () -> {
-                    canceled = true;
+                    modified = true;
                     recreate();
                 });
                 sd.show(getSupportFragmentManager(), StatusDialog.TAG);
@@ -150,5 +171,37 @@ public class OrderInformationActivity extends AppCompatActivity {
                 if (task.getException() != null) task.getException().printStackTrace();
             }
         });
+    }
+
+    private void received() {
+        StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Updating order", false, null);
+        cd.show(getSupportFragmentManager(), StatusDialog.TAG);
+
+        FirebaseFirestore.getInstance().collection("orders").document(orderId).update("status", "Received").addOnCompleteListener(task -> {
+            cd.dismiss();
+            if (task.isSuccessful()) {
+                StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order completed", true, () -> {
+                    modified = true;
+                    recreate();
+                });
+                sd.show(getSupportFragmentManager(), StatusDialog.TAG);
+            } else {
+                Snackbar.make(back, "There was an error updating the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                if (task.getException() != null) task.getException().printStackTrace();
+            }
+        });
+    }
+
+    private void confirmDownloadingNote() {
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Download delivery note")
+                .setMessage("Would you like to download this order's delivery note as a PDF document? You can click the download icon at the top right to download later.")
+                .setPositiveButton("Yes", (dialogInterface, i) -> downloadDocument())
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void downloadDocument() {
+        Toast.makeText(this, "TODO: Download delivery note", Toast.LENGTH_SHORT).show();
     }
 }

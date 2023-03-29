@@ -104,7 +104,7 @@ public class LoginActivity extends AppCompatActivity {
         if (usernameField.getText().toString().matches("\\d{10}")) {
             return true;
         }
-        if (Patterns.EMAIL_ADDRESS.matcher(usernameField.getText().toString()).matches()) {
+        if (Patterns.EMAIL_ADDRESS.matcher(usernameField.getText().toString().trim()).matches()) {
             return true;
         }
         usernameLayout.setError("Invalid email address or telephone number");

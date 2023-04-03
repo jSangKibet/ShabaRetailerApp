@@ -267,6 +267,7 @@ public class OrderInformationActivity extends AppCompatActivity {
     }
 
     private void populateView(View view) {
+        TextView orderType = view.findViewById(R.id.order_type);
         TextView retailerName = view.findViewById(R.id.ret_name);
         TextView retailerEmail = view.findViewById(R.id.ret_email);
         TextView retailerLocation = view.findViewById(R.id.loc);
@@ -277,6 +278,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         TextView totalCost = view.findViewById(R.id.total);
         TextView orderStatus = view.findViewById(R.id.status);
 
+        orderType.setText(CartViewModel.getOrderTypeAsString(order.getType()));
         retailerName.setText(order.getRetailer().getName());
         retailerEmail.setText(order.getRetailer().getEmail());
         retailerLocation.setText(String.format(Locale.getDefault(), "%s, %s", order.getStreet(), order.getCounty()));

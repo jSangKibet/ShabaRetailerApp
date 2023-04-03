@@ -252,7 +252,7 @@ public class OrderInformationActivity extends AppCompatActivity {
                 d.close();
                 fos.close();
                 pfd.close();
-                runOnUiThread(() -> Snackbar.make(id, "Delivery note saved", Snackbar.LENGTH_LONG).setAction("OPEN", view -> openSavedDeliveryNote(u)).show());
+                runOnUiThread(() -> Snackbar.make(id, "Delivery note saved", Snackbar.LENGTH_LONG).setAction("OPEN", view -> openSavedDeliveryNote(u)).setActionTextColor(getResources().getColor(R.color.primaryTextColor)).show());
             } catch (Exception e) {
                 runOnUiThread(() -> {
                     Snackbar.make(id, "There was an error saving your note. Please try again later.", Snackbar.LENGTH_LONG).show();

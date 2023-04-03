@@ -49,7 +49,7 @@
     <string name="name_label">Name:</string>
     <string name="recipient_information">Recipient information</string>
     <string name="accepted_tc_order">I have read and accepted the terms and conditions of making an order</string>
-    <string name="kes">KES %,d</string>
+    <string name="kes">KSh %,d</string>
     <string name="shaba_retail_catalog">Shaba Retail - Catalog</string>
     <string name="my_orders">My orders</string>
     <string name="order_num"># %s</string>
@@ -123,6 +123,19 @@
     <string name="shaba_retailer_exp">This application will allow you to place orders from Shaba and track your orders.</string>
     <string name="get_started">Get started</string>
     <string name="include_lookbook">Include Lookbook in this order</string>
+    <string name="the_shaba">The Shaba</string>
+    <string name="the_shaba_email">team@theshabastudio.com</string>
+    <string name="the_shaba_number">+254 114 286 821</string>
+    <string name="delivery_note">Delivery note</string>
+    <string name="recipient">Recipient</string>
+    <string name="retailer_label">Retailer:</string>
+    <string name="email_label">Email:</string>
+    <string name="location_label">Location:</string>
+    <string name="items">Items</string>
+    <string name="items_total_label">Items total:</string>
+    <string name="total_weight_label">Total weight:</string>
+    <string name="transport_label">Transport:</string>
+    <string name="status_label">Status:</string>
     <string-array name="order_types">
         <item>Wholesale</item>
         <item>Consignment</item>

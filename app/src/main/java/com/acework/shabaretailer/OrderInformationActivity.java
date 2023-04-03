@@ -1,16 +1,27 @@
 package com.acework.shabaretailer;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.pdf.PdfDocument;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.ParcelFileDescriptor;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.acework.shabaretailer.adapter.DeliveryNoteAdapter;
 import com.acework.shabaretailer.adapter.ItemInOrderAdapter;
+import com.acework.shabaretailer.atlas.BackgroundExecutor;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
@@ -18,6 +29,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -27,7 +39,15 @@ public class OrderInformationActivity extends AppCompatActivity {
     private TextView id, date, total, status, transport, deliveryPoint, type;
     private RecyclerView items;
     private ItemInOrderAdapter adapter;
-    private String orderId;
+    private Order order;
+    private final ActivityResultLauncher<Intent> l = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                prepareDeliveryNote(data.getData());
+            }
+        }
+    });
     private MaterialButton back, cancel, received, download;
 
     @Override
@@ -98,7 +118,7 @@ public class OrderInformationActivity extends AppCompatActivity {
     }
 
     private void displayOrder(Order order) {
-        orderId = order.getId();
+        this.order = order;
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
         String formattedDate = dateFormatter.format(new Date(order.getTimestamp()));
 
@@ -137,28 +157,18 @@ public class OrderInformationActivity extends AppCompatActivity {
     }
 
     private void confirmCanceling() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Cancel order")
-                .setMessage("Are you sure you want to cancel this order? This action is irreversible.")
-                .setPositiveButton("Yes", (dialogInterface, i) -> cancel())
-                .setNegativeButton("No", null)
-                .show();
+        new MaterialAlertDialogBuilder(this).setTitle("Cancel order").setMessage("Are you sure you want to cancel this order? This action is irreversible.").setPositiveButton("Yes", (dialogInterface, i) -> cancel()).setNegativeButton("No", null).show();
     }
 
     private void confirmReceived() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Order received")
-                .setMessage("Have the items in the order been delivered to you?")
-                .setPositiveButton("Yes", (dialogInterface, i) -> received())
-                .setNegativeButton("No", null)
-                .show();
+        new MaterialAlertDialogBuilder(this).setTitle("Order received").setMessage("Have the items in the order been delivered to you?").setPositiveButton("Yes", (dialogInterface, i) -> received()).setNegativeButton("No", null).show();
     }
 
     private void cancel() {
         StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Canceling order", false, null);
         cd.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-        FirebaseFirestore.getInstance().collection("orders").document(orderId).update("status", "Canceled").addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("orders").document(order.getId()).update("status", "Canceled").addOnCompleteListener(task -> {
             cd.dismiss();
             if (task.isSuccessful()) {
                 StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order canceled", true, () -> {
@@ -177,7 +187,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Updating order", false, null);
         cd.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-        FirebaseFirestore.getInstance().collection("orders").document(orderId).update("status", "Received").addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("orders").document(order.getId()).update("status", "Received").addOnCompleteListener(task -> {
             cd.dismiss();
             if (task.isSuccessful()) {
                 StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order completed", true, () -> {
@@ -193,15 +203,96 @@ public class OrderInformationActivity extends AppCompatActivity {
     }
 
     private void confirmDownloadingNote() {
-        new MaterialAlertDialogBuilder(this)
-                .setTitle("Download delivery note")
-                .setMessage("Would you like to download this order's delivery note as a PDF document? You can click the download icon at the top right to download later.")
-                .setPositiveButton("Yes", (dialogInterface, i) -> downloadDocument())
-                .setNegativeButton("No", null)
-                .show();
+        new MaterialAlertDialogBuilder(this).setTitle("Download delivery note").setMessage("Would you like to download this order's delivery note as a PDF document? You can click the download icon at the top right to download later.").setPositiveButton("Yes", (dialogInterface, i) -> downloadDocument()).setNegativeButton("No", null).show();
     }
 
     private void downloadDocument() {
-        Toast.makeText(this, "TODO: Download delivery note", Toast.LENGTH_SHORT).show();
+        getNoteDownloadPath();
+    }
+
+    private void getNoteDownloadPath() {
+        Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        i.setType("application/pdf");
+        i.putExtra(Intent.EXTRA_TITLE, order.getId() + ".pdf");
+        l.launch(i);
+    }
+
+    private void prepareDeliveryNote(Uri u) {
+        LayoutInflater li = LayoutInflater.from(this);
+        View v = li.inflate(R.layout.delivery_note, null);
+        populateView(v);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        v.measure(View.MeasureSpec.makeMeasureSpec(dm.widthPixels, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(dm.heightPixels, View.MeasureSpec.EXACTLY));
+        v.layout(0, 0, dm.widthPixels, dm.heightPixels);
+
+        Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.draw(c);
+        Bitmap sb = Bitmap.createScaledBitmap(b, 595, 842, true);
+
+        PdfDocument d = new PdfDocument();
+        PdfDocument.PageInfo pi = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+
+        PdfDocument.Page p = d.startPage(pi);
+        p.getCanvas().drawBitmap(sb, 0, 0, null);
+        d.finishPage(p);
+
+        saveDeliveryNoteToFile(d, u);
+    }
+
+    private void saveDeliveryNoteToFile(PdfDocument d, Uri u) {
+        BackgroundExecutor.execute(() -> {
+            try {
+                ParcelFileDescriptor pfd = getContentResolver().openFileDescriptor(u, "w");
+                FileOutputStream fos = new FileOutputStream(pfd.getFileDescriptor());
+                d.writeTo(fos);
+                d.close();
+                fos.close();
+                pfd.close();
+                runOnUiThread(() -> Snackbar.make(id, "Delivery note saved", Snackbar.LENGTH_LONG).setAction("OPEN", view -> openSavedDeliveryNote(u)).show());
+            } catch (Exception e) {
+                runOnUiThread(() -> {
+                    Snackbar.make(id, "There was an error saving your note. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    e.printStackTrace();
+                });
+            }
+        });
+    }
+
+    private void openSavedDeliveryNote(Uri noteUri) {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setDataAndType(noteUri, "application/pdf");
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        startActivity(intent);
+    }
+
+    private void populateView(View view) {
+        TextView retailerName = view.findViewById(R.id.ret_name);
+        TextView retailerEmail = view.findViewById(R.id.ret_email);
+        TextView retailerLocation = view.findViewById(R.id.loc);
+        RecyclerView itemList = view.findViewById(R.id.list);
+        TextView itemTotal = view.findViewById(R.id.itm_total);
+        TextView totalWeight = view.findViewById(R.id.wgt);
+        TextView transportCost = view.findViewById(R.id.trans);
+        TextView totalCost = view.findViewById(R.id.total);
+        TextView orderStatus = view.findViewById(R.id.status);
+
+        retailerName.setText(order.getRetailer().getName());
+        retailerEmail.setText(order.getRetailer().getEmail());
+        retailerLocation.setText(String.format(Locale.getDefault(), "%s, %s", order.getStreet(), order.getCounty()));
+
+        DeliveryNoteAdapter noteAdapter = new DeliveryNoteAdapter(this);
+        itemList.setAdapter(noteAdapter);
+        noteAdapter.setItems(order.getOrderItems(), order.getType());
+
+        itemTotal.setText(getString(R.string.kes, noteAdapter.getItemCost()));
+        totalWeight.setText(getString(R.string.weight_formatted, noteAdapter.getTotalWeight()));
+        transportCost.setText(getString(R.string.kes, order.getFinalTransportCost()));
+        totalCost.setText(getString(R.string.kes, order.getFinalTotal()));
+        orderStatus.setText(order.getStatus());
     }
 }

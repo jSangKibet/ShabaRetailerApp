@@ -7,7 +7,6 @@ import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -223,21 +222,18 @@ public class OrderInformationActivity extends AppCompatActivity {
         View v = li.inflate(R.layout.delivery_note, null);
         populateView(v);
 
-        DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        v.measure(View.MeasureSpec.makeMeasureSpec(dm.widthPixels, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(dm.heightPixels, View.MeasureSpec.EXACTLY));
-        v.layout(0, 0, dm.widthPixels, dm.heightPixels);
+        v.measure(View.MeasureSpec.makeMeasureSpec(1240, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1754, View.MeasureSpec.EXACTLY));
+        v.layout(0, 0, 1240, 1754);
 
         Bitmap b = Bitmap.createBitmap(v.getMeasuredWidth(), v.getMeasuredHeight(), Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(b);
         v.draw(c);
-        Bitmap sb = Bitmap.createScaledBitmap(b, 595, 842, true);
 
         PdfDocument d = new PdfDocument();
-        PdfDocument.PageInfo pi = new PdfDocument.PageInfo.Builder(595, 842, 1).create();
+        PdfDocument.PageInfo pi = new PdfDocument.PageInfo.Builder(1240, 1754, 1).create();
 
         PdfDocument.Page p = d.startPage(pi);
-        p.getCanvas().drawBitmap(sb, 0, 0, null);
+        p.getCanvas().drawBitmap(b, 0, 0, null);
         d.finishPage(p);
 
         saveDeliveryNoteToFile(d, u);

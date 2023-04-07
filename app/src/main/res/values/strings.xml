@@ -141,4 +141,17 @@
         <item>Consignment</item>
         <item>Commission</item>
     </string-array>
+    <string name="payment_bank_details">Payment bank details</string>
+    <string name="bank">Bank</string>
+    <string name="stanbic_bank">Stanbic Bank</string>
+    <string name="branch">Branch</string>
+    <string name="garden_city">Garden City</string>
+    <string name="account_name">Account name</string>
+    <string name="the_shaba_studio">The Shaba Studio</string>
+    <string name="account_number">Account number</string>
+    <string name="shaba_account_number">0100009411849</string>
+    <string name="copy">Copy</string>
+    <string name="currency">Currency</string>
+    <string name="ksh">KSH</string>
+    <string name="bank_details">Bank details</string>
 </resources>

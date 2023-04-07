@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.acework.shabaretailer.dialog.BankDetailsDialog;
 import com.acework.shabaretailer.model.Retailer;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -29,7 +30,7 @@ public class NavigationFragment extends Fragment {
             loadUser();
         }
     });
-    private MaterialButton toMyOrders, viewTc, logout, edit;
+    private MaterialButton toMyOrders, viewTc, logout, edit, bankDetails;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class NavigationFragment extends Fragment {
         viewTc = view.findViewById(R.id.view_tc);
         logout = view.findViewById(R.id.logout);
         edit = view.findViewById(R.id.edit);
+        bankDetails = view.findViewById(R.id.bank_details);
     }
 
     private void setListeners() {
@@ -65,6 +67,10 @@ public class NavigationFragment extends Fragment {
         viewTc.setOnClickListener(v -> viewTc());
         logout.setOnClickListener(v -> logoutButtonClicked());
         edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
+        bankDetails.setOnClickListener(view -> {
+            BankDetailsDialog d = new BankDetailsDialog();
+            d.show(getChildFragmentManager(), BankDetailsDialog.TAG);
+        });
     }
 
     private void loadUser() {

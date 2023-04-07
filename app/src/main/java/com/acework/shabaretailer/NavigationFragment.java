@@ -67,7 +67,7 @@ public class NavigationFragment extends Fragment {
         viewTc.setOnClickListener(v -> viewTc());
         logout.setOnClickListener(v -> logoutButtonClicked());
         edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
-        bankDetails.setOnClickListener(view -> {
+        bankDetails.setOnClickListener(v -> {
             BankDetailsDialog d = new BankDetailsDialog();
             d.show(getChildFragmentManager(), BankDetailsDialog.TAG);
         });

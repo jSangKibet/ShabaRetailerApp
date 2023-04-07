@@ -343,5 +343,16 @@
             android:fontFamily="@font/work_sans_bold"
             android:text="@string/confirm_order"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/more"
+            style="@style/Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/more"
+            app:icon="@drawable/expand_less_24"
+            app:layout_constraintBottom_toTopOf="@id/confirm"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

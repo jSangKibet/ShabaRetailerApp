@@ -15,6 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.StatusDialog;
+import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
 import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
@@ -34,7 +35,7 @@ import java.util.Objects;
 public class ConfirmOrderFragment extends Fragment {
     private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email, orderType;
     private CheckBox tc, lb;
-    private MaterialButton confirm, back;
+    private MaterialButton confirm, back, more;
     private CartViewModel cartViewModel;
     private String uid;
 
@@ -81,6 +82,7 @@ public class ConfirmOrderFragment extends Fragment {
         back = view.findViewById(R.id.back_button);
         orderType = view.findViewById(R.id.order_type);
         lb = view.findViewById(R.id.lb_checkbox);
+        more = view.findViewById(R.id.more);
     }
 
     private void setValues() {
@@ -151,6 +153,10 @@ public class ConfirmOrderFragment extends Fragment {
     private void setListeners() {
         back.setOnClickListener(v -> requireActivity().onBackPressed());
         confirm.setOnClickListener(v -> confirmOrder());
+        more.setOnClickListener(v -> {
+            CompleteOrderMoreDialog d = new CompleteOrderMoreDialog();
+            d.show(getChildFragmentManager(), CompleteOrderMoreDialog.TAG);
+        });
     }
 
     private Order getOrder() {

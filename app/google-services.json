@@ -1,34 +1,33 @@
 {
   "project_info": {
-    "project_number": "362679378309",
-    "firebase_url": "https://shaba-retail-default-rtdb.firebaseio.com",
-    "project_id": "shaba-retail",
-    "storage_bucket": "shaba-retail.appspot.com"
+    "project_number": "541460207077",
+    "project_id": "shaba-retail-dev",
+    "storage_bucket": "shaba-retail-dev.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:362679378309:android:4a1775a03224601670a4ec",
+        "mobilesdk_app_id": "1:541460207077:android:1b43661d7c0b90b4630b0c",
         "android_client_info": {
           "package_name": "com.acework.shabaretailer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "362679378309-q6ictdfhjgnk9mn757q2fbmvvovplh5l.apps.googleusercontent.com",
+          "client_id": "541460207077-amnac6854ml4su34mvu13did8h0ug0lr.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCo0dOxtDx9z6ZdUeSWG29P4lZ0n4nW2_o"
+          "current_key": "AIzaSyBJ7HukqsNfT4NHqMNqdgntUvNZ3GUt5ks"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "362679378309-q6ictdfhjgnk9mn757q2fbmvvovplh5l.apps.googleusercontent.com",
+              "client_id": "541460207077-amnac6854ml4su34mvu13did8h0ug0lr.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -1,12 +1,12 @@
 package com.acework.shabaretailer.model;
 
 public class RetailerBags {
-    private int twendeConsignment;
-    private int sawaConsignment;
-    private int wahuraConsignment;
-    private int twendeCommission;
-    private int sawaCommission;
-    private int wahuraCommission;
+    private int twendeConsignment = 0;
+    private int sawaConsignment = 0;
+    private int wahuraConsignment = 0;
+    private int twendeCommission = 0;
+    private int sawaCommission = 0;
+    private int wahuraCommission = 0;
 
     public int getTwendeConsignment() {
         return twendeConsignment;
@@ -30,5 +30,29 @@ public class RetailerBags {
 
     public int getWahuraCommission() {
         return wahuraCommission;
+    }
+
+    public void setTwendeConsignment(int twendeConsignment) {
+        this.twendeConsignment = twendeConsignment;
+    }
+
+    public void setSawaConsignment(int sawaConsignment) {
+        this.sawaConsignment = sawaConsignment;
+    }
+
+    public void setWahuraConsignment(int wahuraConsignment) {
+        this.wahuraConsignment = wahuraConsignment;
+    }
+
+    public void setTwendeCommission(int twendeCommission) {
+        this.twendeCommission = twendeCommission;
+    }
+
+    public void setSawaCommission(int sawaCommission) {
+        this.sawaCommission = sawaCommission;
+    }
+
+    public void setWahuraCommission(int wahuraCommission) {
+        this.wahuraCommission = wahuraCommission;
     }
 }

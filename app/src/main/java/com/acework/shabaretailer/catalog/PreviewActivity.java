@@ -1,7 +1,12 @@
 package com.acework.shabaretailer.catalog;
 
+import android.app.DownloadManager;
+import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
 import android.widget.TextView;
 
@@ -20,6 +25,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
@@ -134,10 +141,32 @@ public class PreviewActivity extends AppCompatActivity {
                     download.setEnabled(true);
                 }
             });
+
+            shabaCSR.child(link).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        downloadViaDownloadManager(task.getResult(), name + link);
+                    }
+                }
+            });
         } catch (IOException ioException) {
             Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
             ioException.printStackTrace();
             download.setEnabled(true);
         }
+    }
+
+    private void downloadViaDownloadManager(Uri uri, String fileName) {
+        DownloadManager dlManager;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            dlManager = this.getSystemService(DownloadManager.class);
+        } else {
+            dlManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
+        }
+
+        DownloadManager.Request request = new DownloadManager.Request(uri)
+                .setTitle("Shaba bag").setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+        dlManager.enqueue(request);
     }
 }

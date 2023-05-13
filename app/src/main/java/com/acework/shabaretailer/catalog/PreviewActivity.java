@@ -25,16 +25,11 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ortiz.touchview.TouchImageView;
-
-import java.io.File;
-import java.io.IOException;
 
 public class PreviewActivity extends AppCompatActivity {
     private MaterialButton back, download;
@@ -122,42 +117,25 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void downloadImage() {
         download.setEnabled(false);
-        try {
-            // prepare data
-            String name = getIntent().getStringExtra("itemName");
-            String link = getIntent().getStringExtra("link");
-            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-            StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
-            File localFile = File.createTempFile(name, link);
 
-            // download image
-            shabaCSR.child(link).getFile(localFile).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Snackbar.make(back, "Image downloaded. Check your gallery.", Snackbar.LENGTH_LONG).show();
-                    download.setEnabled(true);
-                } else {
-                    Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
-                    if (task.getException() != null) task.getException().printStackTrace();
-                    download.setEnabled(true);
-                }
-            });
+        // prepare data
+        String name = getIntent().getStringExtra("itemName");
+        String link = getIntent().getStringExtra("link");
+        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+        StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
 
-            shabaCSR.child(link).getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
-                @Override
-                public void onComplete(@NonNull Task<Uri> task) {
-                    if (task.isSuccessful()) {
-                        downloadViaDownloadManager(task.getResult(), name + link);
-                    }
-                }
-            });
-        } catch (IOException ioException) {
-            Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
-            ioException.printStackTrace();
-            download.setEnabled(true);
-        }
+        shabaCSR.child(link).getDownloadUrl().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                downloadViaDownloadManager(task.getResult(), name, name.replace(" ", "_") + "_" + link);
+            } else {
+                Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
+                if (task.getException() != null) task.getException().printStackTrace();
+                download.setEnabled(true);
+            }
+        });
     }
 
-    private void downloadViaDownloadManager(Uri uri, String fileName) {
+    private void downloadViaDownloadManager(Uri uri, String title, String fileName) {
         DownloadManager dlManager;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             dlManager = this.getSystemService(DownloadManager.class);
@@ -166,7 +144,11 @@ public class PreviewActivity extends AppCompatActivity {
         }
 
         DownloadManager.Request request = new DownloadManager.Request(uri)
-                .setTitle("Shaba bag").setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+                .setTitle(title).setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
         dlManager.enqueue(request);
+
+        Snackbar.make(back, "Download started. Check your status bar for progress.", Snackbar.LENGTH_LONG).show();
+        back.postDelayed(this::finish, 2000);
     }
 }

@@ -26,8 +26,11 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ortiz.touchview.TouchImageView;
 
+import java.io.File;
+import java.io.IOException;
+
 public class PreviewActivity extends AppCompatActivity {
-    private MaterialButton back, close;
+    private MaterialButton back, download;
     private TextView title;
     private LottieAnimationView animation;
     private TouchImageView image;
@@ -44,7 +47,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void bindViews() {
         back = findViewById(R.id.back);
-        close = findViewById(R.id.close);
+        download = findViewById(R.id.download);
         title = findViewById(R.id.title);
         image = findViewById(R.id.image);
         animation = findViewById(R.id.animation);
@@ -53,7 +56,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void setListeners() {
         back.setOnClickListener(v -> finish());
-        close.setOnClickListener(v -> finish());
+        download.setOnClickListener(v -> downloadImage());
     }
 
     private void loadImage() {
@@ -84,7 +87,7 @@ public class PreviewActivity extends AppCompatActivity {
                         @Override
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                             image.setImageDrawable(resource);
-                            Snackbar.make(back, "Pinch to zoom in and out", Snackbar.LENGTH_LONG).setAnchorView(close).show();
+                            Snackbar.make(back, "Pinch to zoom in and out", Snackbar.LENGTH_LONG).setAnchorView(download).show();
                         }
 
                         @Override
@@ -104,7 +107,37 @@ public class PreviewActivity extends AppCompatActivity {
         animation.pauseAnimation();
         loadingLayout.setVisibility(View.GONE);
         if (failed) {
-            Snackbar.make(back, "There was an error loading the image. Try again later.", Snackbar.LENGTH_LONG).setAnchorView(close).show();
+            Snackbar.make(back, "There was an error loading the image. Try again later.", Snackbar.LENGTH_LONG).setAnchorView(download).show();
+        } else {
+            download.setEnabled(true);
+        }
+    }
+
+    private void downloadImage() {
+        download.setEnabled(false);
+        try {
+            // prepare data
+            String name = getIntent().getStringExtra("itemName");
+            String link = getIntent().getStringExtra("link");
+            FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
+            StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
+            File localFile = File.createTempFile(name, link);
+
+            // download image
+            shabaCSR.child(link).getFile(localFile).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    Snackbar.make(back, "Image downloaded. Check your gallery.", Snackbar.LENGTH_LONG).show();
+                    download.setEnabled(true);
+                } else {
+                    Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
+                    if (task.getException() != null) task.getException().printStackTrace();
+                    download.setEnabled(true);
+                }
+            });
+        } catch (IOException ioException) {
+            Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
+            ioException.printStackTrace();
+            download.setEnabled(true);
         }
     }
 }

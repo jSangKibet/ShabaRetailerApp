@@ -46,7 +46,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
-        app:layout_constraintBottom_toTopOf="@id/close"
+        app:layout_constraintBottom_toTopOf="@id/download"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_layout" />
@@ -56,7 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/close">
+        app:layout_constraintBottom_toTopOf="@id/download">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/animation"
@@ -84,14 +84,15 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/close"
+        android:id="@+id/download"
         style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:insetBottom="0dp"
-        android:text="@string/close"
+        android:text="@string/download"
         android:textSize="16sp"
-        app:icon="@drawable/close_24"
+        app:icon="@drawable/download_24"
         app:iconGravity="end"
         app:iconSize="32dp"
         app:layout_constraintBottom_toBottomOf="parent" />

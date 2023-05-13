@@ -155,4 +155,5 @@
     <string name="ksh">KSH</string>
     <string name="bank_details">Bank details</string>
     <string name="more_actions">More actions</string>
+    <string name="download">Download</string>
 </resources>

@@ -1,15 +1,15 @@
 package com.acework.shabaretailer.catalog;
 
-import android.app.DownloadManager;
-import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,12 +31,28 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.ortiz.touchview.TouchImageView;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 public class PreviewActivity extends AppCompatActivity {
     private MaterialButton back, download;
     private TextView title;
     private LottieAnimationView animation;
     private TouchImageView image;
     private ConstraintLayout loadingLayout;
+
+    // this object will handle the download destination provided by the user, if any
+    private final ActivityResultLauncher<Intent> chooseDestinationLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            Intent data = result.getData();
+            if (data != null) {
+                Uri uri = data.getData();
+                if (uri != null) {
+                    downloadImage(uri);
+                }
+            }
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +74,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void setListeners() {
         back.setOnClickListener(v -> finish());
-        download.setOnClickListener(v -> downloadImage());
+        download.setOnClickListener(v -> chooseDownloadDestination());
     }
 
     private void loadImage() {
@@ -115,40 +131,42 @@ public class PreviewActivity extends AppCompatActivity {
         }
     }
 
-    private void downloadImage() {
-        download.setEnabled(false);
-
+    private void chooseDownloadDestination() {
         // prepare data
         String name = getIntent().getStringExtra("itemName");
         String link = getIntent().getStringExtra("link");
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference shabaCSR = firebaseStorage.getReference().child("item_images");
+        String fileName = name.replace(" ", "_") + "_" + link;
 
-        shabaCSR.child(link).getDownloadUrl().addOnCompleteListener(task -> {
+        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        chooseDestinationLauncher.launch(intent);
+    }
+
+    private void downloadImage(Uri destinationUri) {
+        download.setEnabled(false);
+        String link = getIntent().getStringExtra("link");
+
+        FirebaseStorage.getInstance().getReference().child("item_images").child(link).getBytes(10485760).addOnCompleteListener(task -> {
+            download.setEnabled(true);
             if (task.isSuccessful()) {
-                downloadViaDownloadManager(task.getResult(), name, name.replace(" ", "_") + "_" + link);
+                try {
+                    ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(destinationUri, "w");
+                    FileOutputStream fileOutputStream = new FileOutputStream(parcelFileDescriptor.getFileDescriptor());
+                    fileOutputStream.write(task.getResult());
+                    fileOutputStream.close();
+                    parcelFileDescriptor.close();
+
+                    Snackbar.make(back, "Image downloaded.", Snackbar.LENGTH_LONG).show();
+                } catch (IOException ioException) {
+                    Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
+                    ioException.printStackTrace();
+                }
             } else {
                 Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
                 if (task.getException() != null) task.getException().printStackTrace();
-                download.setEnabled(true);
             }
         });
-    }
-
-    private void downloadViaDownloadManager(Uri uri, String title, String fileName) {
-        DownloadManager dlManager;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            dlManager = this.getSystemService(DownloadManager.class);
-        } else {
-            dlManager = (DownloadManager) this.getSystemService(Context.DOWNLOAD_SERVICE);
-        }
-
-        DownloadManager.Request request = new DownloadManager.Request(uri)
-                .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
-                .setTitle(title).setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
-        dlManager.enqueue(request);
-
-        Snackbar.make(back, "Download started. Check your status bar for progress.", Snackbar.LENGTH_LONG).show();
-        back.postDelayed(this::finish, 2000);
     }
 }

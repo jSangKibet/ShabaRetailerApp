@@ -1,10 +1,15 @@
 package com.acework.shabaretailer.catalog;
 
-import android.content.Intent;
+import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,11 +17,13 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
 
 import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.StatusDialog;
 import com.airbnb.lottie.LottieAnimationView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -26,6 +33,7 @@ import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -36,23 +44,23 @@ import java.io.IOException;
 
 public class PreviewActivity extends AppCompatActivity {
     private MaterialButton back, download;
+    // this object will handle the result of the storage permission request
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+        if (isGranted) {
+            prepareToDownloadImageP();
+        } else {
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Storage permission denied")
+                    .setMessage("Shaba Retailer requires access to your device's storage to download the image." +
+                            " Please grant the permission from the application's settings to proceed.")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+    });
     private TextView title;
     private LottieAnimationView animation;
     private TouchImageView image;
     private ConstraintLayout loadingLayout;
-
-    // this object will handle the download destination provided by the user, if any
-    private final ActivityResultLauncher<Intent> chooseDestinationLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == RESULT_OK) {
-            Intent data = result.getData();
-            if (data != null) {
-                Uri uri = data.getData();
-                if (uri != null) {
-                    downloadImage(uri);
-                }
-            }
-        }
-    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +82,7 @@ public class PreviewActivity extends AppCompatActivity {
 
     private void setListeners() {
         back.setOnClickListener(v -> finish());
-        download.setOnClickListener(v -> chooseDownloadDestination());
+        download.setOnClickListener(v -> prepareToDownloadImage());
     }
 
     private void loadImage() {
@@ -131,35 +139,31 @@ public class PreviewActivity extends AppCompatActivity {
         }
     }
 
-    private void chooseDownloadDestination() {
-        // prepare data
-        String name = getIntent().getStringExtra("itemName");
-        String link = getIntent().getStringExtra("link");
-        String fileName = name.replace(" ", "_") + "_" + link;
-
-        Intent intent = new Intent(Intent.ACTION_CREATE_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("image/jpeg");
-        intent.putExtra(Intent.EXTRA_TITLE, fileName);
-        chooseDestinationLauncher.launch(intent);
-    }
-
+    // download the image to local storage
     private void downloadImage(Uri destinationUri) {
-        download.setEnabled(false);
-        String link = getIntent().getStringExtra("link");
+        // show progress dialog
+        StatusDialog dialog = StatusDialog.newInstance(R.raw.loading, "Downloading image", false, null);
+        dialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
+        // download image to memory
+        String link = getIntent().getStringExtra("link");
         FirebaseStorage.getInstance().getReference().child("item_images").child(link).getBytes(10485760).addOnCompleteListener(task -> {
-            download.setEnabled(true);
+            dialog.dismiss();
             if (task.isSuccessful()) {
                 try {
+
+                    // save image to file
                     ParcelFileDescriptor parcelFileDescriptor = getContentResolver().openFileDescriptor(destinationUri, "w");
                     FileOutputStream fileOutputStream = new FileOutputStream(parcelFileDescriptor.getFileDescriptor());
                     fileOutputStream.write(task.getResult());
                     fileOutputStream.close();
                     parcelFileDescriptor.close();
 
-                    Snackbar.make(back, "Image downloaded.", Snackbar.LENGTH_LONG).show();
+                    // notify of completion
+                    Snackbar.make(back, "Image downloaded. Please check your gallery.", Snackbar.LENGTH_LONG).show();
                 } catch (IOException ioException) {
+
+                    // notify of failure
                     Snackbar.make(back, "Download failed. Try again later.", Snackbar.LENGTH_LONG).show();
                     ioException.printStackTrace();
                 }
@@ -168,5 +172,75 @@ public class PreviewActivity extends AppCompatActivity {
                 if (task.getException() != null) task.getException().printStackTrace();
             }
         });
+    }
+
+    private void prepareToDownloadImage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            prepareToDownloadImageQ();
+        } else {
+            checkForStoragePermission();
+        }
+    }
+
+    // prepare to download the image (get uri basically)
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    private void prepareToDownloadImageQ() {
+        // Add a specific media item
+        ContentResolver resolver = getApplicationContext().getContentResolver();
+
+        // Find all photo files on the primary external storage device
+        Uri imageCollection;
+        imageCollection = MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY);
+
+        // Save a new image
+        ContentValues newImageDetails = new ContentValues();
+        newImageDetails.put(MediaStore.Images.Media.DISPLAY_NAME, getFileName());
+
+        // Keep a handle to the new image's URI in case you need to modify it later
+        Uri newImageUri = resolver.insert(imageCollection, newImageDetails);
+
+        downloadImage(newImageUri);
+    }
+
+    private void prepareToDownloadImageP() {
+        // Add a specific media item
+        ContentResolver resolver = getApplicationContext().getContentResolver();
+
+        // Find all photo files on the primary external storage device
+        Uri imageCollection;
+        imageCollection = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
+        // Save a new image
+        ContentValues newImageDetails = new ContentValues();
+        newImageDetails.put(MediaStore.Images.Media.DISPLAY_NAME, getFileName());
+
+        // Keep a handle to the new image's URI in case you need to modify it later
+        Uri newImageUri = resolver.insert(imageCollection, newImageDetails);
+
+        downloadImage(newImageUri);
+    }
+
+    // check for storage permission (android P and below)
+    private void checkForStoragePermission() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            prepareToDownloadImageP();
+        } else {
+            requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
+
+    // get download file name
+    private String getFileName() {
+        String name = getIntent().getStringExtra("itemName");
+        String link = getIntent().getStringExtra("link");
+        String[] linkComponents = link.split("\\.");
+        return name + getInsertColor(linkComponents[0]) + ".jpg";
+    }
+
+    // get insert color from image number
+    private String getInsertColor(String number) {
+        if (number.endsWith("1")) return " mustard ";
+        if (number.endsWith("2")) return " maroon ";
+        return " dark brown ";
     }
 }

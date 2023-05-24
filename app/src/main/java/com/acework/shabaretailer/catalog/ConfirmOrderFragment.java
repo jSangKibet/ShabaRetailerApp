@@ -213,38 +213,6 @@ public class ConfirmOrderFragment extends Fragment {
                 DocumentReference newOrderRef = db.collection("orders").document();
                 order.setId(newOrderRef.getId());
 
-                // get retailer bags (create new if it is not there)
-                DocumentSnapshot retailerBagsSnapshot = transaction.get(db.collection("retailer_bags").document(uid));
-                RetailerBags retailerBags = new RetailerBags();
-                if (retailerBagsSnapshot.exists()) {
-                    retailerBags = retailerBagsSnapshot.toObject(RetailerBags.class);
-                }
-
-                // update retailer bags
-                if (order.getType() == Atlas.ORDER_TYPE_COMMISSION) {
-                    for (Item item : order.getOrderItems()) {
-                        if (item.getSku().equals("1")) {
-                            retailerBags.setTwendeCommission(retailerBags.getTwendeCommission() + item.getQuantity());
-                        } else if (item.getSku().equals("2")) {
-                            retailerBags.setSawaCommission(retailerBags.getSawaCommission() + item.getQuantity());
-                        } else {
-                            retailerBags.setWahuraCommission(retailerBags.getWahuraCommission() + item.getQuantity());
-                        }
-                    }
-                }
-
-                if (order.getType() == Atlas.ORDER_TYPE_CONSIGNMENT) {
-                    for (Item item : order.getOrderItems()) {
-                        if (item.getSku().equals("1")) {
-                            retailerBags.setTwendeConsignment(retailerBags.getTwendeConsignment() + item.getQuantity());
-                        } else if (item.getSku().equals("2")) {
-                            retailerBags.setSawaConsignment(retailerBags.getSawaConsignment() + item.getQuantity());
-                        } else {
-                            retailerBags.setWahuraConsignment(retailerBags.getWahuraConsignment() + item.getQuantity());
-                        }
-                    }
-                }
-
                 // check if lookbook is included in the order
                 Retailer retailer = cartViewModel.getCart().getValue().getRetailer();
                 if (lb.isChecked()) {
@@ -253,7 +221,6 @@ public class ConfirmOrderFragment extends Fragment {
                 }
 
                 // perform updates
-                transaction.set(db.collection("retailer_bags").document(uid), retailerBags);
                 transaction.update(db.collection("retailers").document(uid), "lookbook", retailer.getLookbook());
                 transaction.set(newOrderRef, order);
                 return null;

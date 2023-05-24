@@ -15,18 +15,22 @@ import androidx.lifecycle.ViewModelProvider;
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.StatusDialog;
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
 import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
+import com.acework.shabaretailer.model.RetailerBags;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -199,18 +203,65 @@ public class ConfirmOrderFragment extends Fragment {
 
     private void confirmOrder() {
         if (tc.isChecked()) {
-            StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
-            statusDialog.show(getChildFragmentManager(), StatusDialog.TAG);
+            StatusDialog processingDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
+            processingDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
 
-            DocumentReference newOrderRef = FirebaseFirestore.getInstance().collection("orders").document();
-            order.setId(newOrderRef.getId());
-            newOrderRef.set(order).addOnCompleteListener(task -> {
-                statusDialog.dismiss();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            db.runTransaction((Transaction.Function<Void>) transaction -> {
+                // set order id
+                DocumentReference newOrderRef = db.collection("orders").document();
+                order.setId(newOrderRef.getId());
+
+                // get retailer bags (create new if it is not there)
+                DocumentSnapshot retailerBagsSnapshot = transaction.get(db.collection("retailer_bags").document(uid));
+                RetailerBags retailerBags = new RetailerBags();
+                if (retailerBagsSnapshot.exists()) {
+                    retailerBags = retailerBagsSnapshot.toObject(RetailerBags.class);
+                }
+
+                // update retailer bags
+                if (order.getType() == Atlas.ORDER_TYPE_COMMISSION) {
+                    for (Item item : order.getOrderItems()) {
+                        if (item.getSku().equals("1")) {
+                            retailerBags.setTwendeCommission(retailerBags.getTwendeCommission() + item.getQuantity());
+                        } else if (item.getSku().equals("2")) {
+                            retailerBags.setSawaCommission(retailerBags.getSawaCommission() + item.getQuantity());
+                        } else {
+                            retailerBags.setWahuraCommission(retailerBags.getWahuraCommission() + item.getQuantity());
+                        }
+                    }
+                }
+
+                if (order.getType() == Atlas.ORDER_TYPE_CONSIGNMENT) {
+                    for (Item item : order.getOrderItems()) {
+                        if (item.getSku().equals("1")) {
+                            retailerBags.setTwendeConsignment(retailerBags.getTwendeConsignment() + item.getQuantity());
+                        } else if (item.getSku().equals("2")) {
+                            retailerBags.setSawaConsignment(retailerBags.getSawaConsignment() + item.getQuantity());
+                        } else {
+                            retailerBags.setWahuraConsignment(retailerBags.getWahuraConsignment() + item.getQuantity());
+                        }
+                    }
+                }
+
+                // check if lookbook is included in the order
+                Retailer retailer = cartViewModel.getCart().getValue().getRetailer();
+                if (lb.isChecked()) {
+                    retailer.setLookbook(1);
+                    lb.setChecked(false);
+                }
+
+                // perform updates
+                transaction.set(db.collection("retailer_bags").document(uid), retailerBags);
+                transaction.update(db.collection("retailers").document(uid), "lookbook", retailer.getLookbook());
+                transaction.set(newOrderRef, order);
+                return null;
+            }).addOnCompleteListener(task -> {
+                processingDialog.dismiss();
                 if (task.isSuccessful()) {
-                    StatusDialog statusDialog2 = StatusDialog.newInstance(R.raw.success, "Order placed!", true, () -> ((CatalogActivity) requireActivity()).orderCompleted());
-                    statusDialog2.show(getChildFragmentManager(), StatusDialog.TAG);
-                    setLookbookOrdered();
+                    StatusDialog successDialog = StatusDialog.newInstance(R.raw.success, "Order placed!", true, () -> ((CatalogActivity) requireActivity()).orderCompleted());
+                    successDialog.show(getChildFragmentManager(), StatusDialog.TAG);
                 } else {
                     Snackbar.make(requireView(), "Your order could not be placed at the moment. Please try again later.", Snackbar.LENGTH_LONG).show();
                     if (task.getException() != null) task.getException().printStackTrace();
@@ -223,21 +274,5 @@ public class ConfirmOrderFragment extends Fragment {
 
     public void uncheckTC() {
         tc.setChecked(false);
-    }
-
-    private void setLookbookOrdered() {
-        if (lb.isChecked()) {
-            lb.setChecked(false);
-            Cart c = cartViewModel.getCart().getValue();
-            if (c != null) {
-                Retailer r = c.getRetailer();
-                r.setLookbook(1);
-                FirebaseFirestore.getInstance().collection("retailers").document(uid).set(r).addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        if (task.getException() != null) task.getException().printStackTrace();
-                    }
-                });
-            }
-        }
     }
 }

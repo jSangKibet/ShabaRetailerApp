@@ -54,7 +54,7 @@
             android:id="@+id/details_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
+            android:fontFamily="@font/work_sans_bold"
             android:text="@string/order_details"
             android:textColor="?attr/colorPrimary"
             android:textSize="12sp"
@@ -121,26 +121,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/est_transport_label" />
 
-        <ImageView
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="4dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/dotted_line"
-            app:layout_constraintTop_toBottomOf="@id/est_total_label" />
-
         <TextView
             android:id="@+id/recipient_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:fontFamily="@font/work_sans_regular"
+            android:layout_marginTop="12dp"
+            android:fontFamily="@font/work_sans_bold"
             android:text="@string/recipient_information"
             android:textColor="?attr/colorPrimary"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
+            app:layout_constraintTop_toBottomOf="@id/est_total_label" />
 
         <TextView
             android:id="@+id/name_label"

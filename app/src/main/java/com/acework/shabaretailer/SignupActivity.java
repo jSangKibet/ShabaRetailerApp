@@ -16,11 +16,13 @@ import android.widget.ScrollView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.model.Retailer;
+import com.acework.shabaretailer.model.RetailerBags;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -225,7 +227,13 @@ public class SignupActivity extends AppCompatActivity {
     @SuppressWarnings("ConstantConditions")
     private void createRetailer(Retailer retailer) {
         String uid = firebaseAuth.getCurrentUser().getUid();
-        FirebaseFirestore.getInstance().collection("retailers").document(uid).set(retailer).addOnCompleteListener(task -> {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        WriteBatch writeBatch = db.batch();
+
+        writeBatch.set(db.collection("retailers").document(uid), retailer);
+        writeBatch.set(db.collection("retailer_bags").document(uid), new RetailerBags());
+
+        writeBatch.commit().addOnCompleteListener(task -> {
             statusDialog.dismiss();
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());

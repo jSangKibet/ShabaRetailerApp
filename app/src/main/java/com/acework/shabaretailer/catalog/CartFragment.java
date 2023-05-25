@@ -105,7 +105,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
             if (cart.getRetailer().getCounty().equals("Nairobi")) {
                 transPerKg = 250;
             }
-            int finalTransCost = ConfirmOrderFragment.getTransportCost(totalWeight, transPerKg);
+            int finalTransCost = calculateTransportCost(totalWeight, transPerKg);
             transport.setText(getString(R.string.transport, finalTransCost));
             estimatedTotal.setText(getString(R.string.total, totalPrice + finalTransCost));
         }
@@ -123,5 +123,12 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
 
     private void toConfirmOrder() {
         ((CatalogActivity) requireActivity()).toConfirmOrder();
+    }
+
+    private int calculateTransportCost(int weight, int costPerKG) {
+        int kg = weight / 1000;
+        int remainder = weight % 1000;
+        if (remainder > 0) kg += 1;
+        return kg * costPerKG;
     }
 }

@@ -1,5 +1,9 @@
 package com.acework.shabaretailer.atlas;
 
+import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.model.Cart;
+import com.acework.shabaretailer.model.Item;
+
 public class Atlas {
     public static int ORDER_TYPE_WHOLESALE = 0;
     public static int ORDER_TYPE_CONSIGNMENT = 1;

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,13 +16,11 @@ import com.acework.shabaretailer.StatusDialog;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentConfirmOrderBinding;
 import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
-import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.ItemInCart;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel2;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -34,13 +30,9 @@ import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ConfirmOrderFragment extends Fragment {
     private FragmentConfirmOrderBinding binding;
-    private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email, orderType;
-    private CheckBox tc, lb;
-    private MaterialButton confirm, back, more;
     private CartViewModel2 cartViewModel;
     private String uid;
 
@@ -61,27 +53,8 @@ public class ConfirmOrderFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindViews(view);
         setListeners();
         setValues();
-    }
-
-    private void bindViews(View view) {
-        itemTotal = view.findViewById(R.id.item_total);
-        estWeight = view.findViewById(R.id.est_weight);
-        estTrans = view.findViewById(R.id.est_transport);
-        estTotal = view.findViewById(R.id.est_total);
-        name = view.findViewById(R.id.name);
-        county = view.findViewById(R.id.county);
-        street = view.findViewById(R.id.street);
-        telephone = view.findViewById(R.id.telephone);
-        email = view.findViewById(R.id.email);
-        tc = view.findViewById(R.id.tc_checkbox);
-        confirm = view.findViewById(R.id.confirm);
-        back = view.findViewById(R.id.back_button);
-        orderType = view.findViewById(R.id.order_type);
-        lb = view.findViewById(R.id.lb_checkbox);
-        more = view.findViewById(R.id.more);
     }
 
     private void setValues() {
@@ -105,10 +78,10 @@ public class ConfirmOrderFragment extends Fragment {
     private Order getOrder() {
         int totalValueOfItems = calculateItemTotal();
         int totalWeightOfItems = calculateItemWeight();
-        int estimatedTransportCost =calculateEstimatedTransportCost(totalWeightOfItems);
+        int estimatedTransportCost = calculateEstimatedTransportCost(totalWeightOfItems);
         List<Item> itemsInCart = getItemsInCart();
         long timestamp = System.currentTimeMillis();
-        Retailer retailer=cartViewModel.getRetailer();
+        Retailer retailer = cartViewModel.getRetailer();
         return new Order(
                 uid,
                 retailer,
@@ -122,24 +95,24 @@ public class ConfirmOrderFragment extends Fragment {
                 retailer.getCounty(),
                 retailer.getStreet(),
                 cartViewModel.getOrderType(),
-                lb.isChecked() ? 1 : 0);
+                binding.lbCheckbox.isChecked() ? 1 : 0);
     }
 
     private List<Item> getItemsInCart() {
         List<Item> items = new ArrayList<>();
         for (ItemInCart itemInCart : cartViewModel.getItemsInCart()) {
-            if(itemInCart.getMustardInsertNum()>0){
-                Item itemToAdd=itemInCart.getItem().cloneItemWithZeroQuantity("Mustard");
+            if (itemInCart.getMustardInsertNum() > 0) {
+                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Mustard");
                 itemToAdd.setQuantity(itemInCart.getMustardInsertNum());
                 items.add(itemToAdd);
             }
-            if(itemInCart.getMaroonInsertNum()>0){
-                Item itemToAdd=itemInCart.getItem().cloneItemWithZeroQuantity("Maroon");
+            if (itemInCart.getMaroonInsertNum() > 0) {
+                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Maroon");
                 itemToAdd.setQuantity(itemInCart.getMaroonInsertNum());
                 items.add(itemToAdd);
             }
-            if(itemInCart.getDarkBrownInsertNum()>0){
-                Item itemToAdd=itemInCart.getItem().cloneItemWithZeroQuantity("Dark brown");
+            if (itemInCart.getDarkBrownInsertNum() > 0) {
+                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Dark brown");
                 itemToAdd.setQuantity(itemInCart.getDarkBrownInsertNum());
                 items.add(itemToAdd);
             }
@@ -148,7 +121,7 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     private void confirmOrder() {
-        if (tc.isChecked()) {
+        if (binding.tcCheckbox.isChecked()) {
             StatusDialog processingDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
             processingDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
@@ -161,9 +134,9 @@ public class ConfirmOrderFragment extends Fragment {
 
                 // check if lookbook is included in the order
                 Retailer retailer = order.getRetailer();
-                if (lb.isChecked()) {
+                if (binding.lbCheckbox.isChecked()) {
                     retailer.setLookbook(1);
-                    lb.setChecked(false);
+                    binding.lbCheckbox.setChecked(false);
                 }
 
                 // perform updates
@@ -186,7 +159,7 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     public void uncheckTC() {
-        tc.setChecked(false);
+        binding.tcCheckbox.setChecked(false);
     }
 
     private void displayOrderInfo() {
@@ -265,15 +238,15 @@ public class ConfirmOrderFragment extends Fragment {
         return kg * costPerKG;
     }
 
-    private void displayRetailerInfo(){
-        Retailer retailer=cartViewModel.getRetailer();
-        name.setText(retailer.getName());
-        county.setText(retailer.getCounty());
-        street.setText(retailer.getStreet());
-        telephone.setText(retailer.getTelephone());
-        email.setText(retailer.getEmail());
+    private void displayRetailerInfo() {
+        Retailer retailer = cartViewModel.getRetailer();
+        binding.name.setText(retailer.getName());
+        binding.county.setText(retailer.getCounty());
+        binding.street.setText(retailer.getStreet());
+        binding.telephone.setText(retailer.getTelephone());
+        binding.email.setText(retailer.getEmail());
         if (retailer.getLookbook() == 0) {
-            lb.setVisibility(View.VISIBLE);
+            binding.lbCheckbox.setVisibility(View.VISIBLE);
         }
     }
 }

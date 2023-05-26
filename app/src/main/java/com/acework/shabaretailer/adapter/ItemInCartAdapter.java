@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
-import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.google.android.material.button.MaterialButton;
 
@@ -64,9 +63,9 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setItems(Cart cart) {
-        orderType=cart.getOrderType();
-        itemsInCart = cart.getItems();
+    public void setItems(int orderType, List<Item> itemsInCart) {
+        this.orderType = orderType;
+        this.itemsInCart = itemsInCart;
         notifyDataSetChanged();
     }
 

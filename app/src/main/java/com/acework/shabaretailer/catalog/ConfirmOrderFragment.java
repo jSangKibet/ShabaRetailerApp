@@ -17,7 +17,6 @@ import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentConfirmOrderBinding;
 import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
 import com.acework.shabaretailer.model.Item;
-import com.acework.shabaretailer.model.ItemInCart;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel2;
@@ -28,7 +27,6 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConfirmOrderFragment extends Fragment {
@@ -79,7 +77,7 @@ public class ConfirmOrderFragment extends Fragment {
         int totalValueOfItems = calculateItemTotal();
         int totalWeightOfItems = calculateItemWeight();
         int estimatedTransportCost = calculateEstimatedTransportCost(totalWeightOfItems);
-        List<Item> itemsInCart = getItemsInCart();
+        List<Item> itemsInCart = Atlas.getItemsInCart(cartViewModel.getItemsInCart());
         long timestamp = System.currentTimeMillis();
         Retailer retailer = cartViewModel.getRetailer();
         return new Order(
@@ -96,28 +94,6 @@ public class ConfirmOrderFragment extends Fragment {
                 retailer.getStreet(),
                 cartViewModel.getOrderType(),
                 binding.lbCheckbox.isChecked() ? 1 : 0);
-    }
-
-    private List<Item> getItemsInCart() {
-        List<Item> items = new ArrayList<>();
-        for (ItemInCart itemInCart : cartViewModel.getItemsInCart()) {
-            if (itemInCart.getMustardInsertNum() > 0) {
-                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Mustard");
-                itemToAdd.setQuantity(itemInCart.getMustardInsertNum());
-                items.add(itemToAdd);
-            }
-            if (itemInCart.getMaroonInsertNum() > 0) {
-                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Maroon");
-                itemToAdd.setQuantity(itemInCart.getMaroonInsertNum());
-                items.add(itemToAdd);
-            }
-            if (itemInCart.getDarkBrownInsertNum() > 0) {
-                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Dark brown");
-                itemToAdd.setQuantity(itemInCart.getDarkBrownInsertNum());
-                items.add(itemToAdd);
-            }
-        }
-        return items;
     }
 
     private void confirmOrder() {
@@ -168,7 +144,7 @@ public class ConfirmOrderFragment extends Fragment {
         int estimatedTransportCost = calculateEstimatedTransportCost(totalWeightOfItems);
 
         // order type
-        displayOrderType(cartViewModel.getOrderType());
+        binding.orderType.setText(Atlas.getOrderTypeAsString(cartViewModel.getOrderType()));
         // total value of items in order
         binding.estTotal.setText(getString(R.string.kes, totalValueOfItems));
         // total weight of items
@@ -179,63 +155,16 @@ public class ConfirmOrderFragment extends Fragment {
         binding.estTotal.setText(getString(R.string.kes, totalValueOfItems + estimatedTransportCost));
     }
 
-    private void displayOrderType(int orderType) {
-        if (orderType == Atlas.ORDER_TYPE_COMMISSION) {
-            binding.orderType.setText(R.string.commission);
-        } else if (orderType == Atlas.ORDER_TYPE_CONSIGNMENT) {
-            binding.orderType.setText(R.string.consignment);
-        } else {
-            binding.orderType.setText(R.string.wholesale);
-        }
-    }
-
     private int calculateItemTotal() {
-        int itemTotal = 0;
-        int orderType = cartViewModel.getOrderType();
-
-        for (ItemInCart itemInCart : cartViewModel.getItemsInCart()) {
-            itemTotal += itemInCart.getMustardInsertNum() * getPriceToUse(itemInCart.getItem(), orderType);
-            itemTotal += itemInCart.getMaroonInsertNum() * getPriceToUse(itemInCart.getItem(), orderType);
-            itemTotal += itemInCart.getDarkBrownInsertNum() * getPriceToUse(itemInCart.getItem(), orderType);
-        }
-        return itemTotal;
-    }
-
-    // determine item price based on order type
-    private int getPriceToUse(Item item, int orderType) {
-        if (orderType == Atlas.ORDER_TYPE_COMMISSION) {
-            return item.getPriceShaba();
-        } else if (orderType == Atlas.ORDER_TYPE_CONSIGNMENT) {
-            return item.getPriceConsignment();
-        } else {
-            return item.getPriceWholesale();
-        }
+        return Atlas.calculateItemTotal(cartViewModel.getOrderType(), cartViewModel.getItemsInCart());
     }
 
     private int calculateItemWeight() {
-        int itemWeight = 0;
-
-        for (ItemInCart itemInCart : cartViewModel.getItemsInCart()) {
-            itemWeight += itemInCart.getMustardInsertNum() * itemInCart.getItem().getWeight();
-            itemWeight += itemInCart.getMaroonInsertNum() * itemInCart.getItem().getWeight();
-            itemWeight += itemInCart.getDarkBrownInsertNum() * itemInCart.getItem().getWeight();
-        }
-        return itemWeight;
+        return Atlas.calculateItemWeight(cartViewModel.getItemsInCart());
     }
 
     private int calculateEstimatedTransportCost(int weight) {
-        if (cartViewModel.getRetailer().getCounty().equals("Nairobi")) {
-            return calculateTransportCost(weight, 250);
-        } else {
-            return calculateTransportCost(weight, 500);
-        }
-    }
-
-    private int calculateTransportCost(int weight, int costPerKG) {
-        int kg = weight / 1000;
-        int remainder = weight % 1000;
-        if (remainder > 0) kg += 1;
-        return kg * costPerKG;
+        return Atlas.calculateEstimatedTransportCost(cartViewModel.getRetailer().getCounty(), weight);
     }
 
     private void displayRetailerInfo() {

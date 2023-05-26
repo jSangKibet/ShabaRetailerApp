@@ -16,6 +16,7 @@ public class CartViewModel2 extends AndroidViewModel {
     private final List<ItemInCart> itemsInCart = new ArrayList<>();
     private final MutableLiveData<List<ItemInCart>> itemsInCartLive;
     private final MutableLiveData<Integer> orderTypeLive;
+    private final MutableLiveData<Retailer> retailerLive;
     private Retailer retailer = null;
     private int orderType = 3;
 
@@ -23,6 +24,7 @@ public class CartViewModel2 extends AndroidViewModel {
         super(application);
         itemsInCartLive = new MutableLiveData<>(itemsInCart);
         orderTypeLive = new MutableLiveData<>(orderType);
+        retailerLive = new MutableLiveData<>(retailer);
     }
 
     public MutableLiveData<List<ItemInCart>> getItemsInCartLive() {
@@ -31,6 +33,10 @@ public class CartViewModel2 extends AndroidViewModel {
 
     public MutableLiveData<Integer> getOrderTypeLive() {
         return orderTypeLive;
+    }
+
+    public MutableLiveData<Retailer> getRetailerLive() {
+        return retailerLive;
     }
 
     public Retailer getRetailer() {
@@ -57,6 +63,24 @@ public class CartViewModel2 extends AndroidViewModel {
         itemsInCart.clear();
         for (Item item : items) {
             itemsInCart.add(new ItemInCart(item));
+        }
+    }
+
+    public void removeItemFromCart(Item item) {
+        for (ItemInCart itemInCart : itemsInCart) {
+            if (itemInCart.getItem().getSku().equals(item.getSku())) {
+                switch (item.getInsertColour()) {
+                    case "Mustard":
+                        itemInCart.setMustardInsertNum(0);
+                        break;
+                    case "Maroon":
+                        itemInCart.setMaroonInsertNum(0);
+                        break;
+                    case "Dark brown":
+                        itemInCart.setDarkBrownInsertNum(0);
+                }
+                break;
+            }
         }
     }
 }

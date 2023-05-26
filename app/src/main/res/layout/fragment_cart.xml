@@ -10,9 +10,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/header_layout"
-        android:background="@drawable/bg_primary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_primary"
         android:paddingStart="16dp"
         android:paddingTop="8dp"
         android:paddingEnd="16dp"
@@ -23,10 +23,10 @@
             android:id="@+id/back_button"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
-            app:iconTint="?attr/colorOnPrimary"
             android:layout_height="wrap_content"
             android:minWidth="0dp"
             app:icon="@drawable/arrow_back_24"
+            app:iconTint="?attr/colorOnPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -47,6 +47,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:layout_width="match_parent"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_height="0dp"
         android:padding="8dp"
         app:layout_constraintBottom_toTopOf="@id/summary_layout"
@@ -63,9 +64,9 @@
         <TextView
             android:id="@+id/type"
             android:layout_width="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/total"
@@ -74,9 +75,9 @@
         <TextView
             android:id="@+id/total"
             android:layout_width="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/weight"
@@ -85,9 +86,9 @@
         <TextView
             android:id="@+id/weight"
             android:layout_width="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/transport"
@@ -108,8 +109,8 @@
             android:id="@+id/estimated_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
             android:layout_marginBottom="8dp"
+            android:fontFamily="@font/work_sans_regular"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/complete_order"
@@ -117,10 +118,11 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/complete_order"
-            android:fontFamily="@font/work_sans_bold"
             style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
+            android:fontFamily="@font/work_sans_bold"
             android:text="@string/complete_order"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>

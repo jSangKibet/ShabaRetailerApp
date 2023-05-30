@@ -12,7 +12,8 @@ import com.acework.shabaretailer.model.Retailer;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartViewModel2 extends AndroidViewModel {
+public class CartViewModel extends AndroidViewModel {
+    public static String UID = "";
     private final List<ItemInCart> itemsInCart = new ArrayList<>();
     private final MutableLiveData<List<ItemInCart>> itemsInCartLive;
     private final MutableLiveData<Integer> orderTypeLive;
@@ -20,7 +21,7 @@ public class CartViewModel2 extends AndroidViewModel {
     private Retailer retailer = null;
     private int orderType = 3;
 
-    public CartViewModel2(Application application) {
+    public CartViewModel(Application application) {
         super(application);
         itemsInCartLive = new MutableLiveData<>(itemsInCart);
         orderTypeLive = new MutableLiveData<>(orderType);
@@ -93,6 +94,7 @@ public class CartViewModel2 extends AndroidViewModel {
             itemInCart.setMaroonInsertNum(0);
             itemInCart.setDarkBrownInsertNum(0);
         }
+        commit();
     }
 
     public void commit() {

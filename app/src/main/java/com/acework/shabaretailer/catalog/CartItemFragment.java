@@ -20,13 +20,13 @@ import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentCartItemBinding;
 import com.acework.shabaretailer.model.ItemInCart;
-import com.acework.shabaretailer.viewmodel.CartViewModel2;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class CartItemFragment extends Fragment {
     private FragmentCartItemBinding binding;
     private ItemInCart item;
-    private CartViewModel2 cartViewModel;
+    private CartViewModel cartViewModel;
     private LayoutInflater layoutInflater;
     private ImageFragmentAdapter adapter;
 
@@ -44,7 +44,7 @@ public class CartItemFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         layoutInflater = LayoutInflater.from(requireContext());
         setListeners();
     }

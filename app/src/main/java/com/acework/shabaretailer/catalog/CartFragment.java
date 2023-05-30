@@ -16,13 +16,13 @@ import com.acework.shabaretailer.adapter.ItemInCartAdapter;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentCartBinding;
 import com.acework.shabaretailer.model.Item;
-import com.acework.shabaretailer.viewmodel.CartViewModel2;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
 
 public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActionListener {
     private FragmentCartBinding binding;
     private ItemInCartAdapter adapter;
-    private CartViewModel2 cartViewModel2;
+    private CartViewModel cartViewModel;
     private int retailerLoaded = 0;
 
     @Override
@@ -50,14 +50,14 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     private void loadData() {
-        cartViewModel2 = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
 
         // display items & totals
-        cartViewModel2.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> {
-            adapter.setItems(cartViewModel2.getOrderType(), Atlas.getItemsInCart(itemsInCart));
+        cartViewModel.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> {
+            adapter.setItems(cartViewModel.getOrderType(), Atlas.getItemsInCart(itemsInCart));
             computeTotals();
         });
-        cartViewModel2.getRetailerLive().observe(getViewLifecycleOwner(), retailer -> {
+        cartViewModel.getRetailerLive().observe(getViewLifecycleOwner(), retailer -> {
             if (retailer == null) {
                 binding.completeOrder.setEnabled(false);
                 retailerLoaded = 2;
@@ -74,24 +74,24 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     private void computeTotals() {
-        int totalValueOfItems = Atlas.calculateItemTotal(cartViewModel2.getOrderType(), cartViewModel2.getItemsInCart());
-        int totalWeightOfItems = Atlas.calculateItemWeight(cartViewModel2.getItemsInCart());
+        int totalValueOfItems = Atlas.calculateItemTotal(cartViewModel.getOrderType(), cartViewModel.getItemsInCart());
+        int totalWeightOfItems = Atlas.calculateItemWeight(cartViewModel.getItemsInCart());
         int estimatedTransportCost = Atlas.calculateEstimatedTransportCost(
-                cartViewModel2.getRetailer() == null ?
+                cartViewModel.getRetailer() == null ?
                         "Nairobi" :
-                        cartViewModel2.getRetailer().getCounty(),
+                        cartViewModel.getRetailer().getCounty(),
                 totalWeightOfItems);
 
         binding.total.setText(getString(R.string.item_total, totalValueOfItems));
         binding.weight.setText(getString(R.string.weight_total, totalWeightOfItems));
         binding.transport.setText(getString(R.string.transport, estimatedTransportCost));
         binding.estimatedTotal.setText(getString(R.string.total, totalValueOfItems + estimatedTransportCost));
-        binding.type.setText(getString(R.string.order_type_ph, Atlas.getOrderTypeAsString(cartViewModel2.getOrderType())));
+        binding.type.setText(getString(R.string.order_type_ph, Atlas.getOrderTypeAsString(cartViewModel.getOrderType())));
     }
 
     @Override
     public void itemRemoved(Item item) {
-        cartViewModel2.removeItemFromCart(item);
+        cartViewModel.removeItemFromCart(item);
     }
 
     @Override

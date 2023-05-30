@@ -18,7 +18,7 @@ import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.custom.GridSpacingItemDecoration;
 import com.acework.shabaretailer.databinding.FragmentCatalogBinding;
 import com.acework.shabaretailer.model.Item;
-import com.acework.shabaretailer.viewmodel.CartViewModel2;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -28,7 +28,7 @@ import java.util.List;
 public class CatalogFragment extends Fragment {
     private FragmentCatalogBinding binding;
     private ItemAdapter adapter;
-    private CartViewModel2 cartViewModel2;
+    private CartViewModel cartViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class CatalogFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeList();
-        cartViewModel2 = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         setListeners();
         fetchItems();
     }
@@ -80,7 +80,7 @@ public class CatalogFragment extends Fragment {
                     Item i = qds.toObject(Item.class);
                     itemsFromDb.add(i);
                 }
-                cartViewModel2.setItemsInCart(itemsFromDb);
+                cartViewModel.setItemsInCart(itemsFromDb);
                 setQuantityObserver();
             } else {
                 binding.errorMessage.setVisibility(View.VISIBLE);
@@ -90,13 +90,13 @@ public class CatalogFragment extends Fragment {
     }
 
     private void setQuantityObserver() {
-        cartViewModel2.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> {
+        cartViewModel.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> {
             int count = Atlas.getItemsInCart(itemsInCart).size();
-            int total = Atlas.calculateItemTotal(cartViewModel2.getOrderType(), itemsInCart);
+            int total = Atlas.calculateItemTotal(cartViewModel.getOrderType(), itemsInCart);
             adapter.setItems(itemsInCart);
             displayTotals(count, total);
         });
-        cartViewModel2.getOrderTypeLive().observe(getViewLifecycleOwner(), orderType -> {
+        cartViewModel.getOrderTypeLive().observe(getViewLifecycleOwner(), orderType -> {
             adapter.setOrderType(orderType);
             binding.setOrderType.setText(Atlas.getOrderTypeAsString(orderType));
         });
@@ -119,7 +119,7 @@ public class CatalogFragment extends Fragment {
 
     private void setOrderType() {
         SetOrderTypeDialog dialog = SetOrderTypeDialog.newInstance(
-                cartViewModel2.getOrderType(), object -> cartViewModel2.setOrderType(object)
+                cartViewModel.getOrderType(), object -> cartViewModel.setOrderType(object)
         );
         dialog.show(getChildFragmentManager(), SetOrderTypeDialog.TAG);
     }

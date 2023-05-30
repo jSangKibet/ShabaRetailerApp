@@ -19,10 +19,8 @@ import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
-import com.acework.shabaretailer.viewmodel.CartViewModel2;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
@@ -31,8 +29,7 @@ import java.util.List;
 
 public class ConfirmOrderFragment extends Fragment {
     private FragmentConfirmOrderBinding binding;
-    private CartViewModel2 cartViewModel;
-    private String uid;
+    private CartViewModel cartViewModel;
 
     public ConfirmOrderFragment() {
     }
@@ -52,16 +49,13 @@ public class ConfirmOrderFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setListeners();
-        //setValues();
+        setValues();
     }
 
     private void setValues() {
-        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
-        displayOrderInfo();
-        displayRetailerInfo();
-        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        assert u != null;
-        this.uid = u.getUid();
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        cartViewModel.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> displayRetailerInfo());
+        cartViewModel.getRetailerLive().observe(getViewLifecycleOwner(), retailer -> displayRetailerInfo());
     }
 
     private void setListeners() {
@@ -81,7 +75,7 @@ public class ConfirmOrderFragment extends Fragment {
         long timestamp = System.currentTimeMillis();
         Retailer retailer = cartViewModel.getRetailer();
         return new Order(
-                uid,
+                CartViewModel.UID,
                 retailer,
                 timestamp,
                 "Pending",
@@ -116,7 +110,7 @@ public class ConfirmOrderFragment extends Fragment {
                 }
 
                 // perform updates
-                transaction.update(db.collection("retailers").document(uid), "lookbook", retailer.getLookbook());
+                transaction.update(db.collection("retailers").document(CartViewModel.UID), "lookbook", retailer.getLookbook());
                 transaction.set(newOrderRef, order);
                 return null;
             }).addOnCompleteListener(task -> {
@@ -169,13 +163,16 @@ public class ConfirmOrderFragment extends Fragment {
 
     private void displayRetailerInfo() {
         Retailer retailer = cartViewModel.getRetailer();
-        binding.name.setText(retailer.getName());
-        binding.county.setText(retailer.getCounty());
-        binding.street.setText(retailer.getStreet());
-        binding.telephone.setText(retailer.getTelephone());
-        binding.email.setText(retailer.getEmail());
-        if (retailer.getLookbook() == 0) {
-            binding.lbCheckbox.setVisibility(View.VISIBLE);
+        if (retailer != null) {
+            binding.name.setText(retailer.getName());
+            binding.county.setText(retailer.getCounty());
+            binding.street.setText(retailer.getStreet());
+            binding.telephone.setText(retailer.getTelephone());
+            binding.email.setText(retailer.getEmail());
+            if (retailer.getLookbook() == 0) {
+                binding.lbCheckbox.setVisibility(View.VISIBLE);
+            }
+            displayOrderInfo();
         }
     }
 }

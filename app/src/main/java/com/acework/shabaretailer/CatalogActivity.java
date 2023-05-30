@@ -15,7 +15,7 @@ import com.acework.shabaretailer.catalog.CartItemFragment;
 import com.acework.shabaretailer.catalog.CatalogFragment;
 import com.acework.shabaretailer.catalog.ConfirmOrderFragment;
 import com.acework.shabaretailer.model.Retailer;
-import com.acework.shabaretailer.viewmodel.CartViewModel2;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -26,7 +26,7 @@ public class CatalogActivity extends AppCompatActivity {
     private CartFragment cartFragment;
     private ConfirmOrderFragment confirmOrderFragment;
     private Fragment activeFragment;
-    private CartViewModel2 cartViewModel;
+    private CartViewModel cartViewModel;
     private DrawerLayout navDrawer;
     private boolean fromCatalog;
 
@@ -34,7 +34,7 @@ public class CatalogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
-        cartViewModel = new ViewModelProvider(this).get(CartViewModel2.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
         navDrawer = findViewById(R.id.navigation_drawer);
         initializeFragments();
         loadItems();

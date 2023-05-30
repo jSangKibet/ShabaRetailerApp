@@ -83,4 +83,12 @@ public class CartViewModel2 extends AndroidViewModel {
             }
         }
     }
+
+    public void resetCart() {
+        for (ItemInCart itemInCart : itemsInCart) {
+            itemInCart.setMustardInsertNum(0);
+            itemInCart.setMaroonInsertNum(0);
+            itemInCart.setDarkBrownInsertNum(0);
+        }
+    }
 }

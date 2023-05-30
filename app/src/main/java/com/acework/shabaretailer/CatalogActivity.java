@@ -9,12 +9,13 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.catalog.CartFragment;
 import com.acework.shabaretailer.catalog.CartItemFragment;
 import com.acework.shabaretailer.catalog.CatalogFragment;
 import com.acework.shabaretailer.catalog.ConfirmOrderFragment;
 import com.acework.shabaretailer.model.Retailer;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
+import com.acework.shabaretailer.viewmodel.CartViewModel2;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -25,7 +26,7 @@ public class CatalogActivity extends AppCompatActivity {
     private CartFragment cartFragment;
     private ConfirmOrderFragment confirmOrderFragment;
     private Fragment activeFragment;
-    private CartViewModel cartViewModel;
+    private CartViewModel2 cartViewModel;
     private DrawerLayout navDrawer;
     private boolean fromCatalog;
 
@@ -33,7 +34,7 @@ public class CatalogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
-        cartViewModel = new ViewModelProvider(this).get(CartViewModel.class);
+        cartViewModel = new ViewModelProvider(this).get(CartViewModel2.class);
         navDrawer = findViewById(R.id.navigation_drawer);
         initializeFragments();
         loadItems();
@@ -63,8 +64,8 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void loadItems() {
-        cartViewModel.getCart().observe(this, cart -> {
-            if (cart.getItems().size() == 0) {
+        cartViewModel.getItemsInCartLive().observe(this, itemsInCart -> {
+            if (Atlas.getItemsInCart(itemsInCart).size() == 0) {
                 if (activeFragment == cartFragment) {
                     onBackPressed();
                 }

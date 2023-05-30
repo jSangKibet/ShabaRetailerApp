@@ -42,4 +42,8 @@ public class ItemInCart {
     public void setDarkBrownInsertNum(int darkBrownInsertNum) {
         this.darkBrownInsertNum = darkBrownInsertNum;
     }
+
+    public int getQuantity(){
+        return maroonInsertNum+mustardInsertNum+darkBrownInsertNum;
+    }
 }

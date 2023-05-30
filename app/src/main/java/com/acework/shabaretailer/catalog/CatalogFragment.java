@@ -4,40 +4,32 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.ItemAdapter;
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.custom.GridSpacingItemDecoration;
-import com.acework.shabaretailer.model.Cart;
+import com.acework.shabaretailer.databinding.FragmentCatalogBinding;
 import com.acework.shabaretailer.model.Item;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.material.button.MaterialButton;
+import com.acework.shabaretailer.viewmodel.CartViewModel2;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class CatalogFragment extends Fragment {
+    private FragmentCatalogBinding binding;
     private ItemAdapter adapter;
-    private ConstraintLayout summary;
-    private TextView totalQuantity, total, errorMessage;
-    private MaterialButton complete, menuBtn, setOrderType;
-    private RecyclerView itemList;
-    private CartViewModel cartViewModel;
-    private LottieAnimationView loadingAnim;
+    private CartViewModel2 cartViewModel2;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,71 +37,35 @@ public class CatalogFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_catalog, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentCatalogBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindViews(view);
         initializeList();
-        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        cartViewModel2 = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
         setListeners();
         fetchItems();
     }
 
-    private void bindViews(View view) {
-        itemList = view.findViewById(R.id.item_list);
-        summary = view.findViewById(R.id.summary_layout);
-        totalQuantity = view.findViewById(R.id.total_quantity);
-        total = view.findViewById(R.id.total);
-        complete = view.findViewById(R.id.complete_order);
-        menuBtn = view.findViewById(R.id.menu_button);
-        loadingAnim = view.findViewById(R.id.loading_anim);
-        errorMessage = view.findViewById(R.id.error_message);
-        setOrderType = view.findViewById(R.id.set_order_type);
-    }
-
     private void initializeList() {
-        itemList.setLayoutManager(new GridLayoutManager(requireContext(), 2));
+        binding.itemList.setLayoutManager(new GridLayoutManager(requireContext(), 2));
         adapter = new ItemAdapter(requireContext(), this::itemSelected);
-        itemList.setAdapter(adapter);
-        itemList.addItemDecoration(new GridSpacingItemDecoration(2, 8, true));
+        binding.itemList.setAdapter(adapter);
+        binding.itemList.addItemDecoration(new GridSpacingItemDecoration(2, 8, true));
     }
 
     private void setListeners() {
-        complete.setOnClickListener(v -> toCart());
-        menuBtn.setOnClickListener(v -> ((CatalogActivity) requireActivity()).openDrawer());
-        setOrderType.setOnClickListener(v -> setOrderType());
+        binding.completeOrder.setOnClickListener(v -> toCart());
+        binding.menuButton.setOnClickListener(v -> ((CatalogActivity) requireActivity()).openDrawer());
+        binding.setOrderType.setOnClickListener(v -> setOrderType());
     }
 
-    private void itemSelected(Item item) {
-        ((CatalogActivity) requireActivity()).toCartItem(item);
-    }
-
-    private void computeTotals(Cart cart) {
-        int count = 0;
-        int totalPrice = 0;
-
-        for (Item itemInCart : cart.getItems()) {
-            count += itemInCart.getQuantity();
-
-            int priceToUse = itemInCart.getPriceWholesale();
-            if (cart.getOrderType() == 2) priceToUse = itemInCart.getPriceShaba();
-            if (cart.getOrderType() == 1) priceToUse = itemInCart.getPriceConsignment();
-
-            totalPrice += (itemInCart.getQuantity() * priceToUse);
-        }
-
-        if (count > 0) {
-            totalQuantity.setText(getString(R.string.total_item_count, count));
-            total.setText(getString(R.string.order_total, totalPrice));
-            summary.setVisibility(View.VISIBLE);
-        } else {
-            summary.setVisibility(View.GONE);
-        }
+    private void itemSelected(String sku) {
+        Toast.makeText(requireContext(), "Item selected", Toast.LENGTH_LONG).show();
     }
 
     private void toCart() {
@@ -125,45 +81,44 @@ public class CatalogFragment extends Fragment {
                     Item i = qds.toObject(Item.class);
                     itemsFromDb.add(i);
                 }
-                adapter.setItems(itemsFromDb);
+                cartViewModel2.setItemsInCart(itemsFromDb);
                 setQuantityObserver();
             } else {
-                errorMessage.setVisibility(View.VISIBLE);
+                binding.errorMessage.setVisibility(View.VISIBLE);
                 if (task.getException() != null) task.getException().printStackTrace();
             }
         });
     }
 
     private void setQuantityObserver() {
-        cartViewModel.getCart().observe(getViewLifecycleOwner(), cart -> {
-            computeTotals(cart);
-            calculateQuantities(cart.getItems());
-            setOrderType.setText(CartViewModel.getOrderTypeAsString(cart.getOrderType()));
-            adapter.setOrderType(cart.getOrderType());
+        cartViewModel2.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> {
+            int count = Atlas.getItemsInCart(itemsInCart).size();
+            int total = Atlas.calculateItemTotal(cartViewModel2.getOrderType(), itemsInCart);
+            adapter.setItems(itemsInCart);
+            displayTotals(count, total);
         });
+        cartViewModel2.getOrderTypeLive().observe(getViewLifecycleOwner(), orderType -> adapter.setOrderType(orderType));
+    }
+
+    private void displayTotals(int count, int total) {
+        if (count > 0) {
+            binding.totalQuantity.setText(getString(R.string.total_item_count, count));
+            binding.total.setText(getString(R.string.order_total, total));
+            binding.summaryLayout.setVisibility(View.VISIBLE);
+        } else {
+            binding.summaryLayout.setVisibility(View.GONE);
+        }
     }
 
     private void hideAnimation() {
-        loadingAnim.pauseAnimation();
-        loadingAnim.setVisibility(View.GONE);
-    }
-
-    private void calculateQuantities(List<Item> itemsInCart) {
-        HashMap<String, Integer> itemQuantities = new HashMap<>();
-        for (Item i : itemsInCart) {
-            String sku = i.getSku();
-            Integer currentQty = itemQuantities.get(sku);
-            if (currentQty == null) {
-                itemQuantities.put(sku, i.getQuantity());
-            } else {
-                itemQuantities.put(sku, currentQty + i.getQuantity());
-            }
-        }
-        adapter.updateQuantities(itemQuantities);
+        binding.loadingAnim.pauseAnimation();
+        binding.loadingAnim.setVisibility(View.GONE);
     }
 
     private void setOrderType() {
-        SetOrderTypeDialog dialog = SetOrderTypeDialog.newInstance(cartViewModel);
+        SetOrderTypeDialog dialog = SetOrderTypeDialog.newInstance(
+                cartViewModel2.getOrderType(), object -> cartViewModel2.setOrderType(object)
+        );
         dialog.show(getChildFragmentManager(), SetOrderTypeDialog.TAG);
     }
 }

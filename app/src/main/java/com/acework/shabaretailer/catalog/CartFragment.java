@@ -98,8 +98,8 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     @Override
-    public void itemSelected(Item item) {
-        ((CatalogActivity) requireActivity()).toCartItem(item);
+    public void itemSelected(String  sku) {
+        ((CatalogActivity) requireActivity()).toCartItem(sku);
     }
 
     private void toConfirmOrder() {

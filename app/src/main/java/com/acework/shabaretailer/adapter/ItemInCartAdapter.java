@@ -44,7 +44,7 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemsInCart.get(position);
         holder.name.setText(item.getName());
-        holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
+        holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item.getSku()));
         holder.delete.setOnClickListener(v -> itemActionListener.itemRemoved(item));
         if (item.getInsertColour().equals("Dark brown")) {
             holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
@@ -76,7 +76,7 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
 
 
     public interface ItemActionListener {
-        void itemSelected(Item item);
+        void itemSelected(String sku);
 
         void itemRemoved(Item item);
     }

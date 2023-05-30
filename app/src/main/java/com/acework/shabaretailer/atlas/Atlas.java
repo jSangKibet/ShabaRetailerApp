@@ -51,12 +51,14 @@ public class Atlas {
         int itemTotal = 0;
 
         for (ItemInCart itemInCart : itemsInCart) {
-            itemTotal += itemInCart.getMustardInsertNum() * getPriceToUse(itemInCart.getItem(), orderType);
-            itemTotal += itemInCart.getMaroonInsertNum() * getPriceToUse(itemInCart.getItem(), orderType);
-            itemTotal += itemInCart.getDarkBrownInsertNum() * getPriceToUse(itemInCart.getItem(), orderType);
+            int priceToUse=getPriceToUse(itemInCart.getItem(), orderType);
+            itemTotal += itemInCart.getMustardInsertNum() * priceToUse;
+            itemTotal += itemInCart.getMaroonInsertNum() * priceToUse;
+            itemTotal += itemInCart.getDarkBrownInsertNum() * priceToUse;
         }
         return itemTotal;
     }
+
 
     // determine item price based on order type
     public static int getPriceToUse(Item item, int orderType) {

@@ -7,44 +7,28 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
-import androidx.viewpager2.widget.ViewPager2;
 
 import com.acework.shabaretailer.R;
-import com.acework.shabaretailer.model.Item;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.airbnb.lottie.LottieAnimationView;
-import com.google.android.material.button.MaterialButton;
+import com.acework.shabaretailer.atlas.Atlas;
+import com.acework.shabaretailer.databinding.FragmentCartItemBinding;
+import com.acework.shabaretailer.model.ItemInCart;
+import com.acework.shabaretailer.viewmodel.CartViewModel2;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.snackbar.Snackbar;
 
 public class CartItemFragment extends Fragment {
-    private Item item, itemMustard, itemMaroon, itemDarkBrown;
-    private TextView itemName, price, quantityMustard, quantityMaroon, quantityDarkBrown, total, totalQuantity;
-    private MaterialButton back, done, mustardMinus5, mustardMinus, mustardPlus, mustardPlus5;
-    private MaterialButton maroonMinus5, maroonMinus, maroonPlus, maroonPlus5;
-    private MaterialButton darkBrownMinus5, darkBrownMinus, darkBrownPlus, darkBrownPlus5;
-    private TextView description, size, material, weaving, color, strap, insert, weight, sku, strapLength;
-    private LinearLayout features;
-    private MaterialButton more, less;
-    private ConstraintLayout moreLayout;
-    private CartViewModel cartViewModel;
+    private FragmentCartItemBinding binding;
+    private ItemInCart item;
+    private CartViewModel2 cartViewModel;
     private LayoutInflater layoutInflater;
-    private ViewPager2 pager;
-    private LottieAnimationView swipeAnim;
     private ImageFragmentAdapter adapter;
-
-    public CartItemFragment() {
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,219 +36,155 @@ public class CartItemFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_cart_item, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentCartItemBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
+        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
         layoutInflater = LayoutInflater.from(requireContext());
-        bindViews(view);
         setListeners();
     }
 
-    private void bindViews(View view) {
-        back = view.findViewById(R.id.back_button);
-        itemName = view.findViewById(R.id.name);
-        price = view.findViewById(R.id.price);
-        quantityMustard = view.findViewById(R.id.mustard_qty);
-        quantityMaroon = view.findViewById(R.id.maroon_qty);
-        quantityDarkBrown = view.findViewById(R.id.dark_brown_qty);
-        total = view.findViewById(R.id.total);
-        done = view.findViewById(R.id.done);
-        mustardMinus = view.findViewById(R.id.mustard_minus);
-        mustardMinus5 = view.findViewById(R.id.mustard_minus_5);
-        mustardPlus = view.findViewById(R.id.mustard_plus);
-        mustardPlus5 = view.findViewById(R.id.mustard_plus_5);
-        maroonMinus = view.findViewById(R.id.maroon_minus);
-        maroonMinus5 = view.findViewById(R.id.maroon_minus_5);
-        maroonPlus = view.findViewById(R.id.maroon_plus);
-        maroonPlus5 = view.findViewById(R.id.maroon_plus_5);
-        darkBrownMinus = view.findViewById(R.id.dark_brown_minus);
-        darkBrownMinus5 = view.findViewById(R.id.dark_brown_minus_5);
-        darkBrownPlus = view.findViewById(R.id.dark_brown_plus);
-        darkBrownPlus5 = view.findViewById(R.id.dark_brown_plus_5);
-        description = view.findViewById(R.id.description);
-        size = view.findViewById(R.id.size);
-        material = view.findViewById(R.id.material);
-        weaving = view.findViewById(R.id.weaving);
-        color = view.findViewById(R.id.color);
-        strap = view.findViewById(R.id.strap);
-        insert = view.findViewById(R.id.insert);
-        weight = view.findViewById(R.id.weight);
-        sku = view.findViewById(R.id.sku);
-        strapLength = view.findViewById(R.id.strap_length);
-        features = view.findViewById(R.id.features);
-        more = view.findViewById(R.id.more);
-        less = view.findViewById(R.id.less);
-        moreLayout = view.findViewById(R.id.more_layout);
-        totalQuantity = view.findViewById(R.id.total_quantity);
-        pager = view.findViewById(R.id.pager);
-        swipeAnim = view.findViewById(R.id.swipe_animation);
-    }
-
     private void setValues() {
-        itemName.setText(item.getName());
-        quantityMustard.setText(String.valueOf(itemMustard.getQuantity()));
-        quantityMaroon.setText(String.valueOf(itemMaroon.getQuantity()));
-        quantityDarkBrown.setText(String.valueOf(itemDarkBrown.getQuantity()));
-        totalQuantity.setText(getString(R.string.quantity_ph, getTotalQuantity()));
+        binding.name.setText(item.getItem().getName());
+        binding.mustardQty.setText(String.valueOf(item.getMustardInsertNum()));
+        binding.maroonQty.setText(String.valueOf(item.getMaroonInsertNum()));
+        binding.darkBrownQty.setText(String.valueOf(item.getDarkBrownInsertNum()));
+        binding.totalQuantity.setText(getString(R.string.quantity_ph, item.getQuantity()));
         setTotal();
         setItemDetails();
 
         switch (cartViewModel.getOrderType()) {
             case 2:
-                price.setText(getString(R.string.price, item.getPriceShaba()));
+                binding.price.setText(getString(R.string.price, item.getItem().getPriceShaba()));
                 break;
             case 1:
-                price.setText(getString(R.string.price, item.getPriceConsignment()));
+                binding.price.setText(getString(R.string.price, item.getItem().getPriceConsignment()));
                 break;
             default:
-                price.setText(getString(R.string.price, item.getPriceWholesale()));
+                binding.price.setText(getString(R.string.price, item.getItem().getPriceWholesale()));
 
         }
     }
 
     private void setTotal() {
-        int totalInt = getItemPrice(itemMustard) * itemMustard.getQuantity();
-        totalInt += (getItemPrice(itemMaroon) * itemMaroon.getQuantity());
-        totalInt += (getItemPrice(itemDarkBrown) * itemDarkBrown.getQuantity());
-        total.setText(getString(R.string.total, totalInt));
+        int itemTotal = 0;
+        int priceToUse = Atlas.getPriceToUse(item.getItem(), cartViewModel.getOrderType());
+        itemTotal += item.getMustardInsertNum() * priceToUse;
+        itemTotal += item.getMaroonInsertNum() * priceToUse;
+        itemTotal += item.getDarkBrownInsertNum() * priceToUse;
+        binding.total.setText(getString(R.string.total, itemTotal));
     }
 
     private void setItemDetails() {
-        description.setText(item.getDescription());
-        size.setText(item.getSize());
-        material.setText(item.getMaterial());
-        weaving.setText(item.getWeaving());
-        color.setText(item.getColour());
-        strap.setText(item.getStrap());
-        insert.setText(item.getInsert());
-        weight.setText(getString(R.string.weight_formatted, item.getWeight()));
-        sku.setText(item.getSku());
-        strapLength.setText(item.getStrapLength());
+        binding.description.setText(item.getItem().getDescription());
+        binding.size.setText(item.getItem().getSize());
+        binding.material.setText(item.getItem().getMaterial());
+        binding.weaving.setText(item.getItem().getWeaving());
+        binding.color.setText(item.getItem().getColour());
+        binding.strap.setText(item.getItem().getStrap());
+        binding.insert.setText(item.getItem().getInsert());
+        binding.weight.setText(getString(R.string.weight_formatted, item.getItem().getWeight()));
+        binding.sku.setText(item.getItem().getSku());
+        binding.strapLength.setText(item.getItem().getStrapLength());
         setFeatures();
     }
 
     private void setFeatures() {
-        features.removeAllViews();
-        for (String feature : item.getFeatures()) {
+        binding.features.removeAllViews();
+        for (String feature : item.getItem().getFeatures()) {
             @SuppressLint("InflateParams")
             TextView textView = (TextView) layoutInflater.inflate(R.layout.view_textview, null);
             textView.setText(getString(R.string.bullet_item, feature));
-            features.addView(textView);
+            binding.features.addView(textView);
         }
     }
 
     private void setListeners() {
-        back.setOnClickListener(v -> requireActivity().onBackPressed());
-        done.setOnClickListener(v -> done());
-        mustardMinus.setOnClickListener(v -> decrementByOne(itemMustard));
-        mustardMinus5.setOnClickListener(v -> decrementByFive(itemMustard));
-        mustardPlus.setOnClickListener(v -> incrementByOne(itemMustard));
-        mustardPlus5.setOnClickListener(v -> incrementByFive(itemMustard));
-        maroonMinus.setOnClickListener(v -> decrementByOne(itemMaroon));
-        maroonMinus5.setOnClickListener(v -> decrementByFive(itemMaroon));
-        maroonPlus.setOnClickListener(v -> incrementByOne(itemMaroon));
-        maroonPlus5.setOnClickListener(v -> incrementByFive(itemMaroon));
-        darkBrownMinus.setOnClickListener(v -> decrementByOne(itemDarkBrown));
-        darkBrownMinus5.setOnClickListener(v -> decrementByFive(itemDarkBrown));
-        darkBrownPlus.setOnClickListener(v -> incrementByOne(itemDarkBrown));
-        darkBrownPlus5.setOnClickListener(v -> incrementByFive(itemDarkBrown));
-        more.setOnClickListener(v -> moreLayout.setVisibility(View.VISIBLE));
-        less.setOnClickListener(v -> moreLayout.setVisibility(View.GONE));
-        description.setOnClickListener(v -> showDescription());
+        binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
+        binding.done.setOnClickListener(v -> done());
+        binding.mustardMinus.setOnClickListener(v -> decrement("Mustard", 1));
+        binding.mustardMinus5.setOnClickListener(v -> decrement("Mustard", 5));
+        binding.mustardPlus.setOnClickListener(v -> increment("Mustard", 1));
+        binding.mustardPlus5.setOnClickListener(v -> increment("Mustard", 5));
+        binding.maroonMinus.setOnClickListener(v -> decrement("Maroon", 1));
+        binding.maroonMinus5.setOnClickListener(v -> decrement("Maroon", 5));
+        binding.maroonPlus.setOnClickListener(v -> increment("Maroon", 1));
+        binding.maroonPlus5.setOnClickListener(v -> increment("Maroon", 5));
+        binding.darkBrownMinus.setOnClickListener(v -> decrement("Dark brown", 1));
+        binding.darkBrownMinus5.setOnClickListener(v -> decrement("Dark brown", 5));
+        binding.darkBrownPlus.setOnClickListener(v -> increment("Dark brown", 1));
+        binding.darkBrownPlus5.setOnClickListener(v -> increment("Dark brown", 5));
+        binding.more.setOnClickListener(v -> binding.moreLayout.setVisibility(View.VISIBLE));
+        binding.less.setOnClickListener(v -> binding.moreLayout.setVisibility(View.GONE));
+        binding.description.setOnClickListener(v -> showDescription());
     }
 
-    private void decrementByOne(Item itemToDecrement) {
-        if (itemToDecrement.getQuantity() > 0) {
-            itemToDecrement.setQuantity(itemToDecrement.getQuantity() - 1);
-        }
-        setValues();
-    }
-
-    private void decrementByFive(Item itemToDecrement) {
-        if (itemToDecrement.getQuantity() > 0) {
-            int newQuantity = itemToDecrement.getQuantity() - 5;
-            if (newQuantity < 0) newQuantity = 0;
-            itemToDecrement.setQuantity(newQuantity);
-        }
-        setValues();
-    }
-
-    private void incrementByOne(Item itemToIncrement) {
-        if (getTotalQuantity() < 30) {
-            itemToIncrement.setQuantity(itemToIncrement.getQuantity() + 1);
+    private void decrement(String insert, int quantity) {
+        if (insert.equals("Mustard")) {
+            item.decrementMustard(quantity);
+        } else if (insert.equals("Maroon")) {
+            item.decrementMaroon(quantity);
         } else {
-            Snackbar.make(requireView(), "You can only purchase a maximum of 30 bags of one type at a time", Snackbar.LENGTH_SHORT).show();
+            item.decrementDarkBrown(quantity);
         }
         setValues();
     }
 
-    private void incrementByFive(Item itemToIncrement) {
-        if (getTotalQuantity() < 30) {
-            int newTotalQuantity = getTotalQuantity() + 5;
-            if (newTotalQuantity <= 30) {
-                itemToIncrement.setQuantity(itemToIncrement.getQuantity() + 5);
-            } else {
-                Snackbar.make(requireView(), "You can only purchase a maximum of 30 bags of one type at a time", Snackbar.LENGTH_SHORT).show();
+    private void increment(String insert, int quantity) {
+        if (insert.equals("Mustard")) {
+            item.incrementMustard(quantity);
+        } else if (insert.equals("Maroon")) {
+            item.incrementMaroon(quantity);
+        } else {
+            item.incrementDarkBrown(quantity);
+        }
+        setValues();
+    }
+
+    public void setItem(String sku) {
+        for (ItemInCart itemInCart : cartViewModel.getItemsInCart()) {
+            if (itemInCart.getItem().getSku().equals(sku)) {
+                this.item = itemInCart;
             }
-        } else {
-            Snackbar.make(requireView(), "You can only purchase a maximum of 30 bags of one type at a time", Snackbar.LENGTH_SHORT).show();
         }
-        setValues();
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-        moreLayout.setVisibility(View.GONE);
+        binding.moreLayout.setVisibility(View.GONE);
         loadImages();
-        getItems(item);
         setValues();
     }
 
     private void loadImages() {
-        String sku = item.getSku();
+        String sku = item.getItem().getSku();
         if (adapter == null || !adapter.getSku().equals(sku)) {
-            adapter = new ImageFragmentAdapter(requireActivity(), sku, item.getName());
-            pager.setAdapter(adapter);
+            adapter = new ImageFragmentAdapter(requireActivity(), sku, item.getItem().getName());
+            binding.pager.setAdapter(adapter);
             checkIfSwipePromptHasBeenShownRecently();
         }
     }
 
     private void done() {
-        if (itemMustard.getQuantity() > 0) cartViewModel.setItem(itemMustard);
-        if (itemMaroon.getQuantity() > 0) cartViewModel.setItem(itemMaroon);
-        if (itemDarkBrown.getQuantity() > 0) cartViewModel.setItem(itemDarkBrown);
-        cartViewModel.refresh();
         requireActivity().onBackPressed();
     }
 
-    private void getItems(Item item) {
-        itemMustard = cartViewModel.getItemFromCart(item.getSku(), "Mustard");
-        if (itemMustard == null) itemMustard = item.cloneItemWithZeroQuantity("Mustard");
-        itemMaroon = cartViewModel.getItemFromCart(item.getSku(), "Maroon");
-        if (itemMaroon == null) itemMaroon = item.cloneItemWithZeroQuantity("Maroon");
-        itemDarkBrown = cartViewModel.getItemFromCart(item.getSku(), "Dark brown");
-        if (itemDarkBrown == null) itemDarkBrown = item.cloneItemWithZeroQuantity("Dark brown");
-    }
-
     private void showDescription() {
-        new MaterialAlertDialogBuilder(requireContext()).setTitle("Description").setMessage(item.getDescription()).setPositiveButton("Close", null).show();
+        new MaterialAlertDialogBuilder(requireContext()).setTitle("Description").setMessage(item.getItem().getDescription()).setPositiveButton("Close", null).show();
     }
 
-    private int getItemPrice(Item item) {
-        int price = item.getPriceWholesale();
-        if (cartViewModel.getOrderType() == 2) price = item.getPriceShaba();
-        if (cartViewModel.getOrderType() == 1) price = item.getPriceConsignment();
-        return price;
+    private void checkIfSwipePromptHasBeenShownRecently() {
+        SharedPreferences sp = requireActivity().getSharedPreferences("shaba_retailers", Context.MODE_PRIVATE);
+        long lastShown = sp.getLong("swipe_prompt_last_shown", 0);
+        if (System.currentTimeMillis() - lastShown > 604800000L) showSwipePrompt(sp);
     }
 
-    private int getTotalQuantity() {
-        return itemDarkBrown.getQuantity() + itemMaroon.getQuantity() + itemMustard.getQuantity();
+    private void showSwipePrompt(SharedPreferences sp) {
+        binding.swipeAnimation.setVisibility(View.VISIBLE);
+        binding.swipeAnimation.playAnimation();
+        sp.edit().putLong("swipe_prompt_last_shown", System.currentTimeMillis()).apply();
+        binding.pager.postDelayed(() -> binding.swipeAnimation.setVisibility(View.GONE), 3000);
     }
 
     private static class ImageFragmentAdapter extends FragmentStateAdapter {
@@ -297,18 +217,5 @@ public class CartItemFragment extends Fragment {
         public String getSku() {
             return sku;
         }
-    }
-
-    private void checkIfSwipePromptHasBeenShownRecently() {
-        SharedPreferences sp = requireActivity().getSharedPreferences("shaba_retailers", Context.MODE_PRIVATE);
-        long lastShown = sp.getLong("swipe_prompt_last_shown", 0);
-        if (System.currentTimeMillis() - lastShown > 604800000L) showSwipePrompt(sp);
-    }
-
-    private void showSwipePrompt(SharedPreferences sp) {
-        swipeAnim.setVisibility(View.VISIBLE);
-        swipeAnim.playAnimation();
-        sp.edit().putLong("swipe_prompt_last_shown", System.currentTimeMillis()).apply();
-        pager.postDelayed(() -> swipeAnim.setVisibility(View.GONE), 3000);
     }
 }

@@ -59,7 +59,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
         });
         cartViewModel2.getRetailerLive().observe(getViewLifecycleOwner(), retailer -> {
             if (retailer == null) {
-                binding.completeOrder.setEnabled(true);
+                binding.completeOrder.setEnabled(false);
                 retailerLoaded = 2;
             } else {
                 retailerLoaded = 1;

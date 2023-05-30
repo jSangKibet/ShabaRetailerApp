@@ -24,7 +24,7 @@ public class CartViewModel2 extends AndroidViewModel {
         super(application);
         itemsInCartLive = new MutableLiveData<>(itemsInCart);
         orderTypeLive = new MutableLiveData<>(orderType);
-        retailerLive = new MutableLiveData<>(retailer);
+        retailerLive = new MutableLiveData<>();
     }
 
     public MutableLiveData<List<ItemInCart>> getItemsInCartLive() {
@@ -45,6 +45,7 @@ public class CartViewModel2 extends AndroidViewModel {
 
     public void setRetailer(Retailer retailer) {
         this.retailer = retailer;
+        retailerLive.setValue(retailer);
     }
 
     public int getOrderType() {
@@ -83,6 +84,7 @@ public class CartViewModel2 extends AndroidViewModel {
                 break;
             }
         }
+        commit();
     }
 
     public void resetCart() {

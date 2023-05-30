@@ -45,7 +45,7 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         ItemInCart item = items.get(position);
         holder.name.setText(item.getItem().getName());
-        holder.quantity.setText(context.getString(R.string.qty, item.getItem().getQuantity()));
+        holder.quantity.setText(context.getString(R.string.qty, item.getQuantity()));
         holder.add.setOnClickListener(v -> itemActionListener.handle(item.getItem().getSku()));
         holder.edit.setOnClickListener(v -> itemActionListener.handle(item.getItem().getSku()));
         holder.image.loadImages(item.getItem().getSku(), position);

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -65,7 +64,7 @@ public class CatalogFragment extends Fragment {
     }
 
     private void itemSelected(String sku) {
-        Toast.makeText(requireContext(), "Item selected", Toast.LENGTH_LONG).show();
+        ((CatalogActivity) requireActivity()).toCartItem(sku);
     }
 
     private void toCart() {
@@ -97,7 +96,10 @@ public class CatalogFragment extends Fragment {
             adapter.setItems(itemsInCart);
             displayTotals(count, total);
         });
-        cartViewModel2.getOrderTypeLive().observe(getViewLifecycleOwner(), orderType -> adapter.setOrderType(orderType));
+        cartViewModel2.getOrderTypeLive().observe(getViewLifecycleOwner(), orderType -> {
+            adapter.setOrderType(orderType);
+            binding.setOrderType.setText(Atlas.getOrderTypeAsString(orderType));
+        });
     }
 
     private void displayTotals(int count, int total) {

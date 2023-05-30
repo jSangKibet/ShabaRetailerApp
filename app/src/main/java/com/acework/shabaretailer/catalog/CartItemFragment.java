@@ -106,7 +106,7 @@ public class CartItemFragment extends Fragment {
 
     private void setListeners() {
         binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
-        binding.done.setOnClickListener(v -> done());
+        binding.done.setOnClickListener(v -> requireActivity().onBackPressed());
         binding.mustardMinus.setOnClickListener(v -> decrement("Mustard", 1));
         binding.mustardMinus5.setOnClickListener(v -> decrement("Mustard", 5));
         binding.mustardPlus.setOnClickListener(v -> increment("Mustard", 1));
@@ -132,6 +132,7 @@ public class CartItemFragment extends Fragment {
         } else {
             item.decrementDarkBrown(quantity);
         }
+        cartViewModel.commit();
         setValues();
     }
 
@@ -143,6 +144,7 @@ public class CartItemFragment extends Fragment {
         } else {
             item.incrementDarkBrown(quantity);
         }
+        cartViewModel.commit();
         setValues();
     }
 
@@ -164,10 +166,6 @@ public class CartItemFragment extends Fragment {
             binding.pager.setAdapter(adapter);
             checkIfSwipePromptHasBeenShownRecently();
         }
-    }
-
-    private void done() {
-        requireActivity().onBackPressed();
     }
 
     private void showDescription() {

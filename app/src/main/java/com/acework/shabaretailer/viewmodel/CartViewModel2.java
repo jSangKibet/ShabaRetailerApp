@@ -53,6 +53,7 @@ public class CartViewModel2 extends AndroidViewModel {
 
     public void setOrderType(int orderType) {
         this.orderType = orderType;
+        orderTypeLive.setValue(orderType);
     }
 
     public List<ItemInCart> getItemsInCart() {
@@ -90,5 +91,9 @@ public class CartViewModel2 extends AndroidViewModel {
             itemInCart.setMaroonInsertNum(0);
             itemInCart.setDarkBrownInsertNum(0);
         }
+    }
+
+    public void commit() {
+        itemsInCartLive.setValue(itemsInCart);
     }
 }

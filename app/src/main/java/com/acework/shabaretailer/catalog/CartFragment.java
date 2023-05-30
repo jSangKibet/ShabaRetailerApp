@@ -16,14 +16,12 @@ import com.acework.shabaretailer.adapter.ItemInCartAdapter;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentCartBinding;
 import com.acework.shabaretailer.model.Item;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.acework.shabaretailer.viewmodel.CartViewModel2;
 import com.google.android.material.snackbar.Snackbar;
 
 public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActionListener {
     private FragmentCartBinding binding;
     private ItemInCartAdapter adapter;
-    private CartViewModel cartViewModel;
     private CartViewModel2 cartViewModel2;
     private int retailerLoaded = 0;
 
@@ -52,7 +50,6 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     private void loadData() {
-        cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
         cartViewModel2 = new ViewModelProvider(requireActivity()).get(CartViewModel2.class);
 
         // display items & totals
@@ -77,7 +74,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     private void computeTotals() {
-        int totalValueOfItems = Atlas.calculateItemTotal(cartViewModel.getOrderType(), cartViewModel2.getItemsInCart());
+        int totalValueOfItems = Atlas.calculateItemTotal(cartViewModel2.getOrderType(), cartViewModel2.getItemsInCart());
         int totalWeightOfItems = Atlas.calculateItemWeight(cartViewModel2.getItemsInCart());
         int estimatedTransportCost = Atlas.calculateEstimatedTransportCost(
                 cartViewModel2.getRetailer() == null ?
@@ -98,7 +95,7 @@ public class CartFragment extends Fragment implements ItemInCartAdapter.ItemActi
     }
 
     @Override
-    public void itemSelected(String  sku) {
+    public void itemSelected(String sku) {
         ((CatalogActivity) requireActivity()).toCartItem(sku);
     }
 

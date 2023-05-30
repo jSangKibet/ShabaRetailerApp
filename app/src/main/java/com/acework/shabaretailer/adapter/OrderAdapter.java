@@ -14,14 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.model.Order;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHolder> {
@@ -53,7 +52,7 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHold
         } else {
             holder.total.setText(context.getString(R.string.kes, order.getFinalTotal()));
         }
-        holder.type.setText(CartViewModel.getOrderTypeAsString(order.getType()));
+        holder.type.setText(Atlas.getOrderTypeAsString(order.getType()));
         holder.status.setText(order.getStatus());
         holder.container.setOnClickListener(v -> orderActionListener.orderSelected(order));
         holder.copy.setOnClickListener(v -> {

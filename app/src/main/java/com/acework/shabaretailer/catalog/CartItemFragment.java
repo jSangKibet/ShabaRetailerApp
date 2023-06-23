@@ -50,6 +50,13 @@ public class CartItemFragment extends Fragment {
     }
 
     private void setValues() {
+        if (item.getItem().getSku().equals("2")) {
+            binding.dustyPinkLayout.setVisibility(View.GONE);
+            binding.taupeLayout.setVisibility(View.GONE);
+        } else {
+            binding.dustyPinkLayout.setVisibility(View.VISIBLE);
+            binding.taupeLayout.setVisibility(View.VISIBLE);
+        }
         binding.name.setText(item.getItem().getName());
         binding.mustardQty.setText(String.valueOf(item.getMustardInsertNum()));
         binding.maroonQty.setText(String.valueOf(item.getMaroonInsertNum()));

@@ -46,12 +46,22 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
         holder.name.setText(item.getName());
         holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item.getSku()));
         holder.delete.setOnClickListener(v -> itemActionListener.itemRemoved(item));
-        if (item.getInsertColour().equals("Dark brown")) {
-            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
-        } else if (item.getInsertColour().equals("Maroon")) {
-            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
-        } else {
-            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+
+        switch (item.getInsertColour()) {
+            case "Dark brown":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
+                break;
+            case "Maroon":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
+                break;
+            case "Mustard":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+                break;
+            case "Dusty pink":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dusty_pink_circle));
+                break;
+            default:
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.taupe_circle));
         }
 
         int priceToUse = item.getPriceWholesale();

@@ -48,12 +48,22 @@ public class DeliveryNoteAdapter extends RecyclerView.Adapter<DeliveryNoteAdapte
         int total = priceToUse * item.getQuantity();
         holder.name.setText(item.getName());
         holder.total.setText(context.getString(R.string.total_in_cart, priceToUse, item.getQuantity(), total));
-        if (item.getInsertColour().equals("Dark brown")) {
-            holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
-        } else if (item.getInsertColour().equals("Maroon")) {
-            holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
-        } else {
-            holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+
+        switch (item.getInsertColour()) {
+            case "Dark brown":
+                holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
+                break;
+            case "Maroon":
+                holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
+                break;
+            case "Mustard":
+                holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+                break;
+            case "Dusty pink":
+                holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dusty_pink_circle));
+                break;
+            default:
+                holder.insertColour.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.taupe_circle));
         }
     }
 

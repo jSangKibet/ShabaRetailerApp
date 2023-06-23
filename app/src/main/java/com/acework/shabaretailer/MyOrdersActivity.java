@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
@@ -67,7 +68,7 @@ public class MyOrdersActivity extends AppCompatActivity {
 
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         if (u != null) {
-            FirebaseFirestore.getInstance().collection("orders").whereEqualTo("retailerId", u.getUid()).get().addOnCompleteListener(task -> {
+            FirebaseFirestore.getInstance().collection("orders").whereEqualTo("retailerId", u.getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
                     List<Order> retrievedOrders = new ArrayList<>();

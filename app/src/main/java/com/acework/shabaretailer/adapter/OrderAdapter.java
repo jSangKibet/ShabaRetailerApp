@@ -20,7 +20,6 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHolder> {
@@ -66,7 +65,6 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.ItemViewHold
     @SuppressLint("NotifyDataSetChanged")
     public void setItems(List<Order> orders) {
         myOrders = orders;
-        Collections.reverse(myOrders);
         notifyDataSetChanged();
     }
 

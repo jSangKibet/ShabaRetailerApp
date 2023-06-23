@@ -42,6 +42,16 @@ public class Atlas {
                 itemToAdd.setQuantity(itemInCart.getDarkBrownInsertNum());
                 items.add(itemToAdd);
             }
+            if (itemInCart.getDustyPinkInsertNum() > 0) {
+                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Dusty pink");
+                itemToAdd.setQuantity(itemInCart.getDustyPinkInsertNum());
+                items.add(itemToAdd);
+            }
+            if (itemInCart.getTaupeInsertNum() > 0) {
+                Item itemToAdd = itemInCart.getItem().cloneItemWithZeroQuantity("Taupe");
+                itemToAdd.setQuantity(itemInCart.getTaupeInsertNum());
+                items.add(itemToAdd);
+            }
         }
         return items;
     }
@@ -79,6 +89,8 @@ public class Atlas {
             itemWeight += itemInCart.getMustardInsertNum() * itemInCart.getItem().getWeight();
             itemWeight += itemInCart.getMaroonInsertNum() * itemInCart.getItem().getWeight();
             itemWeight += itemInCart.getDarkBrownInsertNum() * itemInCart.getItem().getWeight();
+            itemWeight += itemInCart.getDustyPinkInsertNum() * itemInCart.getItem().getWeight();
+            itemWeight += itemInCart.getTaupeInsertNum() * itemInCart.getItem().getWeight();
         }
         return itemWeight;
     }

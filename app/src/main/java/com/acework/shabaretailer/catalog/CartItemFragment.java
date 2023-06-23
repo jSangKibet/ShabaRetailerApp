@@ -54,6 +54,8 @@ public class CartItemFragment extends Fragment {
         binding.mustardQty.setText(String.valueOf(item.getMustardInsertNum()));
         binding.maroonQty.setText(String.valueOf(item.getMaroonInsertNum()));
         binding.darkBrownQty.setText(String.valueOf(item.getDarkBrownInsertNum()));
+        binding.dustyPinkQty.setText(String.valueOf(item.getDustyPinkInsertNum()));
+        binding.taupeQty.setText(String.valueOf(item.getTaupeInsertNum()));
         binding.totalQuantity.setText(getString(R.string.quantity_ph, item.getQuantity()));
         setTotal();
         setItemDetails();
@@ -77,6 +79,8 @@ public class CartItemFragment extends Fragment {
         itemTotal += item.getMustardInsertNum() * priceToUse;
         itemTotal += item.getMaroonInsertNum() * priceToUse;
         itemTotal += item.getDarkBrownInsertNum() * priceToUse;
+        itemTotal += item.getDustyPinkInsertNum() * priceToUse;
+        itemTotal += item.getTaupeInsertNum() * priceToUse;
         binding.total.setText(getString(R.string.total, itemTotal));
     }
 
@@ -119,30 +123,56 @@ public class CartItemFragment extends Fragment {
         binding.darkBrownMinus5.setOnClickListener(v -> decrement("Dark brown", 5));
         binding.darkBrownPlus.setOnClickListener(v -> increment("Dark brown", 1));
         binding.darkBrownPlus5.setOnClickListener(v -> increment("Dark brown", 5));
+        binding.dustyPinkMinus.setOnClickListener(v -> decrement("Dusty pink", 1));
+        binding.dustyPinkMinus5.setOnClickListener(v -> decrement("Dusty pink", 5));
+        binding.dustyPinkPlus.setOnClickListener(v -> increment("Dusty pink", 1));
+        binding.dustyPinkPlus5.setOnClickListener(v -> increment("Dusty pink", 5));
+        binding.taupeMinus.setOnClickListener(v -> decrement("Taupe", 1));
+        binding.taupeMinus5.setOnClickListener(v -> decrement("Taupe", 5));
+        binding.taupePlus.setOnClickListener(v -> increment("Taupe", 1));
+        binding.taupePlus5.setOnClickListener(v -> increment("Taupe", 5));
         binding.more.setOnClickListener(v -> binding.moreLayout.setVisibility(View.VISIBLE));
         binding.less.setOnClickListener(v -> binding.moreLayout.setVisibility(View.GONE));
         binding.description.setOnClickListener(v -> showDescription());
     }
 
     private void decrement(String insert, int quantity) {
-        if (insert.equals("Mustard")) {
-            item.decrementMustard(quantity);
-        } else if (insert.equals("Maroon")) {
-            item.decrementMaroon(quantity);
-        } else {
-            item.decrementDarkBrown(quantity);
+        switch (insert) {
+            case "Dark brown":
+                item.decrementDarkBrown(quantity);
+                break;
+            case "Maroon":
+                item.decrementMaroon(quantity);
+                break;
+            case "Mustard":
+                item.decrementMustard(quantity);
+                break;
+            case "Dusty pink":
+                item.decrementDustyPink(quantity);
+                break;
+            default:
+                item.decrementTaupe(quantity);
         }
         cartViewModel.commit();
         setValues();
     }
 
     private void increment(String insert, int quantity) {
-        if (insert.equals("Mustard")) {
-            item.incrementMustard(quantity);
-        } else if (insert.equals("Maroon")) {
-            item.incrementMaroon(quantity);
-        } else {
-            item.incrementDarkBrown(quantity);
+        switch (insert) {
+            case "Dark brown":
+                item.incrementDarkBrown(quantity);
+                break;
+            case "Maroon":
+                item.incrementMaroon(quantity);
+                break;
+            case "Mustard":
+                item.incrementMustard(quantity);
+                break;
+            case "Dusty pink":
+                item.incrementDustyPink(quantity);
+                break;
+            default:
+                item.incrementTaupe(quantity);
         }
         cartViewModel.commit();
         setValues();

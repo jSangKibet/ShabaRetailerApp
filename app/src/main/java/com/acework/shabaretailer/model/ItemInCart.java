@@ -10,6 +10,8 @@ public class ItemInCart {
     private int mustardInsertNum = 0;
     private int maroonInsertNum = 0;
     private int darkBrownInsertNum = 0;
+    private int dustyPinkInsertNum = 0;
+    private int taupeInsertNum = 0;
 
     public ItemInCart(Item item) {
         this.item = item;
@@ -43,8 +45,24 @@ public class ItemInCart {
         this.darkBrownInsertNum = darkBrownInsertNum;
     }
 
+    public int getDustyPinkInsertNum() {
+        return dustyPinkInsertNum;
+    }
+
+    public void setDustyPinkInsertNum(int dustyPinkInsertNum) {
+        this.dustyPinkInsertNum = dustyPinkInsertNum;
+    }
+
+    public int getTaupeInsertNum() {
+        return taupeInsertNum;
+    }
+
+    public void setTaupeInsertNum(int taupeInsertNum) {
+        this.taupeInsertNum = taupeInsertNum;
+    }
+
     public int getQuantity() {
-        return maroonInsertNum + mustardInsertNum + darkBrownInsertNum;
+        return maroonInsertNum + mustardInsertNum + darkBrownInsertNum + dustyPinkInsertNum + taupeInsertNum;
     }
 
     public void decrementMustard(int quantity) {
@@ -68,24 +86,52 @@ public class ItemInCart {
         }
     }
 
+    public void decrementDustyPink(int quantity) {
+        if (dustyPinkInsertNum > 0) {
+            dustyPinkInsertNum = dustyPinkInsertNum - quantity;
+            if (dustyPinkInsertNum < 0) dustyPinkInsertNum = 0;
+        }
+    }
+
+    public void decrementTaupe(int quantity) {
+        if (taupeInsertNum > 0) {
+            taupeInsertNum = taupeInsertNum - quantity;
+            if (taupeInsertNum < 0) taupeInsertNum = 0;
+        }
+    }
+
     public void incrementMustard(int quantity) {
-        if (mustardInsertNum <30) {
+        if (mustardInsertNum < 30) {
             mustardInsertNum = mustardInsertNum + quantity;
             if (mustardInsertNum > 30) mustardInsertNum = 30;
         }
     }
 
     public void incrementMaroon(int quantity) {
-        if (maroonInsertNum <30) {
+        if (maroonInsertNum < 30) {
             maroonInsertNum = maroonInsertNum + quantity;
             if (maroonInsertNum > 30) maroonInsertNum = 30;
         }
     }
 
     public void incrementDarkBrown(int quantity) {
-        if (darkBrownInsertNum <30) {
+        if (darkBrownInsertNum < 30) {
             darkBrownInsertNum = darkBrownInsertNum + quantity;
             if (darkBrownInsertNum > 30) darkBrownInsertNum = 30;
+        }
+    }
+
+    public void incrementDustyPink(int quantity) {
+        if (dustyPinkInsertNum < 30) {
+            dustyPinkInsertNum = dustyPinkInsertNum + quantity;
+            if (dustyPinkInsertNum > 30) dustyPinkInsertNum = 30;
+        }
+    }
+
+    public void incrementTaupe(int quantity) {
+        if (taupeInsertNum < 30) {
+            taupeInsertNum = taupeInsertNum + quantity;
+            if (taupeInsertNum > 30) taupeInsertNum = 30;
         }
     }
 }

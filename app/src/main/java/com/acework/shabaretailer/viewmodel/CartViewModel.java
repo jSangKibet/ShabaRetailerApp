@@ -93,6 +93,8 @@ public class CartViewModel extends AndroidViewModel {
             itemInCart.setMustardInsertNum(0);
             itemInCart.setMaroonInsertNum(0);
             itemInCart.setDarkBrownInsertNum(0);
+            itemInCart.setDustyPinkInsertNum(0);
+            itemInCart.setTaupeInsertNum(0);
         }
         commit();
     }

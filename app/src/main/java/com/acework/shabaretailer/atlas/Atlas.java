@@ -61,10 +61,12 @@ public class Atlas {
         int itemTotal = 0;
 
         for (ItemInCart itemInCart : itemsInCart) {
-            int priceToUse=getPriceToUse(itemInCart.getItem(), orderType);
+            int priceToUse = getPriceToUse(itemInCart.getItem(), orderType);
             itemTotal += itemInCart.getMustardInsertNum() * priceToUse;
             itemTotal += itemInCart.getMaroonInsertNum() * priceToUse;
             itemTotal += itemInCart.getDarkBrownInsertNum() * priceToUse;
+            itemTotal += itemInCart.getDustyPinkInsertNum() * priceToUse;
+            itemTotal += itemInCart.getTaupeInsertNum() * priceToUse;
         }
         return itemTotal;
     }

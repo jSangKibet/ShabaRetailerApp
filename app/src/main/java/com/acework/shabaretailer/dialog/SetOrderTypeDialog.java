@@ -1,4 +1,4 @@
-package com.acework.shabaretailer.catalog;
+package com.acework.shabaretailer.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;

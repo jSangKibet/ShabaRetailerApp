@@ -17,6 +17,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentCartItemBinding;
+import com.acework.shabaretailer.dialog.FeaturesDialog;
 import com.acework.shabaretailer.model.ItemInCart;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 

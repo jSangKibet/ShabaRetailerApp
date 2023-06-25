@@ -1,12 +1,14 @@
 <!--?xml version="1.0" encoding="UTF-8"?-->
 <resources>
-  <color name="primaryColor">#000000</color>
-  <color name="primaryLightColor">#2c2c2c</color>
-  <color name="primaryDarkColor">#000000</color>
-  <color name="primaryTextColor">#ffffff</color>
+    <color name="primaryColor">#000000</color>
+    <color name="primaryLightColor">#2c2c2c</color>
+    <color name="primaryDarkColor">#000000</color>
+    <color name="primaryTextColor">#ffffff</color>
 
-  <color name="gray_01">#ebebeb</color>
-  <color name="mustard">#F3B110</color>
-  <color name="maroon">#860C2D</color>
-  <color name="dark_brown">#4F3732</color>
+    <color name="gray_01">#ebebeb</color>
+    <color name="mustard">#F3B110</color>
+    <color name="maroon">#860C2D</color>
+    <color name="dark_brown">#4F3732</color>
+    <color name="dusty_pink">#D5A092</color>
+    <color name="taupe">#A6958D</color>
 </resources>

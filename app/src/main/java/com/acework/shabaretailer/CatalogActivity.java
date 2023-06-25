@@ -9,11 +9,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.catalog.CartFragment;
 import com.acework.shabaretailer.catalog.CartItemFragment;
 import com.acework.shabaretailer.catalog.CatalogFragment;
 import com.acework.shabaretailer.catalog.ConfirmOrderFragment;
-import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.auth.FirebaseAuth;
@@ -45,9 +45,9 @@ public class CatalogActivity extends AppCompatActivity {
         activeFragment = catalogFragment;
     }
 
-    public void toCartItem(Item item) {
+    public void toCartItem(String sku) {
         fromCatalog = activeFragment == catalogFragment;
-        cartItemFragment.setItem(item);
+        cartItemFragment.setItem(sku);
         getSupportFragmentManager().beginTransaction().hide(activeFragment).show(cartItemFragment).commit();
         activeFragment = cartItemFragment;
     }
@@ -64,8 +64,8 @@ public class CatalogActivity extends AppCompatActivity {
     }
 
     private void loadItems() {
-        cartViewModel.getCart().observe(this, cart -> {
-            if (cart.getItems().size() == 0) {
+        cartViewModel.getItemsInCartLive().observe(this, itemsInCart -> {
+            if (Atlas.getItemsInCart(itemsInCart).size() == 0) {
                 if (activeFragment == cartFragment) {
                     onBackPressed();
                 }

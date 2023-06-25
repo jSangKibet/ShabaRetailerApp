@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,41 +14,24 @@ import com.acework.shabaretailer.CatalogActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.StatusDialog;
 import com.acework.shabaretailer.atlas.Atlas;
+import com.acework.shabaretailer.databinding.FragmentConfirmOrderBinding;
 import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
-import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.model.Order;
 import com.acework.shabaretailer.model.Retailer;
-import com.acework.shabaretailer.model.RetailerBags;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Transaction;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ConfirmOrderFragment extends Fragment {
-    private TextView itemTotal, estWeight, estTrans, estTotal, name, county, street, telephone, email, orderType;
-    private CheckBox tc, lb;
-    private MaterialButton confirm, back, more;
+    private FragmentConfirmOrderBinding binding;
     private CartViewModel cartViewModel;
-    private String uid;
 
     public ConfirmOrderFragment() {
-    }
-
-    public static int getTransportCost(int weight, int costPerKG) {
-        int kg = weight / 1000;
-        int remainder = weight % 1000;
-        if (remainder > 0) kg += 1;
-        return kg * costPerKG;
     }
 
     @Override
@@ -59,150 +40,58 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_confirm_order, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentConfirmOrderBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindViews(view);
         setListeners();
         setValues();
     }
 
-    private void bindViews(View view) {
-        itemTotal = view.findViewById(R.id.item_total);
-        estWeight = view.findViewById(R.id.est_weight);
-        estTrans = view.findViewById(R.id.est_transport);
-        estTotal = view.findViewById(R.id.est_total);
-        name = view.findViewById(R.id.name);
-        county = view.findViewById(R.id.county);
-        street = view.findViewById(R.id.street);
-        telephone = view.findViewById(R.id.telephone);
-        email = view.findViewById(R.id.email);
-        tc = view.findViewById(R.id.tc_checkbox);
-        confirm = view.findViewById(R.id.confirm);
-        back = view.findViewById(R.id.back_button);
-        orderType = view.findViewById(R.id.order_type);
-        lb = view.findViewById(R.id.lb_checkbox);
-        more = view.findViewById(R.id.more);
-    }
-
     private void setValues() {
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        cartViewModel.getCart().observe(getViewLifecycleOwner(), this::computeValues);
-        FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
-        assert u != null;
-        this.uid = u.getUid();
-    }
-
-    private void computeValues(Cart cart) {
-        setUserInfo(cart.getRetailer());
-        int totalPrice = 0;
-        int totalWeight = 0;
-        int orderTypeInt = cart.getOrderType();
-
-        for (Item itemInCart : cart.getItems()) {
-            int priceToUse = itemInCart.getPriceWholesale();
-            if (orderTypeInt == 1) priceToUse = itemInCart.getPriceConsignment();
-            if (orderTypeInt == 2) priceToUse = itemInCart.getPriceShaba();
-
-            if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * priceToUse);
-                totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
-            }
-        }
-
-        itemTotal.setText(getString(R.string.kes, totalPrice));
-        estWeight.setText(getString(R.string.weight_formatted, totalWeight));
-        estTrans.setText(getString(R.string.kes, 0));
-        estTotal.setText(getString(R.string.kes, totalPrice));
-
-        if (orderTypeInt == 2) {
-            this.orderType.setText(R.string.commission);
-        } else if (orderTypeInt == 1) {
-            this.orderType.setText(R.string.consignment);
-        } else {
-            this.orderType.setText(R.string.wholesale);
-        }
-
-        int transPerKg = 500;
-        if (cart.getRetailer() != null) {
-            if (cart.getRetailer().getCounty().equals("Nairobi")) {
-                transPerKg = 250;
-            }
-            int finalTransCost = getTransportCost(totalWeight, transPerKg);
-            estTrans.setText(getString(R.string.kes, finalTransCost));
-            estTotal.setText(getString(R.string.kes, totalPrice + finalTransCost));
-        }
-    }
-
-    private void setUserInfo(Retailer retailer) {
-        if (retailer == null) {
-            confirm.setEnabled(false);
-        } else {
-            name.setText(retailer.getName());
-            county.setText(retailer.getCounty());
-            street.setText(retailer.getStreet());
-            telephone.setText(retailer.getTelephone());
-            email.setText(retailer.getEmail());
-            confirm.setEnabled(true);
-            if (retailer.getLookbook() == 0) {
-                lb.setVisibility(View.VISIBLE);
-            }
-        }
+        cartViewModel.getItemsInCartLive().observe(getViewLifecycleOwner(), itemsInCart -> displayRetailerInfo());
+        cartViewModel.getRetailerLive().observe(getViewLifecycleOwner(), retailer -> displayRetailerInfo());
     }
 
     private void setListeners() {
-        back.setOnClickListener(v -> requireActivity().onBackPressed());
-        confirm.setOnClickListener(v -> confirmOrder());
-        more.setOnClickListener(v -> {
+        binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
+        binding.confirm.setOnClickListener(v -> confirmOrder());
+        binding.more.setOnClickListener(v -> {
             CompleteOrderMoreDialog d = new CompleteOrderMoreDialog();
             d.show(getChildFragmentManager(), CompleteOrderMoreDialog.TAG);
         });
     }
 
     private Order getOrder() {
-        int totalPrice = 0;
-        int totalWeight = 0;
-        int estTransCost;
-        List<Item> itemsInCart = getItemsInCart();
-
-        for (Item itemInCart : itemsInCart) {
-            int priceToUse = itemInCart.getPriceWholesale();
-            if (cartViewModel.getOrderType() == 1) priceToUse = itemInCart.getPriceConsignment();
-            if (cartViewModel.getOrderType() == 2) priceToUse = itemInCart.getPriceShaba();
-
-            if (itemInCart.getQuantity() > 0) {
-                totalPrice += (itemInCart.getQuantity() * priceToUse);
-                totalWeight += (itemInCart.getWeight() * itemInCart.getQuantity());
-            }
-        }
-
-        Retailer retailer = Objects.requireNonNull(cartViewModel.getCart().getValue()).getRetailer();
-        int transPerKg = 500;
-        if (retailer.getCounty().equals("Nairobi")) {
-            transPerKg = 250;
-        }
-        estTransCost = getTransportCost(totalWeight, transPerKg);
-
+        int totalValueOfItems = calculateItemTotal();
+        int totalWeightOfItems = calculateItemWeight();
+        int estimatedTransportCost = calculateEstimatedTransportCost(totalWeightOfItems);
+        List<Item> itemsInCart = Atlas.getItemsInCart(cartViewModel.getItemsInCart());
         long timestamp = System.currentTimeMillis();
-
-        return new Order(uid, retailer, timestamp, "Pending", itemsInCart, totalPrice + estTransCost, estTransCost, 0, 0, retailer.getCounty(), retailer.getStreet(), cartViewModel.getOrderType(), lb.isChecked() ? 1 : 0);
-
-    }
-
-    private List<Item> getItemsInCart() {
-        List<Item> itemsInCart = new ArrayList<>();
-        for (Item item : cartViewModel.getItemsInCart()) {
-            if (item.getQuantity() > 0) itemsInCart.add(item);
-        }
-        return itemsInCart;
+        Retailer retailer = cartViewModel.getRetailer();
+        return new Order(
+                CartViewModel.UID,
+                retailer,
+                timestamp,
+                "Pending",
+                itemsInCart,
+                totalValueOfItems + estimatedTransportCost,
+                estimatedTransportCost,
+                0,
+                0,
+                retailer.getCounty(),
+                retailer.getStreet(),
+                cartViewModel.getOrderType(),
+                binding.lbCheckbox.isChecked() ? 1 : 0);
     }
 
     private void confirmOrder() {
-        if (tc.isChecked()) {
+        if (binding.tcCheckbox.isChecked()) {
             StatusDialog processingDialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
             processingDialog.show(getChildFragmentManager(), StatusDialog.TAG);
             Order order = getOrder();
@@ -214,14 +103,14 @@ public class ConfirmOrderFragment extends Fragment {
                 order.setId(newOrderRef.getId());
 
                 // check if lookbook is included in the order
-                Retailer retailer = cartViewModel.getCart().getValue().getRetailer();
-                if (lb.isChecked()) {
+                Retailer retailer = order.getRetailer();
+                if (binding.lbCheckbox.isChecked()) {
                     retailer.setLookbook(1);
-                    lb.setChecked(false);
+                    binding.lbCheckbox.setChecked(false);
                 }
 
                 // perform updates
-                transaction.update(db.collection("retailers").document(uid), "lookbook", retailer.getLookbook());
+                transaction.update(db.collection("retailers").document(CartViewModel.UID), "lookbook", retailer.getLookbook());
                 transaction.set(newOrderRef, order);
                 return null;
             }).addOnCompleteListener(task -> {
@@ -240,6 +129,50 @@ public class ConfirmOrderFragment extends Fragment {
     }
 
     public void uncheckTC() {
-        tc.setChecked(false);
+        binding.tcCheckbox.setChecked(false);
+    }
+
+    private void displayOrderInfo() {
+        int totalValueOfItems = calculateItemTotal();
+        int totalWeightOfItems = calculateItemWeight();
+        int estimatedTransportCost = calculateEstimatedTransportCost(totalWeightOfItems);
+
+        // order type
+        binding.orderType.setText(Atlas.getOrderTypeAsString(cartViewModel.getOrderType()));
+        // total value of items in order
+        binding.estTotal.setText(getString(R.string.kes, totalValueOfItems));
+        // total weight of items
+        binding.estWeight.setText(getString(R.string.weight_formatted, totalWeightOfItems));
+        // estimated transport cost
+        binding.estTransport.setText(getString(R.string.kes, estimatedTransportCost));
+        // estimated total cost
+        binding.estTotal.setText(getString(R.string.kes, totalValueOfItems + estimatedTransportCost));
+    }
+
+    private int calculateItemTotal() {
+        return Atlas.calculateItemTotal(cartViewModel.getOrderType(), cartViewModel.getItemsInCart());
+    }
+
+    private int calculateItemWeight() {
+        return Atlas.calculateItemWeight(cartViewModel.getItemsInCart());
+    }
+
+    private int calculateEstimatedTransportCost(int weight) {
+        return Atlas.calculateEstimatedTransportCost(cartViewModel.getRetailer().getCounty(), weight);
+    }
+
+    private void displayRetailerInfo() {
+        Retailer retailer = cartViewModel.getRetailer();
+        if (retailer != null) {
+            binding.name.setText(retailer.getName());
+            binding.county.setText(retailer.getCounty());
+            binding.street.setText(retailer.getStreet());
+            binding.telephone.setText(retailer.getTelephone());
+            binding.email.setText(retailer.getEmail());
+            if (retailer.getLookbook() == 0) {
+                binding.lbCheckbox.setVisibility(View.VISIBLE);
+            }
+            displayOrderInfo();
+        }
     }
 }

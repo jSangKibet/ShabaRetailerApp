@@ -12,28 +12,26 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.atlas.ObjectHandler;
 import com.acework.shabaretailer.custom.AutoScrollThumbView;
-import com.acework.shabaretailer.model.Item;
+import com.acework.shabaretailer.model.ItemInCart;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
     private final LayoutInflater inflater;
     private final Context context;
-    private final ItemActionListener itemActionListener;
-    private List<Item> allItems;
-    private List<Item> filteredItems;
+    private final ObjectHandler<String> itemActionListener;
+    private List<ItemInCart> items;
     private int orderType = -1;
 
-    public ItemAdapter(Context context, ItemActionListener itemActionListener) {
+    public ItemAdapter(Context context, ObjectHandler<String> itemActionListener) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.itemActionListener = itemActionListener;
-        allItems = new ArrayList<>();
-        filteredItems = new ArrayList<>();
+        items = new ArrayList<>();
     }
 
     @NonNull
@@ -45,12 +43,13 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
-        Item item = filteredItems.get(position);
-        holder.name.setText(item.getName());
+        ItemInCart item = items.get(position);
+        holder.name.setText(item.getItem().getName());
         holder.quantity.setText(context.getString(R.string.qty, item.getQuantity()));
-        holder.add.setOnClickListener(v -> itemActionListener.itemSelected(item));
-        holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
-        holder.image.loadImages(item.getSku(), position);
+        holder.add.setOnClickListener(v -> itemActionListener.handle(item.getItem().getSku()));
+        holder.edit.setOnClickListener(v -> itemActionListener.handle(item.getItem().getSku()));
+        holder.image.loadImages(item.getItem().getSku(), position);
+
         if (item.getQuantity() > 0) {
             holder.add.setVisibility(View.GONE);
             holder.editLayout.setVisibility(View.VISIBLE);
@@ -61,15 +60,15 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         switch (orderType) {
             case 2:
-                holder.price.setText(context.getString(R.string.price, item.getPriceShaba()));
+                holder.price.setText(context.getString(R.string.price, item.getItem().getPriceShaba()));
                 holder.add.setEnabled(true);
                 break;
             case 1:
-                holder.price.setText(context.getString(R.string.price, item.getPriceConsignment()));
+                holder.price.setText(context.getString(R.string.price, item.getItem().getPriceConsignment()));
                 holder.add.setEnabled(true);
                 break;
             case 0:
-                holder.price.setText(context.getString(R.string.price, item.getPriceWholesale()));
+                holder.price.setText(context.getString(R.string.price, item.getItem().getPriceWholesale()));
                 holder.add.setEnabled(true);
                 break;
             default:
@@ -79,48 +78,21 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
         }
     }
 
-    public void setItems(List<Item> itemsToDisplay) {
-        allItems = itemsToDisplay;
-        filter("");
-    }
-
     @SuppressLint("NotifyDataSetChanged")
-    public void filter(String key) {
-        if (key.isEmpty()) {
-            filteredItems = allItems;
-        } else {
-            filteredItems = new ArrayList<>();
-            for (Item item : allItems) {
-                if (item.getName().toLowerCase().contains(key.toLowerCase())) {
-                    filteredItems.add(item);
-                }
-            }
-        }
+    public void setItems(List<ItemInCart> items) {
+        this.items = items;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return filteredItems.size();
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void updateQuantities(HashMap<String, Integer> itemQuantities) {
-        for (Item item : allItems) {
-            Integer itemQty = itemQuantities.get(item.getSku());
-            item.setQuantity(itemQty == null ? 0 : itemQty);
-        }
-        notifyDataSetChanged();
+        return items.size();
     }
 
     @SuppressLint("NotifyDataSetChanged")
     public void setOrderType(int orderType) {
         this.orderType = orderType;
         notifyDataSetChanged();
-    }
-
-    public interface ItemActionListener {
-        void itemSelected(Item item);
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {

@@ -20,9 +20,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.adapter.DeliveryNoteAdapter;
 import com.acework.shabaretailer.adapter.ItemInOrderAdapter;
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.atlas.BackgroundExecutor;
 import com.acework.shabaretailer.model.Order;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -122,7 +122,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         String formattedDate = dateFormatter.format(new Date(order.getTimestamp()));
 
         id.setText(getString(R.string.order_num, order.getId()));
-        type.setText(CartViewModel.getOrderTypeAsString(order.getType()));
+        type.setText(Atlas.getOrderTypeAsString(order.getType()));
         date.setText(formattedDate);
         status.setText(order.getStatus());
 
@@ -278,7 +278,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         TextView totalCost = view.findViewById(R.id.total);
         TextView orderStatus = view.findViewById(R.id.status);
 
-        orderType.setText(CartViewModel.getOrderTypeAsString(order.getType()));
+        orderType.setText(Atlas.getOrderTypeAsString(order.getType()));
         retailerName.setText(order.getRetailer().getName());
         retailerEmail.setText(order.getRetailer().getEmail());
         retailerLocation.setText(String.format(Locale.getDefault(), "%s, %s", order.getStreet(), order.getCounty()));

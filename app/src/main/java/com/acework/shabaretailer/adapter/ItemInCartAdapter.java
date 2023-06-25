@@ -13,7 +13,6 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.acework.shabaretailer.R;
-import com.acework.shabaretailer.model.Cart;
 import com.acework.shabaretailer.model.Item;
 import com.google.android.material.button.MaterialButton;
 
@@ -45,14 +44,24 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         Item item = itemsInCart.get(position);
         holder.name.setText(item.getName());
-        holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item));
+        holder.edit.setOnClickListener(v -> itemActionListener.itemSelected(item.getSku()));
         holder.delete.setOnClickListener(v -> itemActionListener.itemRemoved(item));
-        if (item.getInsertColour().equals("Dark brown")) {
-            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
-        } else if (item.getInsertColour().equals("Maroon")) {
-            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
-        } else {
-            holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+
+        switch (item.getInsertColour()) {
+            case "Dark brown":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dark_brown_circle));
+                break;
+            case "Maroon":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.maroon_circle));
+                break;
+            case "Mustard":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.mustard_circle));
+                break;
+            case "Dusty pink":
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.dusty_pink_circle));
+                break;
+            default:
+                holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.taupe_circle));
         }
 
         int priceToUse = item.getPriceWholesale();
@@ -64,9 +73,9 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void setItems(Cart cart) {
-        orderType=cart.getOrderType();
-        itemsInCart = cart.getItems();
+    public void setItems(int orderType, List<Item> itemsInCart) {
+        this.orderType = orderType;
+        this.itemsInCart = itemsInCart;
         notifyDataSetChanged();
     }
 
@@ -77,7 +86,7 @@ public class ItemInCartAdapter extends RecyclerView.Adapter<ItemInCartAdapter.It
 
 
     public interface ItemActionListener {
-        void itemSelected(Item item);
+        void itemSelected(String sku);
 
         void itemRemoved(Item item);
     }

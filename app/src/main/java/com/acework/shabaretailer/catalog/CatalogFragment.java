@@ -17,6 +17,7 @@ import com.acework.shabaretailer.adapter.ItemAdapter;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.custom.GridSpacingItemDecoration;
 import com.acework.shabaretailer.databinding.FragmentCatalogBinding;
+import com.acework.shabaretailer.dialog.SetOrderTypeDialog;
 import com.acework.shabaretailer.model.Item;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.firestore.FirebaseFirestore;

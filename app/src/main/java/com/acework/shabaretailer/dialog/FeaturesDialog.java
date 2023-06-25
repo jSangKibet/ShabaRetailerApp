@@ -1,4 +1,4 @@
-package com.acework.shabaretailer.catalog;
+package com.acework.shabaretailer.dialog;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;

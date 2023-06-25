@@ -1,13 +1,11 @@
 package com.acework.shabaretailer.catalog;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -21,13 +19,11 @@ import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.FragmentCartItemBinding;
 import com.acework.shabaretailer.model.ItemInCart;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class CartItemFragment extends Fragment {
     private FragmentCartItemBinding binding;
     private ItemInCart item;
     private CartViewModel cartViewModel;
-    private LayoutInflater layoutInflater;
     private ImageFragmentAdapter adapter;
 
     @Override
@@ -45,7 +41,6 @@ public class CartItemFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         cartViewModel = new ViewModelProvider(requireActivity()).get(CartViewModel.class);
-        layoutInflater = LayoutInflater.from(requireContext());
         setListeners();
     }
 
@@ -65,7 +60,6 @@ public class CartItemFragment extends Fragment {
         binding.taupeQty.setText(String.valueOf(item.getTaupeInsertNum()));
         binding.totalQuantity.setText(getString(R.string.quantity_ph, item.getQuantity()));
         setTotal();
-        setItemDetails();
 
         switch (cartViewModel.getOrderType()) {
             case 2:
@@ -91,30 +85,6 @@ public class CartItemFragment extends Fragment {
         binding.total.setText(getString(R.string.total, itemTotal));
     }
 
-    private void setItemDetails() {
-        binding.description.setText(item.getItem().getDescription());
-        binding.size.setText(item.getItem().getSize());
-        binding.material.setText(item.getItem().getMaterial());
-        binding.weaving.setText(item.getItem().getWeaving());
-        binding.color.setText(item.getItem().getColour());
-        binding.strap.setText(item.getItem().getStrap());
-        binding.insert.setText(item.getItem().getInsert());
-        binding.weight.setText(getString(R.string.weight_formatted, item.getItem().getWeight()));
-        binding.sku.setText(item.getItem().getSku());
-        binding.strapLength.setText(item.getItem().getStrapLength());
-        setFeatures();
-    }
-
-    private void setFeatures() {
-        binding.features.removeAllViews();
-        for (String feature : item.getItem().getFeatures()) {
-            @SuppressLint("InflateParams")
-            TextView textView = (TextView) layoutInflater.inflate(R.layout.view_textview, null);
-            textView.setText(getString(R.string.bullet_item, feature));
-            binding.features.addView(textView);
-        }
-    }
-
     private void setListeners() {
         binding.backButton.setOnClickListener(v -> requireActivity().onBackPressed());
         binding.done.setOnClickListener(v -> requireActivity().onBackPressed());
@@ -138,9 +108,7 @@ public class CartItemFragment extends Fragment {
         binding.taupeMinus5.setOnClickListener(v -> decrement("Taupe", 5));
         binding.taupePlus.setOnClickListener(v -> increment("Taupe", 1));
         binding.taupePlus5.setOnClickListener(v -> increment("Taupe", 5));
-        binding.more.setOnClickListener(v -> binding.moreLayout.setVisibility(View.VISIBLE));
-        binding.less.setOnClickListener(v -> binding.moreLayout.setVisibility(View.GONE));
-        binding.description.setOnClickListener(v -> showDescription());
+        binding.more.setOnClickListener(v -> showDescription());
     }
 
     private void decrement(String insert, int quantity) {
@@ -191,7 +159,6 @@ public class CartItemFragment extends Fragment {
                 this.item = itemInCart;
             }
         }
-        binding.moreLayout.setVisibility(View.GONE);
         loadImages();
         setValues();
     }
@@ -206,7 +173,8 @@ public class CartItemFragment extends Fragment {
     }
 
     private void showDescription() {
-        new MaterialAlertDialogBuilder(requireContext()).setTitle("Description").setMessage(item.getItem().getDescription()).setPositiveButton("Close", null).show();
+        FeaturesDialog dialog = FeaturesDialog.newInstance(item.getItem());
+        dialog.show(getChildFragmentManager(), FeaturesDialog.TAG);
     }
 
     private void checkIfSwipePromptHasBeenShownRecently() {

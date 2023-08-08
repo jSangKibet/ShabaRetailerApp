@@ -9,17 +9,12 @@ import android.util.Patterns;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
-import android.widget.CheckBox;
-import android.widget.ScrollView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.model.Retailer;
-import com.acework.shabaretailer.model.RetailerBags;
-import com.google.android.material.button.MaterialButton;
+import com.acework.shabaretailer.databinding.ActivitySignupBinding;
+import com.acework.shabaretailer.model.RetailerNew;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
@@ -28,43 +23,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SignupActivity extends AppCompatActivity {
+    ActivitySignupBinding binding;
     FirebaseAuth firebaseAuth;
-    private MaterialButton back, join, viewTc;
-    private TextInputLayout businessName, name, email, password, confirmPassword, county, street;
-    private CheckBox tc;
-    private ScrollView scrollView;
     private StatusDialog statusDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_signup);
-        bindViews();
+        binding = ActivitySignupBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setListeners();
         initializeCounties();
         firebaseAuth = FirebaseAuth.getInstance();
     }
 
-    private void bindViews() {
-        back = findViewById(R.id.back_button);
-        join = findViewById(R.id.join_button);
-        businessName = findViewById(R.id.business_name_input);
-        name = findViewById(R.id.name_input);
-        email = findViewById(R.id.email_input);
-        password = findViewById(R.id.password_input);
-        confirmPassword = findViewById(R.id.password_confirmation_input);
-        tc = findViewById(R.id.tc_checkbox);
-        viewTc = findViewById(R.id.view_tc);
-        scrollView = findViewById(R.id.scroll_view);
-        county = findViewById(R.id.county_input);
-        street = findViewById(R.id.street_input);
-    }
-
     private void setListeners() {
-        back.setOnClickListener(v -> finish());
-        join.setOnClickListener(v -> join());
-        viewTc.setOnClickListener(v -> viewTc());
-        tc.setOnCheckedChangeListener((buttonView, isChecked) -> hideKeyboard());
+        binding.back.setOnClickListener(v -> finish());
+        binding.join.setOnClickListener(v -> join());
+        binding.viewTc.setOnClickListener(v -> viewTc());
+        binding.tc.setOnCheckedChangeListener((buttonView, isChecked) -> hideKeyboard());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -73,9 +50,9 @@ public class SignupActivity extends AppCompatActivity {
             statusDialog = StatusDialog.newInstance(R.raw.loading, "Attempting to sign you up", false, null);
             statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-            Retailer retailer = getRetailer();
-            String emailString = email.getEditText().getText().toString().trim();
-            String passwordString = password.getEditText().getText().toString().trim();
+            RetailerNew retailer = getRetailer();
+            String emailString = binding.emailField.getText().toString().trim();
+            String passwordString = binding.passwordField.getText().toString().trim();
 
             firebaseAuth.fetchSignInMethodsForEmail(emailString).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
@@ -85,16 +62,16 @@ public class SignupActivity extends AppCompatActivity {
                                 createRetailer(retailer);
                             } else {
                                 statusDialog.dismiss();
-                                Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(binding.back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                             }
                         });
                     } else {
                         statusDialog.dismiss();
-                        Snackbar.make(back, "The provided email address is already in use.", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(binding.back, "The provided email address is already in use.", Snackbar.LENGTH_LONG).show();
                     }
                 } else {
                     statusDialog.dismiss();
-                    Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(binding.back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 }
             });
         }
@@ -104,58 +81,52 @@ public class SignupActivity extends AppCompatActivity {
     private boolean validate() {
         clearErrors();
         hideKeyboard();
-        if (businessName.getEditText().getText().toString().trim().isEmpty()) {
-            businessName.setError("This field is required");
-            scroll(businessName);
+        if (binding.nameField.getText().toString().trim().isEmpty()) {
+            binding.name.setError("This field is required");
+            scroll(binding.name);
             return false;
         }
-        if (name.getEditText().getText().toString().trim().isEmpty()) {
-            name.setError("This field is required");
-            scroll(name);
+        if (!Patterns.EMAIL_ADDRESS.matcher(binding.emailField.getText().toString().trim()).matches()) {
+            binding.email.setError("Invalid email address");
             return false;
         }
-        if (!Patterns.EMAIL_ADDRESS.matcher(email.getEditText().getText().toString().trim()).matches()) {
-            email.setError("Invalid email address");
+        if (binding.passwordField.getText().toString().length() < 8) {
+            binding.password.setError("Password must be at least 8 characters long");
             return false;
         }
-        if (password.getEditText().getText().toString().length() < 8) {
-            password.setError("Password must be at least 8 characters long");
+        if (!binding.confirmPasswordField.getText().toString().equals(binding.passwordField.getText().toString())) {
+            binding.confirmPassword.setError("Passwords do not match");
             return false;
         }
-        if (!confirmPassword.getEditText().getText().toString().equals(password.getEditText().getText().toString())) {
-            confirmPassword.setError("Passwords do not match");
+        if (!binding.tc.isChecked()) {
+            Snackbar.make(binding.back, "You must read and accept the terms and conditions", Snackbar.LENGTH_LONG).show();
             return false;
         }
-        if (!tc.isChecked()) {
-            Snackbar.make(tc, "You must read and accept the terms and conditions", Snackbar.LENGTH_LONG).show();
+        if (binding.countyField.getText().toString().isEmpty()) {
+            binding.county.setError("This field is required");
             return false;
         }
-        if (county.getEditText().getText().toString().isEmpty()) {
-            county.setError("This field is required");
-            return false;
-        }
-        if (street.getEditText().getText().toString().trim().isEmpty()) {
-            street.setError("This field is required");
+        if (binding.townField.getText().toString().trim().isEmpty()) {
+            binding.town.setError("This field is required");
             return false;
         }
         return true;
     }
 
     private void clearErrors() {
-        businessName.setError(null);
-        name.setError(null);
-        email.setError(null);
-        password.setError(null);
-        confirmPassword.setError(null);
-        county.setError(null);
-        street.setError(null);
+        binding.name.setError(null);
+        binding.email.setError(null);
+        binding.county.setError(null);
+        binding.town.setError(null);
+        binding.password.setError(null);
+        binding.confirmPassword.setError(null);
     }
 
     private void scroll(View view) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            scrollView.scrollToDescendant(view);
+            binding.scrollView.scrollToDescendant(view);
         } else {
-            scrollView.fullScroll(View.FOCUS_UP);
+            binding.scrollView.fullScroll(View.FOCUS_UP);
         }
     }
 
@@ -210,35 +181,33 @@ public class SignupActivity extends AppCompatActivity {
         countyList.add("Wajir");
         countyList.add("West Pokot");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, countyList);
-        ((AutoCompleteTextView) county.getEditText()).setAdapter(adapter);
+        binding.countyField.setAdapter(adapter);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private Retailer getRetailer() {
-        return new Retailer(
-                name.getEditText().getText().toString().trim(),
-                businessName.getEditText().getText().toString().trim(),
-                "-",
-                county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim(),
-                email.getEditText().getText().toString().trim());
+    private RetailerNew getRetailer() {
+        RetailerNew retailer = new RetailerNew();
+        retailer.name = binding.nameField.getText().toString().trim();
+        retailer.email = binding.emailField.getText().toString().trim();
+        retailer.county = binding.countyField.getText().toString().trim();
+        retailer.town = binding.townField.getText().toString().trim();
+        return retailer;
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void createRetailer(Retailer retailer) {
+    private void createRetailer(RetailerNew retailer) {
         String uid = firebaseAuth.getCurrentUser().getUid();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         WriteBatch writeBatch = db.batch();
 
         writeBatch.set(db.collection("retailers").document(uid), retailer);
-        writeBatch.set(db.collection("retailer_bags").document(uid), new RetailerBags());
 
         writeBatch.commit().addOnCompleteListener(task -> {
             statusDialog.dismiss();
             if (task.isSuccessful()) {
                 FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(task1 -> toAccountVerification());
             } else {
-                Snackbar.make(back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(binding.back, "Could not sign you up now. Please try again later.", Snackbar.LENGTH_LONG).show();
                 FirebaseAuth.getInstance().getCurrentUser().delete();
             }
         });
@@ -257,6 +226,6 @@ public class SignupActivity extends AppCompatActivity {
 
     private void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(back.getWindowToken(), 0);
+        manager.hideSoftInputFromWindow(binding.back.getWindowToken(), 0);
     }
 }

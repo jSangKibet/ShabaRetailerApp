@@ -23,7 +23,7 @@ public class CatalogActivityNew extends AppCompatActivity {
         binding = ActivityCatalogNewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        ItemAdapterNew adapter = new ItemAdapterNew(this, this::viewItem);
+        ItemAdapterNew adapter = new ItemAdapterNew(this, this::viewItem, getLifecycle());
         binding.list.setAdapter(adapter);
         fetchItems(adapter);
     }

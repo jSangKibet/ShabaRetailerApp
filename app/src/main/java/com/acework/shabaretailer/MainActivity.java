@@ -7,6 +7,7 @@ import android.util.Log;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.model.Retailer;
+import com.acework.shabaretailer.ui.CatalogActivityNew;
 import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             if (user.isEmailVerified()) {
                 CartViewModel.UID = user.getUid();
-                startActivity(new Intent(this, CatalogActivity.class));
+                startActivity(new Intent(this, CatalogActivityNew.class));
                 getRetailer(user);
             } else {
                 startActivity(new Intent(this, AccountVerificationActivity.class));

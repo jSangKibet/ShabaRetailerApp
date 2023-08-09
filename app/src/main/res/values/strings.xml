@@ -160,4 +160,6 @@
     <string name="taupe">Taupe</string>
     <string name="join_shaba">Join Shaba</string>
     <string name="retailer_name">Retailer name</string>
+    <string name="place_order">Place order</string>
+    <string name="view">View</string>
 </resources>

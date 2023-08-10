@@ -27,6 +27,8 @@ public class CatalogActivityNew extends AppCompatActivity {
         ItemAdapterNew adapter = new ItemAdapterNew(this, this::viewItem, getLifecycle());
         binding.list.setAdapter(adapter);
         fetchItems(adapter);
+
+        binding.placeOrder.setOnClickListener(v -> startActivity(new Intent(this, PlaceOrderActivity.class)));
     }
 
     private void viewItem(String sku) {

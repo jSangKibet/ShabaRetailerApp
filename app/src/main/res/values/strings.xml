@@ -167,4 +167,8 @@
     <string name="consignment_label">Consignment:</string>
     <string name="commission_label">Commission:</string>
     <string name="ksh_ph">KSh %,d</string>
+    <string name="fill_required_fields">Fill the required fields below</string>
+    <string name="box">Box</string>
+    <string name="choose_box">Choose box</string>
+    <string name="set_insert_colors">Set insert colors</string>
 </resources>

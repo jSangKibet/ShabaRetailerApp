@@ -26,11 +26,11 @@ import java.util.List;
 
 public class ItemAdapterNew extends RecyclerView.Adapter<ItemAdapterNew.ItemViewHolder> {
     private final LayoutInflater inflater;
-    private final ObjectHandler<ItemNew> viewItemHandler;
+    private final ObjectHandler<String> viewItemHandler;
     private final Lifecycle lifecycle;
     private List<ItemNew> items;
 
-    public ItemAdapterNew(Context context, ObjectHandler<ItemNew> viewItemHandler, Lifecycle lifecycle) {
+    public ItemAdapterNew(Context context, ObjectHandler<String> viewItemHandler, Lifecycle lifecycle) {
         this.inflater = LayoutInflater.from(context);
         this.viewItemHandler = viewItemHandler;
         items = new ArrayList<>();
@@ -50,7 +50,7 @@ public class ItemAdapterNew extends RecyclerView.Adapter<ItemAdapterNew.ItemView
 
         ItemNew item = items.get(position);
         holder.name.setText(item.name);
-        holder.view.setOnClickListener(v -> viewItemHandler.handle(item));
+        holder.view.setOnClickListener(v -> viewItemHandler.handle(item.sku));
 
         loadImages(holder.images, item.sku);
     }

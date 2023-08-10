@@ -17,6 +17,9 @@
         android:theme="@style/Theme.ShabaRetailer"
         tools:targetApi="31">
         <activity
+            android:name=".ui.ItemDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.CatalogActivityNew"
             android:exported="false" />
         <activity

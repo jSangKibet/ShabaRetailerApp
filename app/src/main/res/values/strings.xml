@@ -162,4 +162,9 @@
     <string name="retailer_name">Retailer name</string>
     <string name="place_order">Place order</string>
     <string name="view">View</string>
+    <string name="prices">Prices</string>
+    <string name="wholesale_label">Wholesale:</string>
+    <string name="consignment_label">Consignment:</string>
+    <string name="commission_label">Commission:</string>
+    <string name="ksh_ph">KSh %,d</string>
 </resources>

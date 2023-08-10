@@ -1,5 +1,6 @@
 package com.acework.shabaretailer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -28,8 +29,10 @@ public class CatalogActivityNew extends AppCompatActivity {
         fetchItems(adapter);
     }
 
-    private void viewItem(ItemNew item) {
-
+    private void viewItem(String sku) {
+        Intent intent = new Intent(this, ItemDetailsActivity.class);
+        intent.putExtra("sku", sku);
+        startActivity(intent);
     }
 
     private void fetchItems(ItemAdapterNew adapter) {

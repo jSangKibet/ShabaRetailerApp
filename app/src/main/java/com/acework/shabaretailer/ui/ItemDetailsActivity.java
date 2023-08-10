@@ -1,9 +1,9 @@
 package com.acework.shabaretailer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +12,7 @@ import androidx.viewbinding.ViewBinding;
 
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.StatusDialog;
+import com.acework.shabaretailer.catalog.PreviewActivity;
 import com.acework.shabaretailer.databinding.ActivityItemDetailsBinding;
 import com.acework.shabaretailer.dialog.FeaturesDialogNew;
 import com.acework.shabaretailer.model.ItemNew;
@@ -118,7 +119,6 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
     private void startCarousel() {
         binding.carousel.registerLifecycle(getLifecycle());
-        binding.carousel.start();
         binding.carousel.setCarouselListener(new CarouselListener() {
             @Nullable
             @Override
@@ -133,7 +133,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
             @Override
             public void onClick(int i, @NonNull CarouselItem carouselItem) {
-                Toast.makeText(ItemDetailsActivity.this, "Item clicked!", Toast.LENGTH_SHORT).show();
+                imageClicked(i + 1);
             }
 
             @Override
@@ -141,5 +141,15 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void imageClicked(int pos) {
+        if (item != null) {
+            String rn = sku + "_0" + pos + ".jpg";
+            Intent intent = new Intent(this, PreviewActivity.class);
+            intent.putExtra("itemName", item.name);
+            intent.putExtra("link", rn);
+            startActivity(intent);
+        }
     }
 }

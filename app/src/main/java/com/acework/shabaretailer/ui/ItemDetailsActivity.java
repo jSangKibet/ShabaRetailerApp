@@ -60,7 +60,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }).addOnFailureListener(e -> {
             statusDialog.dismiss();
             Snackbar.make(binding.back, "There was an error getting the bag", Snackbar.LENGTH_LONG)
-                    .setAction("Yes", v -> getItem(sku))
+                    .setAction("Retry", v -> getItem(sku))
                     .show();
             e.printStackTrace();
         });
@@ -69,7 +69,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
     private void setValues() {
         if (item == null) {
             Snackbar.make(binding.back, "There was an error getting the bag", Snackbar.LENGTH_LONG)
-                    .setAction("Yes", v -> getItem(sku))
+                    .setAction("Retry", v -> getItem(sku))
                     .show();
         } else {
             binding.name.setText(item.name);

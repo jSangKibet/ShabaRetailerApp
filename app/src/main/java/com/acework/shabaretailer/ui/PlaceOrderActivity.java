@@ -6,10 +6,8 @@ import android.widget.ArrayAdapter;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.R;
-import com.acework.shabaretailer.atlas.ObjectHandler;
 import com.acework.shabaretailer.databinding.ActivityPlaceOrderBinding;
 import com.acework.shabaretailer.dialog.ChooseBoxDialog;
-import com.acework.shabaretailer.model.Box;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
     private void chooseBox() {
         ChooseBoxDialog dialog = ChooseBoxDialog.newInstance(box -> {
 
-        });
+        }, binding.orderTypeField.getText().toString().trim());
         dialog.show(getSupportFragmentManager(), ChooseBoxDialog.TAG);
     }
 }

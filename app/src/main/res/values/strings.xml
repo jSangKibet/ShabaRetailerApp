@@ -171,4 +171,10 @@
     <string name="box">Box</string>
     <string name="choose_box">Choose box</string>
     <string name="set_insert_colors">Set insert colors</string>
+    <string name="choose_your_box">Choose your box</string>
+    <string name="tap_to_select">Tap on an option to select it</string>
+    <string name="box_wahura_ph">%dx Wahura bucket bag</string>
+    <string name="box_twende_ph">%dx Twende sling bag</string>
+    <string name="box_name_ph">#%d: %s</string>
+    <string name="box_total_ph">%s: KSh %,d</string>
 </resources>

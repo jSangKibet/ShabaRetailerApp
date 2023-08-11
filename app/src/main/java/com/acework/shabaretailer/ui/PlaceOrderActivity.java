@@ -1,5 +1,6 @@
 package com.acework.shabaretailer.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,6 +14,7 @@ import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.ActivityPlaceOrderBinding;
 import com.acework.shabaretailer.dialog.ChooseBoxDialog;
 import com.acework.shabaretailer.model.Box;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
 public class PlaceOrderActivity extends AppCompatActivity {
     ActivityPlaceOrderBinding binding;
     private Box box;
-    private String orderType;
+    private String orderType="Wholesale";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,7 @@ public class PlaceOrderActivity extends AppCompatActivity {
 
         binding.back.setOnClickListener(v -> finish());
         binding.chooseBox.setOnClickListener(v -> chooseBox());
+        binding.toChooseIc.setOnClickListener(v -> toChooseInsertColors());
 
         initializeOrderChoices();
         setOrderTypeChangeListener();
@@ -95,6 +98,15 @@ public class PlaceOrderActivity extends AppCompatActivity {
             binding.total.setText(getString(R.string.box_total_ph, orderType, total));
 
             binding.boxDetails.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void toChooseInsertColors() {
+        if (box != null) {
+            Intent intent = new Intent(this, ChooseInsertColorsActivity.class);
+            intent.putExtra("box", new Gson().toJson(box));
+            intent.putExtra("orderType", orderType);
+            startActivity(intent);
         }
     }
 }

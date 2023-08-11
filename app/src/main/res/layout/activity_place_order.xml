@@ -165,6 +165,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.button.MaterialButton
+        android:id="@+id/to_choose_ic"
         style="@style/Button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

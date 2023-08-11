@@ -182,4 +182,8 @@
     <string name="unaccounted_bags">Unaccounted bags</string>
     <string name="all_bags_set">All bags set!</string>
     <string name="build_your_box">Build your box</string>
+    <string name="build_your_box_exp">Choose the bags to put in your box</string>
+    <string name="byb_choose_bags">Choose bags until this bar is full</string>
+    <string name="box_wahura">Wahura bucket bag (¼)</string>
+    <string name="box_twende">Twende sling bag (&#8539;)</string>
 </resources>

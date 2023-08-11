@@ -85,7 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:insetBottom="0dp"
-        android:text="@string/place_order"
+        android:text="@string/build_your_box"
         android:textAlignment="center"
         app:layout_constraintBottom_toBottomOf="parent" />
 

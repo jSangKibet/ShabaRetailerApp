@@ -28,7 +28,7 @@ public class CatalogActivityNew extends AppCompatActivity {
         binding.list.setAdapter(adapter);
         fetchItems(adapter);
 
-        binding.placeOrder.setOnClickListener(v -> startActivity(new Intent(this, PlaceOrderActivity.class)));
+        binding.placeOrder.setOnClickListener(v -> startActivity(new Intent(this, BuildYourBoxActivity.class)));
     }
 
     private void viewItem(String sku) {

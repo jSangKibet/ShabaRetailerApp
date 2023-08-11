@@ -177,4 +177,9 @@
     <string name="box_twende_ph">%dx Twende sling bag</string>
     <string name="box_name_ph">#%d: %s</string>
     <string name="box_total_ph">%s: KSh %,d</string>
+    <string name="choose_insert_colors">Choose insert colors</string>
+    <string name="set_insert_colors_for_the_bags_in_your_box">Set insert colors for the bags in your box</string>
+    <string name="unaccounted_bags">Unaccounted bags</string>
+    <string name="all_bags_set">All bags set!</string>
+    <string name="build_your_box">Build your box</string>
 </resources>

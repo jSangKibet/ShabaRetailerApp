@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".ui.PlaceOrderActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -101,30 +102,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/bg_white_border_gray"
+            android:background="@drawable/rp_white_gray_br_gray"
             android:padding="16dp"
-            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/box_title">
 
             <TextView
-                android:id="@+id/box_details_title"
+                android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/work_sans_bold"
+                android:fontFamily="@font/work_sans_semi_bold"
                 android:textColor="@color/primaryColor"
-                android:textSize="12sp"
+                android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <LinearLayout
-                android:id="@+id/box_items"
+            <TextView
+                android:id="@+id/wahura"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintTop_toBottomOf="@id/box_details_title" />
+                android:layout_marginTop="8dp"
+                android:background="@color/gray_01"
+                android:fontFamily="@font/work_sans_regular"
+                android:padding="8dp"
+                android:textColor="@color/primaryColor"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/name" />
 
             <TextView
-                android:id="@+id/box_total"
+                android:id="@+id/twende"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@color/gray_01"
+                android:fontFamily="@font/work_sans_regular"
+                android:padding="8dp"
+                android:textColor="@color/primaryColor"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/wahura" />
+
+            <TextView
+                android:id="@+id/total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -132,7 +151,7 @@
                 android:textColor="@color/primaryColor"
                 android:textSize="12sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/box_items" />
+                app:layout_constraintTop_toBottomOf="@id/twende" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.button.MaterialButton

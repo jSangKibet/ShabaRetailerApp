@@ -114,7 +114,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/work_sans_regular"
-            android:text="@string/estimated_total_label"
+            android:text="@string/total_label"
             android:textColor="?attr/colorPrimary"
             android:textSize="14sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -296,6 +296,7 @@
             style="@style/Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="false"
             android:fontFamily="@font/work_sans_bold"
             android:text="@string/confirm_order"
             app:layout_constraintBottom_toBottomOf="parent" />

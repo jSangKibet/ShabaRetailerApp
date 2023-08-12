@@ -189,4 +189,6 @@
     <string name="view_summary">View summary</string>
     <string name="wahura">Wahura</string>
     <string name="twende">Twende</string>
+    <string name="choose_insert_color">Choose insert color</string>
+    <string name="bag">Bag</string>
 </resources>

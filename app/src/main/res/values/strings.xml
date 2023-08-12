@@ -186,4 +186,7 @@
     <string name="byb_choose_bags">Choose bags until this bar is full</string>
     <string name="box_wahura">Wahura bucket bag (¼)</string>
     <string name="box_twende">Twende sling bag (&#8539;)</string>
+    <string name="view_summary">View summary</string>
+    <string name="wahura">Wahura</string>
+    <string name="twende">Twende</string>
 </resources>

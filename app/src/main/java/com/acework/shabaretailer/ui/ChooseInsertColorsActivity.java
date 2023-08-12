@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.R;
@@ -21,6 +23,12 @@ import java.util.List;
 
 public class ChooseInsertColorsActivity extends AppCompatActivity {
     private final List<InsertColorChoice> choices = new ArrayList<>();
+    private final ActivityResultLauncher<Intent> confirmOrderLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            setResult(RESULT_OK);
+            finish();
+        }
+    });
     private ActivityChooseInsertColorsBinding binding;
     private InsertColorChoicesAdapter adapter;
     private int twende;
@@ -53,7 +61,24 @@ public class ChooseInsertColorsActivity extends AppCompatActivity {
 
     @SuppressLint("NotifyDataSetChanged")
     private void insertColorChoiceAdded(InsertColorChoice choice) {
-        choices.add(choice);
+        boolean choiceConsumed = false;
+        for (InsertColorChoice alreadyChosen : choices) {
+            if (choice.wahura > 0) {
+                if (alreadyChosen.wahura > 0 && alreadyChosen.color.equals(choice.color)) {
+                    alreadyChosen.wahura += choice.wahura;
+                    choiceConsumed = true;
+                    break;
+                }
+            } else {
+                if (alreadyChosen.twende > 0 && alreadyChosen.color.equals(choice.color)) {
+                    alreadyChosen.twende += choice.twende;
+                    choiceConsumed = true;
+                    break;
+                }
+            }
+        }
+
+        if (!choiceConsumed) choices.add(choice);
         adapter.notifyDataSetChanged();
         updateUI();
     }
@@ -110,7 +135,7 @@ public class ChooseInsertColorsActivity extends AppCompatActivity {
         Intent intent = new Intent(this, ConfirmOrderActivity.class);
         intent.putExtra("orderType", orderType);
         intent.putExtra("orderItems", new Gson().toJson(getOrderItems()));
-        startActivity(intent);
+        confirmOrderLauncher.launch(intent);
     }
 
     private List<OrderItem> getOrderItems() {

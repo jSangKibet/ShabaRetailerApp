@@ -48,7 +48,7 @@ public class CompleteOrderMoreDialog extends DialogFragment {
         MaterialButton bankDetails = view.findViewById(R.id.bank_details);
         bankDetails.setOnClickListener(v -> {
             BankDetailsDialog d = new BankDetailsDialog();
-            d.show(requireParentFragment().getChildFragmentManager(), BankDetailsDialog.TAG);
+            d.show(requireActivity().getSupportFragmentManager(), BankDetailsDialog.TAG);
             dismiss();
         });
     }

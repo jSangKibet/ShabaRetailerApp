@@ -6,6 +6,8 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.widget.ArrayAdapter;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.R;
@@ -16,6 +18,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BuildYourBoxActivity extends AppCompatActivity {
+    private final ActivityResultLauncher<Intent> confirmOrderLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
+        if (result.getResultCode() == RESULT_OK) {
+            finish();
+        }
+    });
     ActivityBuildYourBoxBinding binding;
     private int wahura = 0;
     private int twende = 0;
@@ -143,6 +150,6 @@ public class BuildYourBoxActivity extends AppCompatActivity {
         intent.putExtra("orderType", orderType);
         intent.putExtra("wahura", wahura);
         intent.putExtra("twende", twende);
-        startActivity(intent);
+        confirmOrderLauncher.launch(intent);
     }
 }

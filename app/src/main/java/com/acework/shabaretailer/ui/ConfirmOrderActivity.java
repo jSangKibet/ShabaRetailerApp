@@ -7,14 +7,19 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.StatusDialog;
 import com.acework.shabaretailer.databinding.ActivityConfirmOrderBinding;
 import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
 import com.acework.shabaretailer.model.OrderItem;
+import com.acework.shabaretailer.model.OrderNew;
 import com.acework.shabaretailer.model.RetailerNew;
+import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Transaction;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -26,6 +31,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     private String orderType;
     private List<OrderItem> orderItems;
     private RetailerNew retailer;
+    private String retailerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +41,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
 
         binding.back.setOnClickListener(v -> finish());
         binding.more.setOnClickListener(v -> showMoreInfo());
+        binding.confirm.setOnClickListener(v -> placeOrder());
 
         unpackData();
 
@@ -54,7 +61,8 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     private void loadRetailer() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).get()
+            retailerId = user.getUid();
+            FirebaseFirestore.getInstance().collection("retailers").document(retailerId).get()
                     .addOnSuccessListener(documentSnapshot -> {
                         retailer = documentSnapshot.toObject(RetailerNew.class);
                         if (retailer == null) {
@@ -104,5 +112,51 @@ public class ConfirmOrderActivity extends AppCompatActivity {
     private void showMoreInfo() {
         CompleteOrderMoreDialog d = new CompleteOrderMoreDialog();
         d.show(getSupportFragmentManager(), CompleteOrderMoreDialog.TAG);
+    }
+
+    private void placeOrder() {
+        StatusDialog dialog = StatusDialog.newInstance(R.raw.loading, "Placing your order...", false, null);
+        dialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+
+        OrderNew order = getOrder();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.runTransaction((Transaction.Function<Void>) transaction -> {
+            // set order id
+            DocumentReference newOrderRef = db.collection("orders").document();
+            order.id = newOrderRef.getId();
+
+            // perform updates
+            transaction.update(db.collection("retailers").document(CartViewModel.UID), "lookbookOrdered", order.includeLookbook);
+            transaction.set(newOrderRef, order);
+            return null;
+        }).addOnSuccessListener(unused -> {
+            if (dialog.isVisible()) dialog.dismissAllowingStateLoss();
+            StatusDialog successDialog = StatusDialog.newInstance(R.raw.success, "Order placed!", true, this::orderPlaced);
+            successDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
+        }).addOnFailureListener(e -> {
+            if (dialog.isVisible()) dialog.dismissAllowingStateLoss();
+            Log.e("Firebase error", e.getMessage() == null ? "Could not get user" : e.getMessage());
+            Snackbar.make(binding.back, "Your order could not be placed at the moment. Please try again later or contact support.", Snackbar.LENGTH_LONG).show();
+        });
+
+    }
+
+    private OrderNew getOrder() {
+        OrderNew order = new OrderNew();
+        order.orderType = orderType;
+        order.retailerId = retailerId;
+        order.timestamp = System.currentTimeMillis();
+        order.orderItems = orderItems;
+        order.includeLookbook = binding.lbCheckbox.isChecked();
+        order.county = retailer.county;
+        order.town = retailer.town;
+        order.status = "Pending";
+        return order;
+    }
+
+    private void orderPlaced() {
+        setResult(RESULT_OK);
+        finish();
     }
 }

@@ -38,7 +38,7 @@
     <string name="cart">Cart</string>
     <string name="confirm_order">Confirm order</string>
     <string name="order_details">Order details</string>
-    <string name="item_total_label">Item total:</string>
+    <string name="item_total_label">Bags total:</string>
     <string name="estimated_weight_label">Estimated weight:</string>
     <string name="estimated_transport_cost_label">Estimated transport cost:</string>
     <string name="estimated_total_label">Estimated total:</string>
@@ -192,4 +192,5 @@
     <string name="choose_insert_color">Choose insert color</string>
     <string name="bag">Bag</string>
     <string name="insert_color_choices">Insert color choices</string>
+    <string name="check_order_details">Check all the details of your order</string>
 </resources>

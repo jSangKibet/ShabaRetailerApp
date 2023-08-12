@@ -1,6 +1,7 @@
 package com.acework.shabaretailer.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -8,17 +9,20 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.adapter.InsertColorChoicesAdapter;
+import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.ActivityChooseInsertColorsBinding;
 import com.acework.shabaretailer.dialog.ChooseInsertColorOptionDialog;
 import com.acework.shabaretailer.model.InsertColorChoice;
+import com.acework.shabaretailer.model.OrderItem;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ChooseInsertColorsActivity extends AppCompatActivity {
+    private final List<InsertColorChoice> choices = new ArrayList<>();
     private ActivityChooseInsertColorsBinding binding;
     private InsertColorChoicesAdapter adapter;
-    private final List<InsertColorChoice> choices = new ArrayList<>();
     private int twende;
     private int wahura;
     private String orderType;
@@ -31,6 +35,7 @@ public class ChooseInsertColorsActivity extends AppCompatActivity {
 
         binding.back.setOnClickListener(v -> finish());
         binding.addColorChoice.setOnClickListener(v -> toAddInsertColorChoice());
+        binding.toSummary.setOnClickListener(v -> toConfirmOrder());
 
         wahura = getIntent().getIntExtra("wahura", 0);
         twende = getIntent().getIntExtra("twende", 0);
@@ -99,5 +104,31 @@ public class ChooseInsertColorsActivity extends AppCompatActivity {
             binding.title.setText(R.string.unaccounted_bags);
             binding.toSummary.setEnabled(false);
         }
+    }
+
+    private void toConfirmOrder() {
+        Intent intent = new Intent(this, ConfirmOrderActivity.class);
+        intent.putExtra("orderType", orderType);
+        intent.putExtra("orderItems", new Gson().toJson(getOrderItems()));
+        startActivity(intent);
+    }
+
+    private List<OrderItem> getOrderItems() {
+        List<OrderItem> orderItems = new ArrayList<>();
+        for (InsertColorChoice choice : choices) {
+            OrderItem item = new OrderItem();
+            item.insertColor = choice.color;
+            if (choice.wahura > 0) {
+                item.sku = "3";
+                item.quantity = choice.wahura;
+                item.price = Atlas.getWahuraPrice(orderType);
+            } else {
+                item.sku = "1";
+                item.quantity = choice.twende;
+                item.price = Atlas.getTwendePrice(orderType);
+            }
+            orderItems.add(item);
+        }
+        return orderItems;
     }
 }

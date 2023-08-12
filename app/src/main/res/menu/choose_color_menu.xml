@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mustard"
+        android:enabled="true"
+        android:icon="@drawable/mustard_circle"
+        android:title="@string/mustard" />
+
+    <item
+        android:id="@+id/maroon"
+        android:enabled="true"
+        android:icon="@drawable/maroon_circle"
+        android:title="@string/maroon" />
+
+    <item
+        android:id="@+id/dark_brown"
+        android:enabled="true"
+        android:icon="@drawable/dark_brown_circle"
+        android:title="@string/dark_brown" />
+
+    <item
+        android:id="@+id/dusty_pink"
+        android:enabled="true"
+        android:icon="@drawable/dusty_pink_circle"
+        android:title="@string/dusty_pink" />
+
+    <item
+        android:id="@+id/taupe"
+        android:enabled="true"
+        android:icon="@drawable/taupe_circle"
+        android:title="@string/taupe" />
+</menu>

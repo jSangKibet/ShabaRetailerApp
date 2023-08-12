@@ -17,20 +17,19 @@ import com.acework.shabaretailer.atlas.ObjectHandler;
 import com.acework.shabaretailer.model.InsertColorChoice;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class InsertColorChoicesAdapter extends RecyclerView.Adapter<InsertColorChoicesAdapter.InsertChoiceVH> {
     private final LayoutInflater inflater;
     private final Context context;
     private final ObjectHandler<InsertColorChoice> colorDeletionHandler;
-    private List<InsertColorChoice> insertColorChoices;
+    private final List<InsertColorChoice> insertColorChoices;
 
-    public InsertColorChoicesAdapter(Context context, ObjectHandler<InsertColorChoice> colorDeletionHandler) {
+    public InsertColorChoicesAdapter(Context context, ObjectHandler<InsertColorChoice> colorDeletionHandler, List<InsertColorChoice> insertColorChoices) {
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.colorDeletionHandler = colorDeletionHandler;
-        insertColorChoices = new ArrayList<>();
+        this.insertColorChoices = insertColorChoices;
     }
 
     @NonNull
@@ -40,6 +39,7 @@ public class InsertColorChoicesAdapter extends RecyclerView.Adapter<InsertColorC
         return new InsertChoiceVH(itemView);
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onBindViewHolder(@NonNull InsertChoiceVH holder, int position) {
         InsertColorChoice choice = insertColorChoices.get(position);
@@ -68,16 +68,7 @@ public class InsertColorChoicesAdapter extends RecyclerView.Adapter<InsertColorC
                 holder.insertColor.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.taupe_circle));
         }
 
-        holder.remove.setOnClickListener(v -> {
-            insertColorChoices.remove(position);
-            notifyItemRemoved(position);
-        });
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void setInsertColorChoices(List<InsertColorChoice> choices) {
-        this.insertColorChoices = choices;
-        notifyDataSetChanged();
+        holder.remove.setOnClickListener(v -> colorDeletionHandler.handle(choice));
     }
 
     @Override

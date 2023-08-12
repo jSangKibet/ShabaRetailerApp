@@ -191,4 +191,5 @@
     <string name="twende">Twende</string>
     <string name="choose_insert_color">Choose insert color</string>
     <string name="bag">Bag</string>
+    <string name="insert_color_choices">Insert color choices</string>
 </resources>

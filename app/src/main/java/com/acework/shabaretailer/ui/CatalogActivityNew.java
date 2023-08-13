@@ -38,7 +38,7 @@ public class CatalogActivityNew extends AppCompatActivity {
     }
 
     private void fetchItems(ItemAdapterNew adapter) {
-        FirebaseFirestore.getInstance().collection("items").get().addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("items").whereEqualTo("active", true).get().addOnCompleteListener(task -> {
             binding.loading.pauseAnimation();
             binding.loading.setVisibility(View.GONE);
 

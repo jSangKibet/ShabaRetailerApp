@@ -131,4 +131,10 @@ public class Atlas {
         if (remainder > 0) kg += 1;
         return kg * costPerKG;
     }
+
+    public static String getItemName(String sku){
+        if(sku.equals("1")) return "Twende sling bag";
+        if(sku.equals("3")) return "Wahura bucket bag";
+        return "Unknown bag";
+    }
 }

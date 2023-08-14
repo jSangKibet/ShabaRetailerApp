@@ -1,4 +1,4 @@
-package com.acework.shabaretailer;
+package com.acework.shabaretailer.ui;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,17 +15,19 @@ import android.widget.TextView;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.acework.shabaretailer.adapter.DeliveryNoteAdapter;
-import com.acework.shabaretailer.adapter.ItemInOrderAdapter;
-import com.acework.shabaretailer.atlas.Atlas;
+import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.StatusDialog;
+import com.acework.shabaretailer.adapter.DeliveryNoteAdapterNew;
+import com.acework.shabaretailer.adapter.ItemInOrderAdapterNew;
 import com.acework.shabaretailer.atlas.BackgroundExecutor;
-import com.acework.shabaretailer.model.Order;
-import com.google.android.material.button.MaterialButton;
+import com.acework.shabaretailer.databinding.ActivityOrderInformationBinding;
+import com.acework.shabaretailer.model.OrderNew;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.FileOutputStream;
@@ -35,25 +37,23 @@ import java.util.Locale;
 
 public class OrderInformationActivity extends AppCompatActivity {
     private static boolean modified = false;
-    private TextView id, date, total, status, transport, deliveryPoint, type;
-    private RecyclerView items;
-    private ItemInOrderAdapter adapter;
-    private Order order;
+    ActivityOrderInformationBinding binding;
+    private ItemInOrderAdapterNew adapter;
+    private OrderNew order;
     private final ActivityResultLauncher<Intent> l = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == RESULT_OK) {
             Intent data = result.getData();
             if (data != null) {
-                prepareDeliveryNote(data.getData());
+                loadRetailer(data.getData());
             }
         }
     });
-    private MaterialButton back, cancel, received, download;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_order_information);
-        bindViews();
+        binding = ActivityOrderInformationBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setListeners();
         initializeList();
         loadOrder();
@@ -62,94 +62,67 @@ public class OrderInformationActivity extends AppCompatActivity {
         }
     }
 
-    private void bindViews() {
-        back = findViewById(R.id.back);
-        id = findViewById(R.id.order_num);
-        date = findViewById(R.id.date);
-        total = findViewById(R.id.total);
-        status = findViewById(R.id.order_status);
-        items = findViewById(R.id.item_list);
-        transport = findViewById(R.id.transport);
-        deliveryPoint = findViewById(R.id.delivery_point);
-        type = findViewById(R.id.type);
-        cancel = findViewById(R.id.cancel);
-        received = findViewById(R.id.received);
-        download = findViewById(R.id.download);
-    }
-
     private void setListeners() {
-        back.setOnClickListener(v -> finish());
-        cancel.setOnClickListener(v -> confirmCanceling());
-        received.setOnClickListener(v -> confirmReceived());
-        download.setOnClickListener(v -> confirmDownloadingNote());
+        binding.back.setOnClickListener(v -> finish());
+        binding.cancel.setOnClickListener(v -> confirmCanceling());
+        binding.received.setOnClickListener(v -> confirmReceived());
+        binding.download.setOnClickListener(v -> confirmDownloadingNote());
     }
 
     private void initializeList() {
-        items.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ItemInOrderAdapter(this);
-        items.setAdapter(adapter);
+        adapter = new ItemInOrderAdapterNew(this);
+        binding.itemList.setAdapter(adapter);
     }
 
     private void loadOrder() {
-        String oid = getIntent().getStringExtra("oid");
-        if (oid == null) {
+        String orderId = getIntent().getStringExtra("orderId");
+        if (orderId == null) {
             finish();
         } else {
             StatusDialog statusDialog = StatusDialog.newInstance(R.raw.loading, "Fetching order information...", false, null);
             statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-            FirebaseFirestore.getInstance().collection("orders").document(oid).get().addOnCompleteListener(task -> {
+            FirebaseFirestore.getInstance().collection("orders").document(orderId).get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
-                    Order o = task.getResult().toObject(Order.class);
-                    if (o == null) {
-                        Snackbar.make(back, "There was an error loading the order. Please try again later.", Snackbar.LENGTH_LONG).show();
-                        Log.e("NPE", "Retrieved order " + oid + " is null");
+                    OrderNew order = task.getResult().toObject(OrderNew.class);
+                    if (order == null) {
+                        Snackbar.make(binding.back, "There was an error loading the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                        Log.e("FirebaseError", "Null");
                     } else {
-                        displayOrder(o);
+                        displayOrder(order);
                     }
                 } else {
-                    Snackbar.make(back, "There was an error loading the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(binding.back, "There was an error loading the order. Please try again later.", Snackbar.LENGTH_LONG).show();
                     if (task.getException() != null) task.getException().printStackTrace();
                 }
             });
         }
     }
 
-    private void displayOrder(Order order) {
+    private void displayOrder(OrderNew order) {
         this.order = order;
         SimpleDateFormat dateFormatter = new SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault());
-        String formattedDate = dateFormatter.format(new Date(order.getTimestamp()));
+        String formattedDate = dateFormatter.format(new Date(order.timestamp));
 
-        id.setText(getString(R.string.order_num, order.getId()));
-        type.setText(Atlas.getOrderTypeAsString(order.getType()));
-        date.setText(formattedDate);
-        status.setText(order.getStatus());
+        binding.orderNum.setText(getString(R.string.order_num, order.id));
+        binding.type.setText(order.orderType);
+        binding.date.setText(formattedDate);
+        binding.orderStatus.setText(order.status);
+        binding.total.setText(getString(R.string.ksh_ph, order.getTotal()));
+        binding.transport.setText(order.county.equals("Nairobi") ? "250" : "500");
+        binding.deliveryPoint.setText(getString(R.string.delivery_point, order.county, order.town));
 
-        if (order.getFinalTotal() > 0) {
-            total.setText(getString(R.string.kes, order.getFinalTotal()));
-        } else {
-            total.setText(getString(R.string.est_total, order.getEstimatedTotal()));
+        adapter.setItems(order.orderItems);
+
+        if (order.status.equals("Pending")) {
+            binding.cancel.setVisibility(View.VISIBLE);
         }
-
-        if (order.getFinalTransportCost() > 0) {
-            transport.setText(getString(R.string.kes, order.getFinalTransportCost()));
-        } else {
-            transport.setText(getString(R.string.est_total, order.getEstimatedTransportCost()));
+        if (order.status.equals("Dispatched")) {
+            binding.received.setVisibility(View.VISIBLE);
         }
-
-        deliveryPoint.setText(getString(R.string.delivery_point, order.getCounty(), order.getStreet()));
-
-        adapter.setItems(order.getOrderItems(), order.getType());
-
-        if (order.getStatus().equals("Pending")) {
-            cancel.setVisibility(View.VISIBLE);
-        }
-        if (order.getStatus().equals("Dispatched")) {
-            received.setVisibility(View.VISIBLE);
-        }
-        if (order.getStatus().equals("Received")) {
-            download.setVisibility(View.VISIBLE);
+        if (order.status.equals("Received")) {
+            binding.download.setVisibility(View.VISIBLE);
             if (modified) confirmDownloadingNote();
         }
         modified = false;
@@ -167,7 +140,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Canceling order", false, null);
         cd.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-        FirebaseFirestore.getInstance().collection("orders").document(order.getId()).update("status", "Canceled").addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("orders").document(order.id).update("status", "Canceled").addOnCompleteListener(task -> {
             cd.dismiss();
             if (task.isSuccessful()) {
                 StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order canceled", true, () -> {
@@ -176,7 +149,7 @@ public class OrderInformationActivity extends AppCompatActivity {
                 });
                 sd.show(getSupportFragmentManager(), StatusDialog.TAG);
             } else {
-                Snackbar.make(back, "There was an error canceling the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(binding.back, "There was an error canceling the order. Please try again later.", Snackbar.LENGTH_LONG).show();
                 if (task.getException() != null) task.getException().printStackTrace();
             }
         });
@@ -186,7 +159,7 @@ public class OrderInformationActivity extends AppCompatActivity {
         StatusDialog cd = StatusDialog.newInstance(R.raw.loading, "Updating order", false, null);
         cd.show(getSupportFragmentManager(), StatusDialog.TAG);
 
-        FirebaseFirestore.getInstance().collection("orders").document(order.getId()).update("status", "Received").addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("orders").document(order.id).update("status", "Received").addOnCompleteListener(task -> {
             cd.dismiss();
             if (task.isSuccessful()) {
                 StatusDialog sd = StatusDialog.newInstance(R.raw.success, "Order completed", true, () -> {
@@ -195,7 +168,7 @@ public class OrderInformationActivity extends AppCompatActivity {
                 });
                 sd.show(getSupportFragmentManager(), StatusDialog.TAG);
             } else {
-                Snackbar.make(back, "There was an error updating the order. Please try again later.", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(binding.back, "There was an error updating the order. Please try again later.", Snackbar.LENGTH_LONG).show();
                 if (task.getException() != null) task.getException().printStackTrace();
             }
         });
@@ -213,14 +186,26 @@ public class OrderInformationActivity extends AppCompatActivity {
         Intent i = new Intent(Intent.ACTION_CREATE_DOCUMENT);
         i.addCategory(Intent.CATEGORY_OPENABLE);
         i.setType("application/pdf");
-        i.putExtra(Intent.EXTRA_TITLE, order.getId() + ".pdf");
+        i.putExtra(Intent.EXTRA_TITLE, order.id + ".pdf");
         l.launch(i);
     }
 
-    private void prepareDeliveryNote(Uri u) {
+    private void loadRetailer(Uri u) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                String name = (String) documentSnapshot.get("name");
+                String email = user.getEmail();
+
+                prepareDeliveryNote(u, name, email);
+            });
+        }
+    }
+
+    private void prepareDeliveryNote(Uri u, String name, String email) {
         LayoutInflater li = LayoutInflater.from(this);
         View v = li.inflate(R.layout.delivery_note, null);
-        populateView(v);
+        populateView(v, name, email);
 
         v.measure(View.MeasureSpec.makeMeasureSpec(1240, View.MeasureSpec.EXACTLY), View.MeasureSpec.makeMeasureSpec(1754, View.MeasureSpec.EXACTLY));
         v.layout(0, 0, 1240, 1754);
@@ -248,10 +233,10 @@ public class OrderInformationActivity extends AppCompatActivity {
                 d.close();
                 fos.close();
                 pfd.close();
-                runOnUiThread(() -> Snackbar.make(id, "Delivery note saved", Snackbar.LENGTH_LONG).setAction("OPEN", view -> openSavedDeliveryNote(u)).setActionTextColor(getResources().getColor(R.color.primaryTextColor)).show());
+                runOnUiThread(() -> Snackbar.make(binding.back, "Delivery note saved", Snackbar.LENGTH_LONG).setAction("OPEN", view -> openSavedDeliveryNote(u)).setActionTextColor(getResources().getColor(R.color.primaryTextColor)).show());
             } catch (Exception e) {
                 runOnUiThread(() -> {
-                    Snackbar.make(id, "There was an error saving your note. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(binding.back, "There was an error saving your note. Please try again later.", Snackbar.LENGTH_LONG).show();
                     e.printStackTrace();
                 });
             }
@@ -266,31 +251,29 @@ public class OrderInformationActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void populateView(View view) {
+    private void populateView(View view, String name, String email) {
         TextView orderType = view.findViewById(R.id.order_type);
         TextView retailerName = view.findViewById(R.id.ret_name);
         TextView retailerEmail = view.findViewById(R.id.ret_email);
         TextView retailerLocation = view.findViewById(R.id.loc);
         RecyclerView itemList = view.findViewById(R.id.list);
         TextView itemTotal = view.findViewById(R.id.itm_total);
-        TextView totalWeight = view.findViewById(R.id.wgt);
         TextView transportCost = view.findViewById(R.id.trans);
         TextView totalCost = view.findViewById(R.id.total);
         TextView orderStatus = view.findViewById(R.id.status);
 
-        orderType.setText(Atlas.getOrderTypeAsString(order.getType()));
-        retailerName.setText(order.getRetailer().getName());
-        retailerEmail.setText(order.getRetailer().getEmail());
-        retailerLocation.setText(String.format(Locale.getDefault(), "%s, %s", order.getStreet(), order.getCounty()));
+        orderType.setText(order.orderType);
+        retailerName.setText(name);
+        retailerEmail.setText(email);
+        retailerLocation.setText(String.format(Locale.getDefault(), "%s, %s", order.town, order.county));
 
-        DeliveryNoteAdapter noteAdapter = new DeliveryNoteAdapter(this);
+        DeliveryNoteAdapterNew noteAdapter = new DeliveryNoteAdapterNew(this);
         itemList.setAdapter(noteAdapter);
-        noteAdapter.setItems(order.getOrderItems(), order.getType());
+        noteAdapter.setItems(order.orderItems);
 
-        itemTotal.setText(getString(R.string.kes, noteAdapter.getItemCost()));
-        totalWeight.setText(getString(R.string.weight_formatted, noteAdapter.getTotalWeight()));
-        transportCost.setText(getString(R.string.kes, order.getFinalTransportCost()));
-        totalCost.setText(getString(R.string.kes, order.getFinalTotal()));
-        orderStatus.setText(order.getStatus());
+        itemTotal.setText(getString(R.string.kes, order.getBagTotal()));
+        transportCost.setText(order.county.equals("Nairobi") ? "250" : "500");
+        totalCost.setText(getString(R.string.kes, order.getTotal()));
+        orderStatus.setText(order.status);
     }
 }

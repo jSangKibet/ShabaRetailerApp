@@ -8,7 +8,6 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.OrderInformationActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.StatusDialog;
 import com.acework.shabaretailer.adapter.OrderAdapterNew;

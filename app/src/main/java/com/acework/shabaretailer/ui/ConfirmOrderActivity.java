@@ -13,7 +13,6 @@ import com.acework.shabaretailer.dialog.CompleteOrderMoreDialog;
 import com.acework.shabaretailer.model.OrderItem;
 import com.acework.shabaretailer.model.OrderNew;
 import com.acework.shabaretailer.model.RetailerNew;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -127,7 +126,7 @@ public class ConfirmOrderActivity extends AppCompatActivity {
             order.id = newOrderRef.getId();
 
             // perform updates
-            transaction.update(db.collection("retailers").document(CartViewModel.UID), "lookbookOrdered", order.includeLookbook);
+            transaction.update(db.collection("retailers").document(order.retailerId), "lookbookOrdered", order.includeLookbook);
             transaction.set(newOrderRef, order);
             return null;
         }).addOnSuccessListener(unused -> {

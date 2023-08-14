@@ -13,12 +13,16 @@ public class OrderNew {
     public String town;
     public String status;
 
-    public int getTotal() {
+    public int getBagTotal(){
         int bagTotal = 0;
         for (OrderItem item : orderItems) {
             bagTotal += (item.price * item.quantity);
         }
+        return bagTotal;
+    }
+
+    public int getTotal() {
         int transport = county.equals("Nairobi") ? 250 : 500;
-        return bagTotal + transport;
+        return getBagTotal() + transport;
     }
 }

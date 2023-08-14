@@ -76,7 +76,7 @@
                 android:value="" />
         </activity>
         <activity
-            android:name=".OrderInformationActivity"
+            android:name=".ui.OrderInformationActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"

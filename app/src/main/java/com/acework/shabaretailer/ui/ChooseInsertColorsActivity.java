@@ -125,9 +125,11 @@ public class ChooseInsertColorsActivity extends AppCompatActivity {
         if ((remainingTwende + remainingWahura) == 0) {
             binding.title.setText(R.string.all_bags_set);
             binding.toSummary.setEnabled(true);
+            binding.addColorChoice.setVisibility(View.GONE);
         } else {
             binding.title.setText(R.string.unaccounted_bags);
             binding.toSummary.setEnabled(false);
+            binding.addColorChoice.setVisibility(View.VISIBLE);
         }
     }
 

@@ -193,4 +193,5 @@
     <string name="bag">Bag</string>
     <string name="insert_color_choices">Insert color choices</string>
     <string name="check_order_details">Check all the details of your order</string>
+    <string name="name">Name</string>
 </resources>

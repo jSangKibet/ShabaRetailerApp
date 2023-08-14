@@ -50,25 +50,8 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:hint="@string/your_name"
+        android:hint="@string/name"
         app:layout_constraintTop_toBottomOf="@id/header_layout">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textCapWords" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/biz_name"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:hint="@string/business_name"
-        app:layout_constraintTop_toBottomOf="@id/name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -86,14 +69,13 @@
         android:layout_marginEnd="16dp"
         android:hint="@string/county"
         android:labelFor="@id/county"
-        app:layout_constraintTop_toBottomOf="@id/biz_name">
+        app:layout_constraintTop_toBottomOf="@id/name">
 
         <AutoCompleteTextView
             android:id="@+id/county"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/work_sans_regular"
-            android:inputType="none" />
+            android:fontFamily="@font/work_sans_regular" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
@@ -121,7 +103,6 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:enabled="false"
         android:text="@string/save_changes"
         app:layout_constraintTop_toBottomOf="@id/street" />
 
@@ -131,19 +112,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginBottom="16dp"
         android:fontFamily="@font/work_sans_regular"
         android:text="@string/change_password"
-        app:layout_constraintBottom_toTopOf="@id/change_email" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/change_email"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/work_sans_regular"
-        android:text="@string/change_email_address"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,16 +2,12 @@ package com.acework.shabaretailer;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.model.Retailer;
 import com.acework.shabaretailer.ui.CatalogActivityNew;
-import com.acework.shabaretailer.viewmodel.CartViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,42 +21,11 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
             if (user.isEmailVerified()) {
-                CartViewModel.UID = user.getUid();
                 startActivity(new Intent(this, CatalogActivityNew.class));
-                getRetailer(user);
             } else {
                 startActivity(new Intent(this, AccountVerificationActivity.class));
             }
         }
         finish();
-    }
-
-    private void getRetailer(FirebaseUser u) {
-        FirebaseFirestore.getInstance().collection("retailers").document(u.getUid()).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Retailer r = task.getResult().toObject(Retailer.class);
-                if (r != null) {
-                    if (r.getEmail().equals(u.getEmail())) {
-                        Log.i("UserEmail", "Sync not necessary");
-                    } else {
-                        r.setEmail(u.getEmail());
-                        updateRetailer(u.getUid(), u.getEmail());
-                    }
-                }
-            }
-        });
-    }
-
-    private void updateRetailer(String uid, String email) {
-        FirebaseFirestore.getInstance().collection("retailers").document(uid).update("email", email).addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Log.i("UserEmail", "Updated!");
-            } else {
-                Log.e("UserEmail", "Sync failed!");
-                if (task.getException() != null) {
-                    task.getException().printStackTrace();
-                }
-            }
-        });
     }
 }

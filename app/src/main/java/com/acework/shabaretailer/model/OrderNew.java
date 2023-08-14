@@ -12,4 +12,13 @@ public class OrderNew {
     public String county;
     public String town;
     public String status;
+
+    public int getTotal() {
+        int bagTotal = 0;
+        for (OrderItem item : orderItems) {
+            bagTotal += (item.price * item.quantity);
+        }
+        int transport = county.equals("Nairobi") ? 250 : 500;
+        return bagTotal + transport;
+    }
 }

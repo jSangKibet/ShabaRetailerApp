@@ -1,19 +1,19 @@
-package com.acework.shabaretailer;
+package com.acework.shabaretailer.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.TextView;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.acework.shabaretailer.adapter.OrderAdapter;
-import com.acework.shabaretailer.model.Order;
-import com.google.android.material.button.MaterialButton;
+import com.acework.shabaretailer.OrderInformationActivity;
+import com.acework.shabaretailer.R;
+import com.acework.shabaretailer.StatusDialog;
+import com.acework.shabaretailer.adapter.OrderAdapterNew;
+import com.acework.shabaretailer.databinding.ActivityMyOrdersBinding;
+import com.acework.shabaretailer.model.OrderNew;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -25,10 +25,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyOrdersActivity extends AppCompatActivity {
-    private MaterialButton back;
-    private RecyclerView orderList;
-    private OrderAdapter orderAdapter;
-    private TextView emptyList;
+    ActivityMyOrdersBinding binding;
+    private OrderAdapterNew orderAdapter;
 
     private final ActivityResultLauncher<Intent> oiaLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
         if (result.getResultCode() == RESULT_OK) {
@@ -39,27 +37,20 @@ public class MyOrdersActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_orders);
-        bindViews();
+        binding = ActivityMyOrdersBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setListeners();
         initializeList();
         loadOrders();
     }
 
-    private void bindViews() {
-        back = findViewById(R.id.back_button);
-        orderList = findViewById(R.id.order_list);
-        emptyList = findViewById(R.id.empty_list);
-    }
-
     private void setListeners() {
-        back.setOnClickListener(v -> finish());
+        binding.backButton.setOnClickListener(v -> finish());
     }
 
     private void initializeList() {
-        orderList.setLayoutManager(new LinearLayoutManager(this));
-        orderAdapter = new OrderAdapter(this, this::orderSelected);
-        orderList.setAdapter(orderAdapter);
+        orderAdapter = new OrderAdapterNew(this, this::orderSelected);
+        binding.orderList.setAdapter(orderAdapter);
     }
 
     private void loadOrders() {
@@ -71,23 +62,23 @@ public class MyOrdersActivity extends AppCompatActivity {
             FirebaseFirestore.getInstance().collection("orders").whereEqualTo("retailerId", u.getUid()).orderBy("timestamp", Query.Direction.DESCENDING).get().addOnCompleteListener(task -> {
                 statusDialog.dismiss();
                 if (task.isSuccessful()) {
-                    List<Order> retrievedOrders = new ArrayList<>();
+                    List<OrderNew> retrievedOrders = new ArrayList<>();
                     for (QueryDocumentSnapshot qds : task.getResult()) {
-                        retrievedOrders.add(qds.toObject(Order.class));
+                        retrievedOrders.add(qds.toObject(OrderNew.class));
                     }
                     orderAdapter.setItems(retrievedOrders);
-                    if (retrievedOrders.size() < 1) emptyList.setVisibility(View.VISIBLE);
+                    if (retrievedOrders.size() < 1) binding.emptyList.setVisibility(View.VISIBLE);
                 } else {
-                    Snackbar.make(back, "There was a problem fetching your orders. Please try again later.", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(binding.backButton, "There was a problem fetching your orders. Please try again later.", Snackbar.LENGTH_LONG).setAction("Retry", v -> loadOrders()).show();
                     if (task.getException() != null) task.getException().printStackTrace();
                 }
             });
         }
     }
 
-    private void orderSelected(Order order) {
+    private void orderSelected(OrderNew order) {
         Intent orderInfoIntent = new Intent(this, OrderInformationActivity.class);
-        orderInfoIntent.putExtra("oid", order.getId());
+        orderInfoIntent.putExtra("orderId", order.id);
         oiaLauncher.launch(orderInfoIntent);
     }
 }

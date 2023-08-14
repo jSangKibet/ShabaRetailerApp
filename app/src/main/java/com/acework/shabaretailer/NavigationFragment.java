@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.acework.shabaretailer.databinding.FragmentNavigationBinding;
 import com.acework.shabaretailer.dialog.BankDetailsDialog;
+import com.acework.shabaretailer.ui.MyOrdersActivity;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

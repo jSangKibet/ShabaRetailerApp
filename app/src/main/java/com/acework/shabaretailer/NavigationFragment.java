@@ -1,36 +1,25 @@
 package com.acework.shabaretailer;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.acework.shabaretailer.databinding.FragmentNavigationBinding;
 import com.acework.shabaretailer.dialog.BankDetailsDialog;
-import com.acework.shabaretailer.model.Retailer;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class NavigationFragment extends Fragment {
-    private TextView name, businessName, email;
-    private final ActivityResultLauncher<Intent> startActivityForResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), result -> {
-        if (result.getResultCode() == Activity.RESULT_OK) {
-            loadUser();
-        }
-    });
-    private MaterialButton toMyOrders, viewTc, logout, edit, bankDetails;
+    FragmentNavigationBinding binding;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,36 +27,25 @@ public class NavigationFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_navigation, container, false);
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = FragmentNavigationBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        bindViews(view);
         setListeners();
         loadUser();
     }
 
-    private void bindViews(View view) {
-        name = view.findViewById(R.id.name);
-        businessName = view.findViewById(R.id.business_name);
-        email = view.findViewById(R.id.email);
-        toMyOrders = view.findViewById(R.id.to_my_orders);
-        viewTc = view.findViewById(R.id.view_tc);
-        logout = view.findViewById(R.id.logout);
-        edit = view.findViewById(R.id.edit);
-        bankDetails = view.findViewById(R.id.bank_details);
-    }
 
     private void setListeners() {
-        toMyOrders.setOnClickListener(v -> startActivity(new Intent(requireContext(), MyOrdersActivity.class)));
-        viewTc.setOnClickListener(v -> viewTc());
-        logout.setOnClickListener(v -> logoutButtonClicked());
-        edit.setOnClickListener(v -> startActivityForResult.launch(new Intent(requireContext(), EditRetailerActivity.class)));
-        bankDetails.setOnClickListener(v -> {
+        binding.toMyOrders.setOnClickListener(v -> startActivity(new Intent(requireContext(), MyOrdersActivity.class)));
+        binding.viewTc.setOnClickListener(v -> viewTc());
+        binding.logout.setOnClickListener(v -> logoutButtonClicked());
+        binding.edit.setOnClickListener(v -> startActivity(new Intent(requireContext(), EditRetailerActivity.class)));
+        binding.bankDetails.setOnClickListener(v -> {
             BankDetailsDialog d = new BankDetailsDialog();
             d.show(getChildFragmentManager(), BankDetailsDialog.TAG);
         });
@@ -76,21 +54,16 @@ public class NavigationFragment extends Fragment {
     private void loadUser() {
         FirebaseUser u = FirebaseAuth.getInstance().getCurrentUser();
         if (u != null) {
-            email.setText(u.getEmail());
-            FirebaseFirestore.getInstance().collection("retailers").document(u.getUid()).get().addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Retailer retailer = task.getResult().toObject(Retailer.class);
-                    if (retailer != null) setValues(retailer);
-                } else {
-                    if (task.getException() != null) task.getException().printStackTrace();
+            binding.email.setText(u.getEmail());
+            FirebaseFirestore.getInstance().collection("retailers").document(u.getUid()).addSnapshotListener((value, error) -> {
+                if (value != null) {
+                    binding.name.setText((String) value.get("name"));
+                }
+                if (error != null) {
+                    error.printStackTrace();
                 }
             });
         }
-    }
-
-    private void setValues(Retailer retailer) {
-        name.setText(retailer.getName());
-        businessName.setText(retailer.getBusinessName());
     }
 
     private void viewTc() {

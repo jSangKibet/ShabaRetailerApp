@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
 
 import com.acework.shabaretailer.adapter.ItemAdapterNew;
 import com.acework.shabaretailer.databinding.ActivityCatalogNewBinding;
@@ -28,6 +29,7 @@ public class CatalogActivityNew extends AppCompatActivity {
         binding.list.setAdapter(adapter);
         fetchItems(adapter);
 
+        binding.menu.setOnClickListener(v -> binding.navigationDrawer.openDrawer(GravityCompat.START));
         binding.placeOrder.setOnClickListener(v -> startActivity(new Intent(this, BuildYourBoxActivity.class)));
     }
 

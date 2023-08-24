@@ -1,9 +1,12 @@
 package com.acework.shabaretailer.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ArrayAdapter;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -28,6 +31,7 @@ public class BuildYourBoxActivity extends AppCompatActivity {
     private int twende = 0;
     private String orderType = "Wholesale";
     private int sink = 0;
+    private boolean progressVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +122,11 @@ public class BuildYourBoxActivity extends AppCompatActivity {
         binding.wahuraMinus.setEnabled(wahura >= 1);
         binding.twendeMinus.setEnabled(twende >= 1);
 
-        binding.toChooseIc.setEnabled(sink == 8);
+        if (sink == 8) {
+            animateShowButton();
+        } else {
+            animateShowProgressBar();
+        }
     }
 
     private int getProgress() {
@@ -151,5 +159,48 @@ public class BuildYourBoxActivity extends AppCompatActivity {
         intent.putExtra("wahura", wahura);
         intent.putExtra("twende", twende);
         confirmOrderLauncher.launch(intent);
+    }
+
+    private void animateShowButton() {
+        binding.progress.animate()
+                .alpha(0f)
+                .setDuration(500)
+                .setListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        binding.progress.setVisibility(View.GONE);
+                    }
+                });
+
+        binding.toChooseIc.setAlpha(0f);
+        binding.toChooseIc.setVisibility(View.VISIBLE);
+        binding.toChooseIc.animate()
+                .alpha(1f)
+                .setDuration(500)
+                .setListener(null);
+
+        progressVisible = false;
+    }
+
+    private void animateShowProgressBar() {
+        if (!progressVisible) {
+            binding.toChooseIc.animate()
+                    .alpha(0f)
+                    .setDuration(500)
+                    .setListener(new AnimatorListenerAdapter() {
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            binding.toChooseIc.setVisibility(View.GONE);
+                        }
+                    });
+
+            binding.progress.setAlpha(0f);
+            binding.progress.setVisibility(View.VISIBLE);
+            binding.progress.animate()
+                    .alpha(1f)
+                    .setDuration(500)
+                    .setListener(null);
+            progressVisible = true;
+        }
     }
 }

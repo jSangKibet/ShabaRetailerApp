@@ -136,7 +136,7 @@
     <string name="all_bags_set">All bags set!</string>
     <string name="build_your_box">Build your box</string>
     <string name="build_your_box_exp">Choose the bags to put in your box</string>
-    <string name="byb_choose_bags">Choose bags until this bar is full</string>
+    <string name="byb_choose_bags">Step 2: Choose your bags until the box is full</string>
     <string name="box_wahura">Wahura bucket bag (¼)</string>
     <string name="box_twende">Twende sling bag (&#8539;)</string>
     <string name="wahura">Wahura</string>
@@ -146,4 +146,6 @@
     <string name="insert_color_choices">Insert color choices</string>
     <string name="check_order_details">Check all the details of your order</string>
     <string name="name">Name</string>
+    <string name="byb_step_1">Step 1: Choose your order type</string>
+    <string name="byb_step_3">Step 3: Choose insert colors</string>
 </resources>

@@ -164,4 +164,7 @@
     <string name="proceed">Proceed</string>
     <string name="skip_instructions">Skip instructions next time</string>
     <string name="back_to_top">Back to top</string>
+    <string name="byb">Build Your Own Box</string>
+    <string name="jks_signature">Created by Joseph Sang</string>
+
 </resources>

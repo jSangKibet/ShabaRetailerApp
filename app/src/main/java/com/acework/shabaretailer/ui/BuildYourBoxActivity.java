@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.acework.shabaretailer.R;
 import com.acework.shabaretailer.atlas.Atlas;
 import com.acework.shabaretailer.databinding.ActivityBuildYourBoxBinding;
+import com.acework.shabaretailer.ui.view.byb.ChooseInsertColorsActivity;
 
 import java.util.ArrayList;
 import java.util.List;

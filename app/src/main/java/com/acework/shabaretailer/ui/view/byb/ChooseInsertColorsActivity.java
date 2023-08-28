@@ -1,4 +1,4 @@
-package com.acework.shabaretailer.ui;
+package com.acework.shabaretailer.ui.view.byb;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import com.acework.shabaretailer.databinding.ActivityChooseInsertColorsBinding;
 import com.acework.shabaretailer.dialog.ChooseInsertColorOptionDialog;
 import com.acework.shabaretailer.model.InsertColorChoice;
 import com.acework.shabaretailer.model.OrderItem;
+import com.acework.shabaretailer.ui.ConfirmOrderActivity;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

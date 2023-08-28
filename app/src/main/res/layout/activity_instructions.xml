@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.view.byb.InstructionsActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="24dp">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/icon_transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/work_sans_semi_bold"
+            android:text="@string/build_your_box_instructions"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/icon" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/scroll_down_to_view_all_the_instructions"
+            android:textColor="@color/primaryColor"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <TextView
+            android:id="@+id/step_1_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/step_1_order_type"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/subtitle" />
+
+        <TextView
+            android:id="@+id/step_1_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/instructions_step_1"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_1_title" />
+
+        <ImageView
+            android:id="@+id/step_1_shot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/byb_tutorial_step_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_1_subtitle" />
+
+        <TextView
+            android:id="@+id/step_2_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/step_2_bag_types"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_1_shot" />
+
+        <TextView
+            android:id="@+id/step_2_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/instructions_step_2"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_2_title" />
+
+        <ImageView
+            android:id="@+id/step_2_shot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/byb_tutorial_step_2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_2_subtitle" />
+
+        <TextView
+            android:id="@+id/step_3_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/step_3_customize"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_2_shot" />
+
+        <TextView
+            android:id="@+id/step_3_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/instructions_step_3"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_3_title" />
+
+        <ImageView
+            android:id="@+id/step_3_shot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/byb_tutorial_step_3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_3_subtitle" />
+
+        <TextView
+            android:id="@+id/step_4_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/step_4_review"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_3_shot" />
+
+        <TextView
+            android:id="@+id/step_4_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/instructions_step_4"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_4_title" />
+
+        <ImageView
+            android:id="@+id/step_4_shot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/byb_tutorial_step_4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_4_subtitle" />
+
+        <TextView
+            android:id="@+id/step_5_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/step_5_checkout"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_4_shot" />
+
+        <TextView
+            android:id="@+id/step_5_subtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/instructions_step_5"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_5_title" />
+
+        <ImageView
+            android:id="@+id/step_5_shot"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:src="@drawable/byb_tutorial_step_5"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_5_subtitle" />
+
+        <TextView
+            android:id="@+id/done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/work_sans_bold"
+            android:text="@string/done"
+            android:textColor="@color/primaryColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/step_5_shot" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/proceed"
+            style="@style/Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/proceed"
+            app:layout_constraintTop_toBottomOf="@id/done" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/skip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:buttonTint="?attr/colorPrimary"
+            android:fontFamily="@font/work_sans_regular"
+            android:text="@string/skip_instructions"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/proceed" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/top"
+            style="@style/OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@string/back_to_top"
+            app:icon="@drawable/arrow_upward"
+            app:layout_constraintTop_toBottomOf="@id/skip" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

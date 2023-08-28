@@ -148,4 +148,20 @@
     <string name="name">Name</string>
     <string name="byb_step_1">Step 1: Choose your order type</string>
     <string name="byb_step_3">Step 3: Choose insert colors</string>
+    <string name="build_your_box_instructions">Build Your Box Instructions</string>
+    <string name="scroll_down_to_view_all_the_instructions">Scroll down to view all the instructions</string>
+    <string name="step_1_order_type">Step 1: Order Type</string>
+    <string name="instructions_step_1">At this step, you’ll see different options for order type. Pick the one that suits your needs.</string>
+    <string name="step_2_bag_types">Step 2: Choose your bags</string>
+    <string name="instructions_step_2">Effortlessly choose the bag types you desire, from sling bags to handbags. As you add each bag, a progress bar will visually inform you of your box’s fill status.</string>
+    <string name="step_3_customize">Step 3: Customize your bags</string>
+    <string name="instructions_step_3">Handpick the color that resonates with your client’s tastes and needs based on the quantity chosen in step 2.</string>
+    <string name="step_4_review">Step 4: Review</string>
+    <string name="instructions_step_4">Before finalizing, review the contents of your custom box to ensure it meets your expectations</string>
+    <string name="step_5_checkout">Step 5: Checkout</string>
+    <string name="instructions_step_5">If everything looks good, hit ‘Confirm Order’ to complete ordering your box!</string>
+    <string name="done">Done!</string>
+    <string name="proceed">Proceed</string>
+    <string name="skip_instructions">Skip instructions next time</string>
+    <string name="back_to_top">Back to top</string>
 </resources>

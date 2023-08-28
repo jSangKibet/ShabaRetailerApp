@@ -40,6 +40,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         binding.back.setOnClickListener(v -> finish());
         binding.more.setOnClickListener(v -> showSpecifications());
+        binding.build.setOnClickListener(v -> startActivity(new Intent(this, BuildYourBoxActivity.class)));
 
         sku = getIntent().getStringExtra("sku");
         if (sku == null) {

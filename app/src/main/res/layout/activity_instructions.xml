@@ -243,31 +243,20 @@
             android:id="@+id/proceed"
             style="@style/Button"
             android:layout_width="match_parent"
+            app:layout_goneMarginTop="8dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/proceed"
             app:layout_constraintTop_toBottomOf="@id/done" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/skip"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:buttonTint="?attr/colorPrimary"
-            android:fontFamily="@font/work_sans_regular"
-            android:text="@string/skip_instructions"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/proceed" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/top"
             style="@style/OutlinedButton"
             android:layout_width="match_parent"
+            android:layout_marginTop="8dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
             android:text="@string/back_to_top"
             app:icon="@drawable/arrow_upward"
-            app:layout_constraintTop_toBottomOf="@id/skip" />
+            app:layout_constraintTop_toBottomOf="@id/proceed" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,6 +1,7 @@
 package com.acework.shabaretailer.ui.view.byb;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,5 +15,7 @@ public class InstructionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityInstructionsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        binding.proceed.setOnClickListener(v -> finish());
+        binding.top.setOnClickListener(v -> binding.getRoot().fullScroll(View.FOCUS_UP));
     }
 }

@@ -5,7 +5,7 @@
     android:id="@+id/navigation_drawer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CatalogActivityNew"
+    tools:context=".ui.CatalogActivity"
     tools:openDrawer="start">
 
     <androidx.constraintlayout.widget.ConstraintLayout

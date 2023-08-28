@@ -8,7 +8,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.ui.CatalogActivityNew;
+import com.acework.shabaretailer.ui.CatalogActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -57,7 +57,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (task.isSuccessful()) {
                     if (firebaseAuth.getCurrentUser().isEmailVerified()) {
                         statusDialog = StatusDialog.newInstance(R.raw.success, "Welcome back!", true, () -> {
-                            startActivity(new Intent(LoginActivity.this, CatalogActivityNew.class));
+                            startActivity(new Intent(LoginActivity.this, CatalogActivity.class));
                             finish();
                         });
                         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);

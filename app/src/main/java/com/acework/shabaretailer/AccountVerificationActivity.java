@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.ui.CatalogActivityNew;
+import com.acework.shabaretailer.ui.CatalogActivity;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.snackbar.Snackbar;
@@ -53,7 +53,7 @@ public class AccountVerificationActivity extends AppCompatActivity {
             checkVerification.setEnabled(true);
             if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
                 StatusDialog statusDialog = StatusDialog.newInstance(R.raw.success, "Account verified! Welcome to Shaba Retailer.", true, () -> {
-                    startActivity(new Intent(AccountVerificationActivity.this, CatalogActivityNew.class));
+                    startActivity(new Intent(AccountVerificationActivity.this, CatalogActivity.class));
                     finish();
                 });
                 statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);

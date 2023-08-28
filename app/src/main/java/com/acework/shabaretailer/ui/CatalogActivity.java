@@ -8,21 +8,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
 
 import com.acework.shabaretailer.adapter.ItemAdapterNew;
-import com.acework.shabaretailer.databinding.ActivityCatalogNewBinding;
+import com.acework.shabaretailer.databinding.ActivityCatalogBinding;
 import com.acework.shabaretailer.model.ItemNew;
+import com.acework.shabaretailer.ui.view.byb.BybIntroActivity;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CatalogActivityNew extends AppCompatActivity {
-    ActivityCatalogNewBinding binding;
+public class CatalogActivity extends AppCompatActivity {
+    ActivityCatalogBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityCatalogNewBinding.inflate(getLayoutInflater());
+        binding = ActivityCatalogBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
         ItemAdapterNew adapter = new ItemAdapterNew(this, this::viewItem, getLifecycle());
@@ -31,6 +32,8 @@ public class CatalogActivityNew extends AppCompatActivity {
 
         binding.menu.setOnClickListener(v -> binding.navigationDrawer.openDrawer(GravityCompat.START));
         binding.placeOrder.setOnClickListener(v -> startActivity(new Intent(this, BuildYourBoxActivity.class)));
+
+        startActivity(new Intent(this, BybIntroActivity.class));
     }
 
     private void viewItem(String sku) {

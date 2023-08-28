@@ -5,7 +5,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.ui.CatalogActivity;
+import com.acework.shabaretailer.ui.view.catalog.CatalogActivityNew;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(this, WelcomeActivity.class));
         } else {
             if (user.isEmailVerified()) {
-                startActivity(new Intent(this, CatalogActivity.class));
+                startActivity(new Intent(this, CatalogActivityNew.class));
             } else {
                 startActivity(new Intent(this, AccountVerificationActivity.class));
             }

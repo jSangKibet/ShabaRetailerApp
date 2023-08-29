@@ -6,14 +6,12 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.acework.shabaretailer.model.Retailer;
-import com.google.android.material.button.MaterialButton;
+import com.acework.shabaretailer.databinding.ActivityEditRetailerBinding;
+import com.acework.shabaretailer.model.RetailerNew;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -22,38 +20,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EditRetailerActivity extends AppCompatActivity {
-    private TextInputLayout name, bizName, county, street;
-    private MaterialButton saveChanges, changePassword, changeEmail, back;
-    private Retailer currentRetailer;
+    ActivityEditRetailerBinding binding;
+    private RetailerNew retailer;
     private StatusDialog statusDialog;
     private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_retailer);
-        bindViews();
+        binding = ActivityEditRetailerBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         setListeners();
         initializeCounties();
         loadRetailer();
     }
 
-    private void bindViews() {
-        name = findViewById(R.id.name);
-        bizName = findViewById(R.id.biz_name);
-        county = findViewById(R.id.county_input);
-        street = findViewById(R.id.street);
-        saveChanges = findViewById(R.id.save_changes);
-        saveChanges.setOnClickListener(v -> saveChanges());
-        back = findViewById(R.id.back_button);
-        changePassword = findViewById(R.id.change_password);
-        changeEmail = findViewById(R.id.change_email);
-    }
-
     private void setListeners() {
-        back.setOnClickListener(v -> finish());
-        changePassword.setOnClickListener(v -> startActivity(new Intent(this, ChangePasswordActivity.class)));
-        changeEmail.setOnClickListener(v -> startActivity(new Intent(this, ChangeEmailActivity.class)));
+        binding.backButton.setOnClickListener(v -> finish());
+        binding.changePassword.setOnClickListener(v -> startActivity(new Intent(this, ChangePasswordActivity.class)));
+        binding.saveChanges.setOnClickListener(v -> saveChanges());
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -107,7 +92,7 @@ public class EditRetailerActivity extends AppCompatActivity {
         countyList.add("Wajir");
         countyList.add("West Pokot");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item, countyList);
-        ((AutoCompleteTextView) county.getEditText()).setAdapter(adapter);
+        binding.county.setAdapter(adapter);
     }
 
     private void loadRetailer() {
@@ -116,48 +101,41 @@ public class EditRetailerActivity extends AppCompatActivity {
 
         user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            statusDialog.dismiss();
-            Snackbar.make(name, "There was an error retrieving your information. Exit the application and try again.", Snackbar.LENGTH_LONG).show();
+            loadingRetailerFailed();
         } else {
-            FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).get().addOnCompleteListener(task -> {
-                statusDialog.dismiss();
-                if (task.isSuccessful()) {
-                    Retailer r = task.getResult().toObject(Retailer.class);
-                    if (r == null) {
-                        Snackbar.make(name, "There was an error retrieving your information. Please try again later.", Snackbar.LENGTH_LONG).show();
-                        Log.e("NPE", "Retrieved retailer " + user.getUid() + " is null");
-                    } else {
-                        currentRetailer = r;
-                        setValues();
-                    }
+            FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).get().addOnSuccessListener(documentSnapshot -> {
+                if (statusDialog.isVisible()) statusDialog.dismissAllowingStateLoss();
+                retailer = documentSnapshot.toObject(RetailerNew.class);
+                if (retailer == null) {
+                    Log.e("FirebaseError", "Null");
+                    loadingRetailerFailed();
                 } else {
-                    Snackbar.make(name, "There was an error retrieving your information. Exit the application and try again.", Snackbar.LENGTH_LONG).show();
-                    if (task.getException() != null) task.getException().printStackTrace();
+                    setValues();
                 }
+            }).addOnFailureListener(e -> {
+                e.printStackTrace();
+                loadingRetailerFailed();
             });
-
         }
     }
 
     private void saveChanges() {
         if (validate()) {
-            Retailer retailer = getRetailer();
-            if (areSimilar(retailer)) {
-                Snackbar.make(name, "You have not made any changes.", Snackbar.LENGTH_LONG).show();
-            } else {
+            updateRetailer();
+            {
                 statusDialog = StatusDialog.newInstance(R.raw.loading, "Updating your information", false, null);
                 statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
 
                 FirebaseFirestore.getInstance().collection("retailers").document(user.getUid()).set(retailer).addOnCompleteListener(task -> {
                     statusDialog.dismiss();
                     if (task.isSuccessful()) {
-                        statusDialog = StatusDialog.newInstance(R.raw.success, "Your information has been updated. You will see the changes the next time you launch the application.", true, () -> {
+                        statusDialog = StatusDialog.newInstance(R.raw.success, "Your information has been updated.", true, () -> {
                             setResult(RESULT_OK);
                             finish();
                         });
                         statusDialog.show(getSupportFragmentManager(), StatusDialog.TAG);
                     } else {
-                        Snackbar.make(name, "There was an error updating your information. Please try again later.", Snackbar.LENGTH_LONG).show();
+                        Snackbar.make(binding.backButton, "There was an error updating your information. Please try again later.", Snackbar.LENGTH_LONG).show();
                         if (task.getException() != null) task.getException().printStackTrace();
                     }
                 });
@@ -170,23 +148,18 @@ public class EditRetailerActivity extends AppCompatActivity {
         clearErrors();
         hideKeyboard();
 
-        if (name.getEditText().getText().toString().trim().isEmpty()) {
-            name.setError("This field is required");
+        if (binding.name.getEditText().getText().toString().trim().isEmpty()) {
+            binding.name.setError("This field is required");
             return false;
         }
 
-        if (bizName.getEditText().getText().toString().trim().isEmpty()) {
-            bizName.setError("This field is required");
+        if (binding.county.getText().toString().isEmpty()) {
+            binding.countyInput.setError("This field is required");
             return false;
         }
 
-        if (county.getEditText().getText().toString().isEmpty()) {
-            county.setError("This field is required");
-            return false;
-        }
-
-        if (street.getEditText().getText().toString().trim().isEmpty()) {
-            street.setError("This field is required");
+        if (binding.street.getEditText().getText().toString().trim().isEmpty()) {
+            binding.street.setError("This field is required");
             return false;
         }
 
@@ -195,40 +168,33 @@ public class EditRetailerActivity extends AppCompatActivity {
 
     @SuppressWarnings("ConstantConditions")
     private void setValues() {
-        name.getEditText().setText(currentRetailer.getName());
-        bizName.getEditText().setText(currentRetailer.getBusinessName());
-        ((AutoCompleteTextView) county.getEditText()).setText(currentRetailer.getCounty(), false);
-        street.getEditText().setText(currentRetailer.getStreet());
-        saveChanges.setEnabled(true);
+        binding.name.getEditText().setText(retailer.name);
+        binding.county.setText(retailer.county, false);
+        binding.street.getEditText().setText(retailer.town);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private Retailer getRetailer() {
-        return new Retailer(
-                name.getEditText().getText().toString().trim(),
-                bizName.getEditText().getText().toString().trim(),
-                currentRetailer.getTelephone(),
-                county.getEditText().getText().toString(),
-                street.getEditText().getText().toString().trim(),
-                currentRetailer.getEmail());
+    private void updateRetailer() {
+        retailer.name = binding.name.getEditText().getText().toString().trim();
+        retailer.county = binding.county.getText().toString();
+        retailer.town = binding.street.getEditText().getText().toString().trim();
     }
 
-    private boolean areSimilar(Retailer retailer) {
-        if (!currentRetailer.getName().equals(retailer.getName())) return false;
-        if (!currentRetailer.getBusinessName().equals(retailer.getBusinessName())) return false;
-        if (!currentRetailer.getCounty().equals(retailer.getCounty())) return false;
-        return currentRetailer.getStreet().equals(retailer.getStreet());
-    }
 
     private void hideKeyboard() {
         InputMethodManager manager = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        manager.hideSoftInputFromWindow(name.getWindowToken(), 0);
+        manager.hideSoftInputFromWindow(binding.backButton.getWindowToken(), 0);
     }
 
     private void clearErrors() {
-        name.setError(null);
-        bizName.setError(null);
-        county.setError(null);
-        street.setError(null);
+        binding.name.setError(null);
+        binding.county.setError(null);
+        binding.street.setError(null);
+    }
+
+    private void loadingRetailerFailed() {
+        if (statusDialog.isVisible()) statusDialog.dismissAllowingStateLoss();
+        StatusDialog dialog = StatusDialog.newInstance(R.raw.failed, "There was an error getting your details. Please try again later, or contact support.", true, this::finish);
+        dialog.show(getSupportFragmentManager(), StatusDialog.TAG);
     }
 }

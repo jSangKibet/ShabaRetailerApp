@@ -3,6 +3,7 @@ package com.acework.shabaretailer.ui.view.catalog
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import com.acework.shabaretailer.databinding.ActivityCatalogNewBinding
 import com.acework.shabaretailer.ui.ItemDetailsActivity
 import com.acework.shabaretailer.ui.view.byb.BybIntroActivity
@@ -17,6 +18,8 @@ class CatalogActivityNew : AppCompatActivity() {
 
         binding.viewWahura.setOnClickListener { viewItem("3") }
         binding.viewTwende.setOnClickListener { viewItem("1") }
+        binding.menu.setOnClickListener { binding.navigationDrawer.openDrawer(GravityCompat.START) }
+
 
         startActivity((Intent(this, BybIntroActivity::class.java)))
     }

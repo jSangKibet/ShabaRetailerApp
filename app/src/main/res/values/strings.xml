@@ -30,7 +30,6 @@
     <string name="recipient_information">Recipient information</string>
     <string name="accepted_tc_order">I have read and accepted the terms and conditions of making an order</string>
     <string name="kes">KSh %,d</string>
-    <string name="shaba_retail_catalog">Shaba Retail - Catalog</string>
     <string name="my_orders">My orders</string>
     <string name="order_num"># %s</string>
     <string name="order_information">Order information</string>
@@ -48,7 +47,6 @@
     <string name="account_verification_prompt">An email with a link to verify your account has been sent to your email address. Please follow the instructions in the email to verify your account. If more than five minutes have passed and you didn\'t get the email, check your spam folder or request a new verification mail below. <b>If you recently changed your email, please click \'Resend verification email\' below.</b></string>
     <string name="resend_verification_email">Resend verification email</string>
     <string name="i_have_verified">I have verified my account</string>
-    <string name="error_loading_catalog">There was an error loading the catalog. Please check your network and try again after a few minutes.</string>
     <string name="mustard">Mustard</string>
     <string name="maroon">Maroon</string>
     <string name="dark_brown">Dark brown</string>
@@ -71,7 +69,6 @@
     <string name="delivery_location">Delivery location:</string>
     <string name="delivery_point">%s, %s</string>
     <string name="cancel">Cancel</string>
-    <string name="order_type">Order type</string>
     <string name="wholesale">Wholesale</string>
     <string name="order_type_label">Order type:</string>
     <string name="reset_your_password">Reset your password</string>
@@ -162,7 +159,6 @@
     <string name="instructions_step_5">If everything looks good, hit ‘Confirm Order’ to complete ordering your box!</string>
     <string name="done">Done!</string>
     <string name="proceed">Proceed</string>
-    <string name="skip_instructions">Skip instructions next time</string>
     <string name="back_to_top">Back to top</string>
     <string name="byb">Build Your Own Box</string>
     <string name="jks_signature">Created by Joseph Sang</string>

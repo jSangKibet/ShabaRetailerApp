@@ -131,27 +131,17 @@ public class BuildYourBoxActivity extends AppCompatActivity {
     }
 
     private int getProgress() {
-        switch (sink) {
-            case 0:
-                return 0;
-            case 1:
-                return 13;
-            case 2:
-                return 25;
-            case 3:
-                return 38;
-            case 4:
-                return 50;
-            case 5:
-                return 63;
-            case 6:
-                return 75;
-            case 7:
-                return 88;
-            case 8:
-                return 100;
-        }
-        return 0;
+        return switch (sink) {
+            case 1 -> 13;
+            case 2 -> 25;
+            case 3 -> 38;
+            case 4 -> 50;
+            case 5 -> 63;
+            case 6 -> 75;
+            case 7 -> 88;
+            case 8 -> 100;
+            default -> 0;
+        };
     }
 
     private void toChooseInsertColors() {

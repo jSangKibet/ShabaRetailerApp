@@ -107,7 +107,7 @@ private fun ActivityRoot(
                 TextFieldTranslucent(
                     errorMsg = R.string.field_required,
                     isError = uiState.nameError,
-                    label = R.string.your_shops_name,
+                    label = R.string.your_business_name,
                     onValueChange = { name ->
                         viewModel.updateFields(name = name)
                     },

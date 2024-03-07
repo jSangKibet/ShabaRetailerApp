@@ -5,13 +5,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.addCallback
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -30,6 +32,7 @@ import com.acework.shabaretailer.R
 import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.atlas.STATE_SUCCESS
 import com.acework.shabaretailer.atlas.countriesWithCodes
+import com.acework.shabaretailer.ui.components.buttons.ButtonBar
 import com.acework.shabaretailer.ui.components.dialogs.DialogLoading
 import com.acework.shabaretailer.ui.components.dialogs.DialogSuccess
 import com.acework.shabaretailer.ui.components.fields.TextFieldTranslucent
@@ -97,15 +100,15 @@ private fun ActivityRoot(
                     .weight(1f)
             ) {
 
-                //  name
+                // business name
                 TextFieldTranslucent(
                     errorMsg = R.string.field_required,
-                    isError = uiState.nameError,
-                    label = R.string.your_shops_name,
+                    isError = uiState.businessNameError,
+                    label = R.string.your_business_name,
                     onValueChange = { name ->
-                        viewModel.updateFields(name = name)
+                        viewModel.updateFields(businessName = name)
                     },
-                    value = uiState.name
+                    value = uiState.businessName
                 )
 
                 // country
@@ -131,17 +134,60 @@ private fun ActivityRoot(
                     value = uiState.city
                 )
 
-                // finish button
-                Button(
-                    modifier = Modifier.fillMaxWidth(),
-                    onClick = { viewModel.validate() },
-                    shape = RoundedCornerShape(0.dp)
+                // postal address
+                TextFieldTranslucent(
+                    errorMsg = R.string.field_required,
+                    isError = uiState.postalAddressError,
+                    label = R.string.postal_address,
+                    onValueChange = { address ->
+                        viewModel.updateFields(postalAddress = address)
+                    },
+                    value = uiState.postalAddress
+                )
+
+                // mobile number
+                TextFieldTranslucent(
+                    errorMsg = R.string.invalid_input,
+                    isError = uiState.numberError,
+                    label = R.string.your_mobile_number,
+                    onValueChange = { number ->
+                        viewModel.updateFields(number = number)
+                    },
+                    value = uiState.number
+                )
+
+                // name
+                TextFieldTranslucent(
+                    errorMsg = R.string.field_required,
+                    isError = uiState.nameError,
+                    label = R.string.your_name,
+                    onValueChange = { name ->
+                        viewModel.updateFields(name = name)
+                    },
+                    value = uiState.name
+                )
+
+                // number & name requirement explanation
+                Row(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                        .padding(8.dp)
                 ) {
                     Text(
-                        text = stringResource(id = R.string.finish_u).uppercase(),
-                        style = MaterialTheme.typography.titleMedium
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                        text = stringResource(id = R.string.required_shipping_details)
                     )
                 }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // finish button
+                ButtonBar(
+                    onClick = { viewModel.validate() },
+                    text = stringResource(id = R.string.finish_u),
+                )
             }
         }
 

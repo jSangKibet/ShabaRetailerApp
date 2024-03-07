@@ -2,14 +2,14 @@ package com.acework.shabaretailer.ui.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.google.firebase.Firebase
-import com.google.firebase.auth.auth
-import com.google.firebase.firestore.firestore
 import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.atlas.STATE_LOADING
 import com.acework.shabaretailer.atlas.STATE_SUCCESS
 import com.acework.shabaretailer.atlas.countriesWithCodes
 import com.acework.shabaretailer.model.Retailer
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,15 +20,21 @@ class CreateRetailerViewModel : ViewModel() {
     val uiState: StateFlow<CreateRetailerUiState> = _uiState.asStateFlow()
 
     fun updateFields(
-        name: String = uiState.value.name,
+        businessName: String = uiState.value.businessName,
         country: String = uiState.value.country,
         city: String = uiState.value.city,
+        postalAddress: String = uiState.value.postalAddress,
+        number: String = uiState.value.number,
+        name: String = uiState.value.name,
     ) {
         _uiState.update { state ->
             state.copy(
-                name = name,
+                businessName = businessName,
                 country = country,
-                city = city
+                city = city,
+                postalAddress = postalAddress,
+                number = number,
+                name = name
             )
         }
     }
@@ -36,16 +42,17 @@ class CreateRetailerViewModel : ViewModel() {
     fun validate() {
         _uiState.update { state ->
             state.copy(
-                nameError = state.name.trim().isEmpty(),
+                businessNameError = state.businessName.trim().isEmpty(),
                 countryError = state.country.isEmpty(),
-                cityError = state.city.trim().isEmpty()
+                cityError = state.city.trim().isEmpty(),
+                postalAddressError = state.postalAddress.trim().isEmpty(),
+                numberError = !state.number.trim().matches(Regex("[+]\\d+")),
+                nameError = state.name.trim().isEmpty()
             )
         }
 
-        uiState.value.let { state ->
-            if (!(state.nameError || state.countryError || state.cityError)) {
-                finishCreatingRetailer()
-            }
+        if (uiState.value.isInputValid()) {
+            finishCreatingRetailer()
         }
     }
 
@@ -62,13 +69,16 @@ class CreateRetailerViewModel : ViewModel() {
                     )
                 }
 
-                val retailer = Retailer(
+                val retailer = Retailer.create(
+                    uiState.value.businessName,
                     uiState.value.city,
                     uiState.value.country,
                     countriesWithCodes[uiState.value.country] ?: "-",
                     email,
                     user.uid,
                     uiState.value.name,
+                    uiState.value.number,
+                    uiState.value.postalAddress
                 )
 
                 db.collection("retailers").document(user.uid).set(retailer)
@@ -96,16 +106,32 @@ class CreateRetailerViewModel : ViewModel() {
 
 data class CreateRetailerUiState(
     // input values
-    val name: String = "",
+    val businessName: String = "",
     val country: String = "",
     val city: String = "",
+    val postalAddress: String = "",
+    val number: String = "",
+    val name: String = "",
 
     // input errors
-    val nameError: Boolean = false,
+    val businessNameError: Boolean = false,
     val countryError: Boolean = false,
     val cityError: Boolean = false,
+    val postalAddressError: Boolean = false,
+    val numberError: Boolean = false,
+    val nameError: Boolean = false,
 
     // view states
     val loading: Boolean = false,
     val retailerCreationStatus: Int = STATE_LOADING,
 )
+
+fun CreateRetailerUiState.isInputValid(): Boolean {
+    if (businessNameError) return false
+    if (countryError) return false
+    if (cityError) return false
+    if (postalAddressError) return false
+    if (numberError) return false
+    if (nameError) return false
+    return true
+}

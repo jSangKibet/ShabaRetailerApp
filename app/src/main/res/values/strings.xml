@@ -29,7 +29,6 @@
     <!-- sign up -->
     <string name="hello_retailer">Hello retailer!</string>
     <string name="provide_your_details_to_join_shaba">Provide your details to join Shaba</string>
-    <string name="your_shops_name">Your shop\’s name</string>
     <string name="country">Country</string>
     <string name="ra_the_tc">I have read &amp; accepted the terms &amp; conditions of using the Shaba retailer\’s application</string>
     <string name="click_here_to_read_tc">Click here to read the terms &amp; conditions</string>
@@ -46,6 +45,11 @@
     <string name="passwords_do_not_match">Passwords do not match</string>
     <string name="title_activity_home">HomeActivity</string>
     <string name="city">City</string>
+    <string name="your_business_name">Your business\'s name</string>
+    <string name="your_mobile_number">Your mobile number (international format)</string>
+    <string name="your_name">Your name</string>
+    <string name="postal_address">Postal address</string>
+    <string name="required_shipping_details">Your mobile number &amp; name are required for shipping purposes. Please provide correct details.</string>
 
     <!-- catalog -->
     <string name="catalog">Catalog</string>

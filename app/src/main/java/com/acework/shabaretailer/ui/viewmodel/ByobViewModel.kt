@@ -20,6 +20,7 @@ import com.acework.shabaretailer.model.Order
 import com.acework.shabaretailer.model.OrderItem
 import com.acework.shabaretailer.model.OrderShipmentDetails
 import com.acework.shabaretailer.network.NetworkOperations
+import com.acework.shabaretailer.network.model.LandedCostRequestBody
 import com.acework.shabaretailer.network.model.getShipmentRequestBody
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -247,6 +248,40 @@ class ByobViewModel : ViewModel() {
             )
 
             NetworkOperations.rates(parameters) { requestStatus, responseStatus, errorCode, result ->
+                _uiState.update { state -> state.copy(loading = false) }
+                if (requestStatus && responseStatus) {
+                    val shippingFee = getShippingCost(result)
+                    val productCodes = getProductCodes(result)
+                    if (shippingFee >= 0) {
+                        _uiState.update { state ->
+                            state.copy(
+                                loadingRates = STATE_SUCCESS,
+                                shipping = shippingFee,
+                                productCodes = productCodes
+                            )
+                        }
+                    } else {
+                        _uiState.update { state -> state.copy(loadingRates = STATE_ERROR) }
+                    }
+                } else {
+                    println(errorCode)
+                    _uiState.update { state -> state.copy(loadingRates = STATE_ERROR) }
+                }
+            }
+        }
+    }
+
+    fun getLandedCost() {
+        _uiState.update { state ->
+            state.copy(
+                loading = true,
+                loadingMessage = R.string.getting_shipping_rates,
+                loadingRates = STATE_LOADING
+            )
+        }
+        viewModelScope.launch {
+
+            NetworkOperations.landedCost(LandedCostRequestBody()) { requestStatus, responseStatus, errorCode, result ->
                 _uiState.update { state -> state.copy(loading = false) }
                 if (requestStatus && responseStatus) {
                     val shippingFee = getShippingCost(result)

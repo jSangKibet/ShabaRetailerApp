@@ -88,11 +88,8 @@ fun Login(
                     painterResource(id = R.drawable.twende), contentScale = ContentScale.FillBounds
                 )
         ) {
-
             // header
-            Row(
-                modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically
-            ) {
+            Column (horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.fillMaxWidth()) {
                 Image(
                     painter = painterResource(id = R.drawable.logo),
                     contentDescription = stringResource(id = R.string.image_content_description),

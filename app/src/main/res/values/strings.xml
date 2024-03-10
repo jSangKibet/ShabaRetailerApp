@@ -177,6 +177,7 @@
     <string name="logout">Logout</string>
     <string name="do_you_want_to_logout">Do you want to log out?</string>
     <string name="order_tutorial">Order tutorial</string>
+    <string name="find_us_online">Find us online</string>
 
     <!-- edit retailer -->
     <string name="title_activity_edit_retailer">EditRetailerActivity</string>

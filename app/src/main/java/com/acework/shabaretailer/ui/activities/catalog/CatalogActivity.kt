@@ -13,6 +13,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -43,21 +45,22 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.acework.shabaretailer.R
-import com.acework.shabaretailer.ui.activities.retailer.AboutActivity
 import com.acework.shabaretailer.MainActivity
 import com.acework.shabaretailer.PostalService
+import com.acework.shabaretailer.R
 import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.atlas.items
 import com.acework.shabaretailer.model.Item
 import com.acework.shabaretailer.ui.activities.orders.ByobActivity
 import com.acework.shabaretailer.ui.activities.orders.MyOrdersActivity
+import com.acework.shabaretailer.ui.activities.retailer.AboutActivity
 import com.acework.shabaretailer.ui.activities.retailer.CreateRetailerActivity
 import com.acework.shabaretailer.ui.activities.retailer.EditRetailerActivity
 import com.acework.shabaretailer.ui.activities.retailer.EmailVerificationActivity
 import com.acework.shabaretailer.ui.components.buttons.ButtonBar
 import com.acework.shabaretailer.ui.components.buttons.ButtonBarOutlined
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconBlack
+import com.acework.shabaretailer.ui.components.buttons.ButtonIconOutlinedGray
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconTextWhite
 import com.acework.shabaretailer.ui.components.dialogs.DialogConfirmation
 import com.acework.shabaretailer.ui.components.dialogs.DialogLoading
@@ -84,6 +87,7 @@ class CatalogActivity : ComponentActivity() {
                     toFinishCreatingRetailer = { toFinishCreatingRetailer() },
                     toMyOrders = { toMyOrders() },
                     toOpenTC = { openTC() },
+                    toSocial = { toSocial(it) },
                     toVerifyEmail = { toVerifyEmail() },
                     showAbout = { showAbout() }
                 )
@@ -144,6 +148,23 @@ class CatalogActivity : ComponentActivity() {
     private fun toVerifyEmail() {
         startActivity(Intent(this, EmailVerificationActivity::class.java))
     }
+
+    private fun toSocial(destination: Int) {
+        val browserIntent = Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(
+                when (destination) {
+                    0 -> "https://www.instagram.com/_theshaba/"
+                    1 -> "https://www.facebook.com/theshabastudio"
+                    2 -> "https://www.youtube.com/channel/UC5EOCKOB06WdkJEdMhRsXZA"
+                    3 -> "mailto:team@theshaba.com"
+                    4 -> "https://ke.linkedin.com/company/the-shaba?trk=public_profile_topcard-current-company"
+                    else -> "https://twitter.com/TheShabaStudio"
+                }
+            )
+        )
+        startActivity(browserIntent)
+    }
 }
 
 @Composable
@@ -158,6 +179,7 @@ private fun ActivityRoot(
     toFinishCreatingRetailer: () -> Unit,
     toMyOrders: () -> Unit,
     toOpenTC: () -> Unit,
+    toSocial: (Int) -> Unit,
     toVerifyEmail: () -> Unit,
     showAbout: () -> Unit,
     viewModel: CatalogViewModel = viewModel()
@@ -190,6 +212,7 @@ private fun ActivityRoot(
                     toEditRetailer = toEditRetailer,
                     toMyOrders = toMyOrders,
                     toOpenTC = toOpenTC,
+                    toSocial = toSocial,
                     showAbout = showAbout
                 )
             }
@@ -406,6 +429,7 @@ private fun Bag(item: Item, openItem: (String) -> Unit) {
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Drawer(
     uiState: CatalogUiState,
@@ -416,6 +440,7 @@ private fun Drawer(
     toEditRetailer: () -> Unit,
     toMyOrders: () -> Unit,
     toOpenTC: () -> Unit,
+    toSocial: (Int) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -447,6 +472,34 @@ private fun Drawer(
         )
         Spacer(modifier = Modifier.weight(1f))
 
+
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(
+                style = MaterialTheme.typography.titleSmall,
+                text = stringResource(id = R.string.find_us_online)
+            )
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                ButtonIconOutlinedGray(enabled = true, iconResId = R.drawable.bi_instagram) {
+                    toSocial(0)
+                }
+
+                ButtonIconOutlinedGray(enabled = true, iconResId = R.drawable.bi_facebook) {
+                    toSocial(1)
+                }
+                ButtonIconOutlinedGray(enabled = true, iconResId = R.drawable.bi_youtube) {
+                    toSocial(2)
+                }
+                ButtonIconOutlinedGray(enabled = true, iconResId = R.drawable.bi_google) {
+                    toSocial(3)
+                }
+                ButtonIconOutlinedGray(enabled = true, iconResId = R.drawable.bi_linkedin) {
+                    toSocial(4)
+                }
+                ButtonIconOutlinedGray(enabled = true, iconResId = R.drawable.bi_twitter_x) {
+                    toSocial(5)
+                }
+            }
+        }
 
         ButtonBarOutlined(
             onClick = {

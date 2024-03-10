@@ -56,7 +56,7 @@ import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconBlack
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconOutlinedGray
 import com.acework.shabaretailer.ui.components.dialogs.DialogLoading
-import com.acework.shabaretailer.ui.components.dialogs.DialogPaymentDetailsNew
+import com.acework.shabaretailer.ui.components.dialogs.DialogPaymentDetails
 import com.acework.shabaretailer.ui.components.dialogs.DialogSuccess
 import com.acework.shabaretailer.ui.components.snackbars.SnackbarModal
 import com.acework.shabaretailer.ui.components.views.headers.HeaderWithoutAction
@@ -76,7 +76,6 @@ class ByobActivity : ComponentActivity() {
                     ActivityRoot(
                         back = { finish() },
                         copyAccountNumber = { copyAccountNumberToClipboard() },
-                        copyCreditCardNumber = { copyCreditCardNumber() },
                         viewOrderTC = { openTC() }
                     )
                 }
@@ -96,12 +95,6 @@ class ByobActivity : ComponentActivity() {
         clipboard.setPrimaryClip(clip)
     }
 
-    private fun copyCreditCardNumber() {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("Credit card number", "4069061021158318")
-        clipboard.setPrimaryClip(clip)
-    }
-
 }
 
 @Composable
@@ -109,7 +102,6 @@ private fun ActivityRoot(
     byobViewModel: ByobViewModel = viewModel(),
     back: () -> Unit,
     copyAccountNumber: () -> Unit,
-    copyCreditCardNumber: () -> Unit,
     viewOrderTC: () -> Unit
 ) {
     val byobUiState by byobViewModel.uiState.collectAsState()
@@ -136,7 +128,6 @@ private fun ActivityRoot(
                 byobViewModel = byobViewModel,
                 byobUiState = byobUiState,
                 copyAccountNumber = copyAccountNumber,
-                copyCreditCardNumber = copyCreditCardNumber,
                 viewOrderTC = viewOrderTC
             )
         }
@@ -885,7 +876,6 @@ fun OrderSummary(
     byobViewModel: ByobViewModel,
     byobUiState: ByobUiState,
     copyAccountNumber: () -> Unit,
-    copyCreditCardNumber: () -> Unit,
     viewOrderTC: () -> Unit
 ) {
     BackHandler {
@@ -1099,9 +1089,8 @@ fun OrderSummary(
 
     // bank details dialog
     if (byobUiState.showBankDetails) {
-        DialogPaymentDetailsNew(
+        DialogPaymentDetails(
             copyAccountNumber = copyAccountNumber,
-            copyCreditCardNumber = copyCreditCardNumber,
             dismiss = { byobViewModel.updateShowBankDetails(false) }
         )
     }

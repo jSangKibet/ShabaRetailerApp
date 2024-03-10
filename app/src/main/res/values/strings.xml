@@ -167,9 +167,10 @@
     <string name="copy">Copy</string>
     <string name="payment_details">Payment details</string>
     <string name="usd">USD</string>
-    <string name="number_account_new">0100 009 411 857</string>
+    <string name="number_account_usd">0100 009 411 857</string>
     <string name="credit_card_number">Credit card number</string>
     <string name="number_credit_card">4069 0610 2115 8318</string>
+    <string name="payment_prompt">Please don\'t pay for your order until it is marked as \'Confirmed\'</string>
 
     <!-- sidebar -->
     <string name="my_orders">My orders</string>

@@ -87,7 +87,7 @@ fun DialogPaymentDetails(
                         )
                         Text(
                             style = MaterialTheme.typography.titleSmall,
-                            text = stringResource(id = R.string.number_account)
+                            text = stringResource(id = R.string.number_account_usd)
                         )
                     }
                     Button(
@@ -113,7 +113,12 @@ fun DialogPaymentDetails(
 
                 Text(
                     style = MaterialTheme.typography.titleSmall,
-                    text = stringResource(id = R.string.ksh)
+                    text = stringResource(id = R.string.usd)
+                )
+
+                Text(
+                    style = MaterialTheme.typography.bodySmall,
+                    text = stringResource(id = R.string.payment_prompt)
                 )
 
                 Button(

@@ -64,7 +64,7 @@ import com.acework.shabaretailer.ui.components.buttons.ButtonIconOutlinedGray
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconTextWhite
 import com.acework.shabaretailer.ui.components.dialogs.DialogConfirmation
 import com.acework.shabaretailer.ui.components.dialogs.DialogLoading
-import com.acework.shabaretailer.ui.components.dialogs.DialogPaymentDetailsNew
+import com.acework.shabaretailer.ui.components.dialogs.DialogPaymentDetails
 import com.acework.shabaretailer.ui.components.snackbars.SnackbarModal
 import com.acework.shabaretailer.ui.theme.ShabaRetailersTheme
 import com.acework.shabaretailer.ui.viewmodel.CatalogUiState
@@ -79,7 +79,6 @@ class CatalogActivity : ComponentActivity() {
                 ActivityRoot(
                     exitApp = { finish() },
                     copyAccountNumber = { copyAccountNumber() },
-                    copyCreditCardNumber = { copyCreditCardNumber() },
                     openItem = { openItem(it) },
                     onSignedOut = { signedOut() },
                     toByb = { toByob() },
@@ -124,12 +123,6 @@ class CatalogActivity : ComponentActivity() {
         clipboard.setPrimaryClip(clip)
     }
 
-    private fun copyCreditCardNumber() {
-        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("Credit card number", "4069061021158318")
-        clipboard.setPrimaryClip(clip)
-    }
-
     private fun openTC() {
         val browserIntent =
             Intent(Intent.ACTION_VIEW, Uri.parse("https://www.theshaba.com/terms-of-use"))
@@ -171,7 +164,6 @@ class CatalogActivity : ComponentActivity() {
 private fun ActivityRoot(
     exitApp: () -> Unit,
     copyAccountNumber: () -> Unit,
-    copyCreditCardNumber: () -> Unit,
     openItem: (String) -> Unit,
     onSignedOut: () -> Unit,
     toByb: () -> Unit,
@@ -221,7 +213,6 @@ private fun ActivityRoot(
     ) {
         Catalog(
             copyAccountNumber = copyAccountNumber,
-            copyCreditCardNumber = copyCreditCardNumber,
             exitApp = exitApp,
             openDrawer = { toggleDrawer() },
             openItem = openItem,
@@ -237,7 +228,6 @@ private fun ActivityRoot(
 @Composable
 private fun Catalog(
     copyAccountNumber: () -> Unit,
-    copyCreditCardNumber: () -> Unit,
     exitApp: () -> Unit,
     openDrawer: () -> Unit,
     openItem: (String) -> Unit,
@@ -307,9 +297,8 @@ private fun Catalog(
 
         // dialogs
         if (uiState.showBankDetails) {
-            DialogPaymentDetailsNew(
+            DialogPaymentDetails(
                 copyAccountNumber = copyAccountNumber,
-                copyCreditCardNumber = copyCreditCardNumber,
                 dismiss = { viewModel.setShowingBankDetails(false) }
             )
         }

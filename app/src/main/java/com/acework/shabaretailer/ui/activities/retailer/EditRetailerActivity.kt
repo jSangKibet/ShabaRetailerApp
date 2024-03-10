@@ -103,48 +103,91 @@ private fun ActivityRoot(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                //  name
-                TextFieldTranslucent(
-                    errorMsg = R.string.field_required,
-                    isError = uiState.nameError,
-                    label = R.string.your_business_name,
-                    onValueChange = { name ->
-                        viewModel.updateFields(name = name)
-                    },
-                    value = uiState.name
-                )
+                Column (modifier = Modifier.weight(1f)) {
+                    // business name
+                    TextFieldTranslucent(
+                        errorMsg = R.string.field_required,
+                        isError = uiState.businessNameError,
+                        label = R.string.your_business_name,
+                        onValueChange = { name ->
+                            viewModel.updateFields(businessName = name)
+                        },
+                        value = uiState.businessName
+                    )
 
-                // country
-                DropDownTranslucent(
-                    errorMsg = stringResource(id = R.string.invalid_input),
-                    isError = uiState.countryError,
-                    dropdownItems = countriesWithCodes.keys.toList(),
-                    label = stringResource(id = R.string.country),
-                    onValueChange = { country ->
-                        viewModel.updateFields(country = country)
-                    },
-                    value = uiState.country
-                )
+                    // country
+                    DropDownTranslucent(
+                        errorMsg = stringResource(id = R.string.invalid_input),
+                        isError = uiState.countryError,
+                        dropdownItems = countriesWithCodes.keys.toList(),
+                        label = stringResource(id = R.string.country),
+                        onValueChange = { country ->
+                            viewModel.updateFields(country = country)
+                        },
+                        value = uiState.country
+                    )
 
-                //  city
-                TextFieldTranslucent(
-                    errorMsg = R.string.field_required,
-                    isError = uiState.cityError,
-                    label = R.string.city,
-                    onValueChange = { city ->
-                        viewModel.updateFields(city = city)
-                    },
-                    value = uiState.city
-                )
+                    //  city
+                    TextFieldTranslucent(
+                        errorMsg = R.string.field_required,
+                        isError = uiState.cityError,
+                        label = R.string.city,
+                        onValueChange = { city ->
+                            viewModel.updateFields(city = city)
+                        },
+                        value = uiState.city
+                    )
 
+                    // postal address
+                    TextFieldTranslucent(
+                        errorMsg = R.string.field_required,
+                        isError = uiState.postalAddressError,
+                        label = R.string.postal_address,
+                        onValueChange = { address ->
+                            viewModel.updateFields(postalAddress = address)
+                        },
+                        value = uiState.postalAddress
+                    )
+
+                    // mobile number
+                    TextFieldTranslucent(
+                        errorMsg = R.string.invalid_input,
+                        isError = uiState.numberError,
+                        label = R.string.your_mobile_number,
+                        onValueChange = { number ->
+                            viewModel.updateFields(number = number)
+                        },
+                        value = uiState.number
+                    )
+
+                    // name
+                    TextFieldTranslucent(
+                        errorMsg = R.string.field_required,
+                        isError = uiState.nameError,
+                        label = R.string.your_name,
+                        onValueChange = { name ->
+                            viewModel.updateFields(name = name)
+                        },
+                        value = uiState.name
+                    )
+
+                    // state code
+                    TextFieldTranslucent(
+                        errorMsg = R.string.field_required,
+                        isError = false,
+                        label = R.string.state_code,
+                        onValueChange = { code ->
+                            viewModel.updateFields(stateCode = code)
+                        },
+                        value = uiState.stateCode
+                    )
+                }
 
                 // save changes
                 ButtonBar(
                     onClick = { viewModel.validate() },
                     text = stringResource(id = R.string.save_changes)
                 )
-
-                Spacer(modifier = Modifier.weight(1f))
 
                 ButtonBarOutlined(
                     onClick = toChangePassword,

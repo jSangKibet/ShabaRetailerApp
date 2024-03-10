@@ -9,7 +9,8 @@ data class Retailer(
     val id: String = "",
     val name: String = "",
     val number: String = "",
-    val postalAddress: String = ""
+    val postalAddress: String = "",
+    val stateCode: String="",
 ) {
     companion object {
         fun create(
@@ -21,7 +22,8 @@ data class Retailer(
             id: String,
             name: String,
             number: String,
-            postalAddress: String
+            postalAddress: String,
+            stateCode: String
         ): Retailer {
             return Retailer(
                 businessName,
@@ -32,7 +34,8 @@ data class Retailer(
                 id,
                 name,
                 number,
-                postalAddress
+                postalAddress,
+                stateCode
             )
         }
     }

@@ -26,6 +26,7 @@ class CreateRetailerViewModel : ViewModel() {
         postalAddress: String = uiState.value.postalAddress,
         number: String = uiState.value.number,
         name: String = uiState.value.name,
+        stateCode: String = uiState.value.stateCode
     ) {
         _uiState.update { state ->
             state.copy(
@@ -34,7 +35,8 @@ class CreateRetailerViewModel : ViewModel() {
                 city = city,
                 postalAddress = postalAddress,
                 number = number,
-                name = name
+                name = name,
+                stateCode = stateCode
             )
         }
     }
@@ -78,7 +80,8 @@ class CreateRetailerViewModel : ViewModel() {
                     user.uid,
                     uiState.value.name,
                     uiState.value.number,
-                    uiState.value.postalAddress
+                    uiState.value.postalAddress,
+                    uiState.value.stateCode
                 )
 
                 db.collection("retailers").document(user.uid).set(retailer)
@@ -112,6 +115,7 @@ data class CreateRetailerUiState(
     val postalAddress: String = "",
     val number: String = "",
     val name: String = "",
+    val stateCode: String = "",
 
     // input errors
     val businessNameError: Boolean = false,

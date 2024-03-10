@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -98,6 +100,7 @@ private fun ActivityRoot(
                     .fillMaxWidth()
                     .padding(16.dp)
                     .weight(1f)
+                    .verticalScroll(rememberScrollState())
             ) {
 
                 // business name
@@ -145,6 +148,20 @@ private fun ActivityRoot(
                     value = uiState.postalAddress
                 )
 
+                // number & name requirement explanation
+                Row(
+                    modifier = Modifier
+                        .background(MaterialTheme.colorScheme.surface)
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                        text = stringResource(id = R.string.required_shipping_details)
+                    )
+                }
+
                 // mobile number
                 TextFieldTranslucent(
                     errorMsg = R.string.invalid_input,
@@ -167,7 +184,7 @@ private fun ActivityRoot(
                     value = uiState.name
                 )
 
-                // number & name requirement explanation
+                // state code requirement explanation
                 Row(
                     modifier = Modifier
                         .background(MaterialTheme.colorScheme.surface)
@@ -177,10 +194,21 @@ private fun ActivityRoot(
                     Text(
                         color = MaterialTheme.colorScheme.primary,
                         style = MaterialTheme.typography.bodySmall,
-                        text = stringResource(id = R.string.required_shipping_details)
+                        text = stringResource(id = R.string.optional_required_state_code)
                     )
                 }
-                
+
+                // state code
+                TextFieldTranslucent(
+                    errorMsg = R.string.field_required,
+                    isError = false,
+                    label = R.string.state_code,
+                    onValueChange = { code ->
+                        viewModel.updateFields(stateCode = code)
+                    },
+                    value = uiState.stateCode
+                )
+
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // finish button

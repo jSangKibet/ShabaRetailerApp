@@ -1,5 +1,6 @@
 package com.acework.shabaretailer.atlas
 
+import com.acework.shabaretailer.PostalService
 import com.acework.shabaretailer.model.Item
 
 const val STATE_LOADING = 0
@@ -301,4 +302,19 @@ val countriesWithCodes = mapOf(
     "Yemen" to "YE",
     "Zambia" to "ZM",
     "Zimbabwe" to "ZW"
+)
+
+val ratingEndpointParams = mapOf(
+    "accountNumber" to "351403631",
+    "originCountryCode" to "KE",
+    "originCityName" to "Nairobi",
+    "destinationCountryCode" to PostalService.retailer.countryCode,
+    "destinationCityName" to PostalService.retailer.city,
+    "weight" to "2",
+    "length" to "34",
+    "width" to "32",
+    "height" to "34",
+    "plannedShippingDate" to getPlannedShippingDate(),
+    "isCustomsDeclarable" to "false",
+    "unitOfMeasurement" to "metric"
 )

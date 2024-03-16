@@ -3,8 +3,6 @@ package com.acework.shabaretailer.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Firebase
-import com.google.firebase.firestore.firestore
 import com.acework.shabaretailer.PostalService
 import com.acework.shabaretailer.R
 import com.acework.shabaretailer.atlas.PRICE_TWENDE
@@ -12,16 +10,19 @@ import com.acework.shabaretailer.atlas.PRICE_WAHURA
 import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.atlas.STATE_LOADING
 import com.acework.shabaretailer.atlas.STATE_SUCCESS
-import com.acework.shabaretailer.atlas.getPlannedShippingDate
 import com.acework.shabaretailer.atlas.getProductCodes
 import com.acework.shabaretailer.atlas.getShipmentDetails
-import com.acework.shabaretailer.atlas.getShippingCost
+import com.acework.shabaretailer.atlas.getShippingCosts
+import com.acework.shabaretailer.atlas.ratingEndpointParams
 import com.acework.shabaretailer.model.Order
 import com.acework.shabaretailer.model.OrderItem
 import com.acework.shabaretailer.model.OrderShipmentDetails
+import com.acework.shabaretailer.model.ShippingCosts
 import com.acework.shabaretailer.network.NetworkOperations
 import com.acework.shabaretailer.network.model.LandedCostRequestBody
 import com.acework.shabaretailer.network.model.getShipmentRequestBody
+import com.google.firebase.Firebase
+import com.google.firebase.firestore.firestore
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -141,7 +142,7 @@ class ByobViewModel : ViewModel() {
             false,
             PostalService.retailer.id,
             shipmentDetails.shipmentTrackingNumber,
-            uiState.value.shipping,
+            uiState.value.shippingCosts.total,
             "Pending",
             System.currentTimeMillis()
         )
@@ -227,79 +228,65 @@ class ByobViewModel : ViewModel() {
             state.copy(
                 loading = true,
                 loadingMessage = R.string.getting_shipping_rates,
-                loadingRates = STATE_LOADING
+                loadingCosts = STATE_LOADING
             )
         }
         viewModelScope.launch {
-
-            val parameters = mapOf(
-                "accountNumber" to "351403631",
-                "originCountryCode" to "KE",
-                "originCityName" to "Nairobi",
-                "destinationCountryCode" to PostalService.retailer.countryCode,
-                "destinationCityName" to PostalService.retailer.city,
-                "weight" to "2",
-                "length" to "34",
-                "width" to "32",
-                "height" to "34",
-                "plannedShippingDate" to getPlannedShippingDate(),
-                "isCustomsDeclarable" to "false",
-                "unitOfMeasurement" to "metric"
-            )
-
-            NetworkOperations.rates(parameters) { requestStatus, responseStatus, errorCode, result ->
+            NetworkOperations.rates(ratingEndpointParams) { requestStatus, responseStatus, errorCode, result ->
                 _uiState.update { state -> state.copy(loading = false) }
                 if (requestStatus && responseStatus) {
-                    val shippingFee = getShippingCost(result)
                     val productCodes = getProductCodes(result)
-                    if (shippingFee >= 0) {
-                        _uiState.update { state ->
-                            state.copy(
-                                loadingRates = STATE_SUCCESS,
-                                shipping = shippingFee,
-                                productCodes = productCodes
-                            )
-                        }
+                    if (productCodes.first.isNotEmpty() && productCodes.second.isNotEmpty()) {
+                        _uiState.update { state -> state.copy(productCodes = productCodes) }
+                        getLandedCost()
                     } else {
-                        _uiState.update { state -> state.copy(loadingRates = STATE_ERROR) }
+                        _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                     }
                 } else {
                     println(errorCode)
-                    _uiState.update { state -> state.copy(loadingRates = STATE_ERROR) }
+                    _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                 }
             }
         }
     }
 
-    fun getLandedCost() {
+    private fun getLandedCost() {
         _uiState.update { state ->
             state.copy(
                 loading = true,
-                loadingMessage = R.string.getting_shipping_rates,
-                loadingRates = STATE_LOADING
+                loadingMessage = R.string.getting_shipping_rates
             )
         }
-        viewModelScope.launch {
 
-            NetworkOperations.landedCost(LandedCostRequestBody()) { requestStatus, responseStatus, errorCode, result ->
+        viewModelScope.launch {
+            NetworkOperations.landedCost(
+                LandedCostRequestBody.create(
+                    uiState.value.productCodes.first,
+                    uiState.value.productCodes.second,
+                    uiState.value.twende,
+                    uiState.value.wahura / 2
+                )
+            ) { requestStatus, responseStatus, errorCode, result ->
                 _uiState.update { state -> state.copy(loading = false) }
                 if (requestStatus && responseStatus) {
-                    val shippingFee = getShippingCost(result)
-                    val productCodes = getProductCodes(result)
-                    if (shippingFee >= 0) {
+
+                    var bagTotal = uiState.value.twende * PRICE_TWENDE
+                    bagTotal += (uiState.value.wahura / 2) * PRICE_WAHURA
+                    val shippingCosts = getShippingCosts(bagTotal.toDouble(), result)
+
+                    if (shippingCosts.bagTotal > 0.0) {
                         _uiState.update { state ->
                             state.copy(
-                                loadingRates = STATE_SUCCESS,
-                                shipping = shippingFee,
-                                productCodes = productCodes
+                                loadingCosts = STATE_SUCCESS,
+                                shippingCosts = shippingCosts
                             )
                         }
                     } else {
-                        _uiState.update { state -> state.copy(loadingRates = STATE_ERROR) }
+                        _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                     }
                 } else {
                     println(errorCode)
-                    _uiState.update { state -> state.copy(loadingRates = STATE_ERROR) }
+                    _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                 }
             }
         }
@@ -332,7 +319,6 @@ class ByobViewModel : ViewModel() {
                     }
                     _uiState.update { state -> state.copy(loading = false) }
                     println(result)
-                    // todo: place order
                 } else {
                     println(errorCode)
                     _uiState.update { state ->
@@ -380,8 +366,8 @@ data class ByobUiState(
     val loadingMessage: Int = R.string.loading,
     val orderPlaced: Boolean = false,
     val errorPlacingOrder: Boolean = false,
-    val loadingRates: Int = STATE_LOADING,
-    val shipping: Double = 0.0,
+    val loadingCosts: Int = STATE_LOADING,
+    val shippingCosts: ShippingCosts = ShippingCosts(),
     val productCodes: Pair<String, String> = Pair("D", "D"),
     val loadingShipment: Int = STATE_LOADING
 )

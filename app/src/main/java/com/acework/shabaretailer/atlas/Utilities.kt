@@ -1,9 +1,10 @@
 package com.acework.shabaretailer.atlas
 
 import android.util.Log
+import com.acework.shabaretailer.model.OrderShipmentDetails
+import com.acework.shabaretailer.model.ShippingCosts
 import com.google.gson.Gson
 import com.google.gson.JsonObject
-import com.acework.shabaretailer.model.OrderShipmentDetails
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -54,7 +55,7 @@ fun getProductCodes(jsonResult: String): Pair<String, String> {
     } catch (e: Exception) {
         Log.e("StringThatFailedParse", jsonResult)
         e.printStackTrace()
-        Pair("D", "D")
+        Pair("", "")
     }
 }
 
@@ -100,4 +101,42 @@ fun getPlannedShippingDate(): String {
 
 fun getPlannedShippingDateAndTime(): String {
     return getPlannedShippingDate() + "T09:00:00 GMT+03:00"
+}
+
+/**
+ * This function returns the shipping costs from a landed cost JSON result
+ */
+fun getShippingCosts(bagTotal: Double, landedCost: String): ShippingCosts {
+    return try {
+        val gson = Gson()
+        val resultAsJson = gson.fromJson(landedCost, JsonObject::class.java)
+
+        val productArray = resultAsJson.getAsJsonArray("products")
+        val product = productArray.get(0).asJsonObject
+
+        val detailedPriceBreakdown = product.get("detailedPriceBreakdown").asJsonObject
+        val breakdown = detailedPriceBreakdown.getAsJsonArray("breakdown")
+
+        val shippingCosts = ShippingCosts(bagTotal)
+
+        for (element in breakdown) {
+            val obj = element.asJsonObject
+            val name = obj.get("name").asString
+            val price = obj.get("price").asDouble
+
+            when (name) {
+                "SPRQN" -> shippingCosts.weightPrice = price
+                "STSCH" -> shippingCosts.dhlExpressFee = price
+                "TOTAL DUTIES" -> shippingCosts.duties = price
+                "TOTAL TAXES" -> shippingCosts.taxes = price
+                "TOTAL FEES" -> shippingCosts.dhlFees = price
+            }
+        }
+
+        shippingCosts
+    } catch (e: Exception) {
+        Log.e("StringThatFailedParse", landedCost)
+        e.printStackTrace()
+        ShippingCosts(0.0)
+    }
 }

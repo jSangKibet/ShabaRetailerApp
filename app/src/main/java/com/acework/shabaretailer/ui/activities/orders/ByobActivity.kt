@@ -152,7 +152,7 @@ private fun ActivityRoot(
             DialogSuccess(action = back, text = stringResource(id = R.string.order_placed))
         }
 
-        if (byobUiState.loadingRates == STATE_ERROR) {
+        if (byobUiState.loadingCosts == STATE_ERROR) {
             SnackbarModal(
                 text = stringResource(id = R.string.error_getting_shipping_rates),
                 action = { byobViewModel.getRating() },
@@ -934,7 +934,7 @@ fun OrderSummary(
 
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "$%.2f".format(byobUiState.shipping)
+                    text = "$%.2f".format(byobUiState.shippingCosts)
                 )
             }
 
@@ -950,7 +950,7 @@ fun OrderSummary(
 
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "$%.2f".format(bagsTotal + byobUiState.shipping)
+                    text = "$%.2f".format(bagsTotal + byobUiState.shippingCosts)
                 )
             }
 

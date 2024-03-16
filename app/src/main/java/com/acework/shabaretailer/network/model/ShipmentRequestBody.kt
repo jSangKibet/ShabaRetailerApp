@@ -36,7 +36,8 @@ data class PostalAddress(
     val postalCode: String = "0100",
     val cityName: String = "Nairobi",
     val countryCode: String = "KE",
-    val addressLine1: String = "432-00618 Ruaraka"
+    val addressLine1: String = "432-00618 Ruaraka",
+    val provinceCode: String = ""
 )
 
 data class ContactInformation(
@@ -48,7 +49,7 @@ data class ContactInformation(
 
 data class Content(
     val packages: List<Package> = listOf(Package()),
-    val isCustomsDeclarable: Boolean = false,
+    val isCustomsDeclarable: Boolean = true,
     val description: String = "Sisal handbags",
     val incoterm: String = "DAP",
     val unitOfMeasurement: String = "metric"
@@ -73,14 +74,16 @@ fun getShipmentRequestBody(productCodes: Pair<String, String>): ShipmentRequestB
         customerDetails = CustomerDetails(
             receiverDetails = PartyDetails(
                 postalAddress = PostalAddress(
-                    postalCode = "-",
+                    postalCode = PostalService.retailer.postalAddress,
                     cityName = PostalService.retailer.city,
                     countryCode = PostalService.retailer.countryCode,
-                    addressLine1 = "-"
+                    addressLine1 = PostalService.retailer.postalAddress,
+                    provinceCode = PostalService.retailer.stateCode
                 ),
                 contactInformation = ContactInformation(
                     email = PostalService.retailer.email,
-                    companyName = PostalService.retailer.name,
+                    phone = PostalService.retailer.number,
+                    companyName = PostalService.retailer.businessName,
                     fullName = PostalService.retailer.name
                 )
             )

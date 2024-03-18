@@ -154,9 +154,9 @@ private fun ActivityRoot(
 
         if (byobUiState.loadingCosts == STATE_ERROR) {
             SnackbarModal(
-                text = stringResource(id = R.string.error_getting_shipping_rates),
-                action = { byobViewModel.getRating() },
-                actionText = stringResource(id = R.string.retry_u)
+                text = byobUiState.landedCostsErrorMessage,
+                action = { back() },
+                actionText = stringResource(id = R.string.okay_u)
             )
         }
     }
@@ -858,7 +858,7 @@ fun ChooseInserts(
                 modifier = Modifier.fillMaxWidth(),
                 onClick = {
                     byobViewModel.setSection(ByobViewModel.CONFIRM_ORDER)
-                    byobViewModel.getRating()
+                    byobViewModel.getLandedCost()
                 },
                 shape = RoundedCornerShape(0.dp)
             ) {
@@ -934,7 +934,7 @@ fun OrderSummary(
 
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "$%.2f".format(byobUiState.shippingCosts)
+                    text = "$%.2f".format(byobUiState.shippingCosts.total)
                 )
             }
 
@@ -950,7 +950,7 @@ fun OrderSummary(
 
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "$%.2f".format(bagsTotal + byobUiState.shippingCosts)
+                    text = "$%.2f".format(bagsTotal + byobUiState.shippingCosts.total)
                 )
             }
 

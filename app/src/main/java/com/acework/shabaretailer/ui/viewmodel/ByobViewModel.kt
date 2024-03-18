@@ -10,10 +10,8 @@ import com.acework.shabaretailer.atlas.PRICE_WAHURA
 import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.atlas.STATE_LOADING
 import com.acework.shabaretailer.atlas.STATE_SUCCESS
-import com.acework.shabaretailer.atlas.getProductCodes
 import com.acework.shabaretailer.atlas.getShipmentDetails
 import com.acework.shabaretailer.atlas.getShippingCosts
-import com.acework.shabaretailer.atlas.ratingEndpointParams
 import com.acework.shabaretailer.model.Order
 import com.acework.shabaretailer.model.OrderItem
 import com.acework.shabaretailer.model.OrderShipmentDetails
@@ -223,46 +221,17 @@ class ByobViewModel : ViewModel() {
         _uiState.update { it.copy(errorPlacingOrder = false) }
     }
 
-    fun getRating() {
+    fun getLandedCost() {
         _uiState.update { state ->
             state.copy(
                 loading = true,
-                loadingMessage = R.string.getting_shipping_rates,
-                loadingCosts = STATE_LOADING
-            )
-        }
-        viewModelScope.launch {
-            NetworkOperations.rates(ratingEndpointParams) { requestStatus, responseStatus, errorCode, result ->
-                _uiState.update { state -> state.copy(loading = false) }
-                if (requestStatus && responseStatus) {
-                    val productCodes = getProductCodes(result)
-                    if (productCodes.first.isNotEmpty() && productCodes.second.isNotEmpty()) {
-                        _uiState.update { state -> state.copy(productCodes = productCodes) }
-                        getLandedCost()
-                    } else {
-                        _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
-                    }
-                } else {
-                    println(errorCode)
-                    _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
-                }
-            }
-        }
-    }
-
-    private fun getLandedCost() {
-        _uiState.update { state ->
-            state.copy(
-                loading = true,
-                loadingMessage = R.string.getting_shipping_rates
+                loadingMessage = R.string.getting_shipping_costs
             )
         }
 
         viewModelScope.launch {
             NetworkOperations.landedCost(
                 LandedCostRequestBody.create(
-                    uiState.value.productCodes.first,
-                    uiState.value.productCodes.second,
                     uiState.value.twende,
                     uiState.value.wahura / 2
                 )
@@ -285,7 +254,12 @@ class ByobViewModel : ViewModel() {
                         _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                     }
                 } else {
-                    println(errorCode)
+                    println(result)
+                    if (result.contains("200003")) {
+                        _uiState.update { state -> state.copy(landedCostsErrorMessage = "Your country requires a state or province code to allow shipping. Please edit your information to include your state or province code.") }
+                    } else {
+                        _uiState.update { state -> state.copy(landedCostsErrorMessage = "There was an error getting shipping costs. Please try again.") }
+                    }
                     _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                 }
             }
@@ -367,7 +341,8 @@ data class ByobUiState(
     val orderPlaced: Boolean = false,
     val errorPlacingOrder: Boolean = false,
     val loadingCosts: Int = STATE_LOADING,
-    val shippingCosts: ShippingCosts = ShippingCosts(),
+    val landedCostsErrorMessage: String = "There was an error getting shipping costs. Please try again.",
+    val shippingCosts: ShippingCosts = ShippingCosts(0.0),
     val productCodes: Pair<String, String> = Pair("D", "D"),
     val loadingShipment: Int = STATE_LOADING
 )

@@ -7,8 +7,8 @@ import com.acework.shabaretailer.atlas.PRICE_WAHURA
 data class LandedCostRequestBody(
     val customerDetails: LCCustomerDetails = LCCustomerDetails(),
     val accounts: List<LCAccount> = listOf(LCAccount()),
-    val productCode: String = "",
-    val localProductCode: String = "",
+    val productCode: String = "P",
+    val localProductCode: String = "P",
     val unitOfMeasurement: String = "metric",
     val currencyCode: String = "USD",
     val isCustomsDeclarable: Boolean = true,
@@ -26,21 +26,27 @@ data class LandedCostRequestBody(
 ) {
     companion object {
         fun create(
-            productCode: String,
-            localProductCode: String,
             numOfTwende: Int,
             numOfWahura: Int
         ): LandedCostRequestBody {
             return LandedCostRequestBody(
                 customerDetails = LCCustomerDetails(
-                    customerDetails = LCPartyDetails(
-                        PostalService.retailer.postalAddress,
-                        PostalService.retailer.city,
-                        PostalService.retailer.countryCode
-                    )
+                    receiverDetails =
+                    if (PostalService.retailer.stateCode.isNotEmpty()) {
+                        LCPartyDetailsStateCode(
+                            postalCode = "",
+                            cityName = PostalService.retailer.city,
+                            countryCode = PostalService.retailer.countryCode,
+                            provinceCode = PostalService.retailer.stateCode
+                        )
+                    } else {
+                        LCPartyDetails(
+                            postalCode = "",
+                            cityName = PostalService.retailer.city,
+                            countryCode = PostalService.retailer.countryCode
+                        )
+                    }
                 ),
-                productCode = productCode,
-                localProductCode = localProductCode,
                 items = listOf(
                     getLCItemTwende(numOfTwende),
                     getLCItemWahura(numOfWahura)
@@ -52,13 +58,24 @@ data class LandedCostRequestBody(
 
 data class LCCustomerDetails(
     val shipperDetails: LCPartyDetails = LCPartyDetails(),
-    val customerDetails: LCPartyDetails = LCPartyDetails()
+    val receiverDetails: LCPartyDetails = LCPartyDetails()
 )
 
-data class LCPartyDetails(
+open class LCPartyDetails(
     val postalCode: String = "00100",
     val cityName: String = "NAIROBI",
-    val countryCode: String = "KE",
+    val countryCode: String = "KE"
+)
+
+class LCPartyDetailsStateCode(
+    postalCode: String,
+    cityName: String,
+    countryCode: String,
+    val provinceCode: String = ""
+) : LCPartyDetails(
+    postalCode = postalCode,
+    cityName = cityName,
+    countryCode = countryCode
 )
 
 data class LCAccount(

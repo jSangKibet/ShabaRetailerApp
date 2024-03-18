@@ -303,18 +303,3 @@ val countriesWithCodes = mapOf(
     "Zambia" to "ZM",
     "Zimbabwe" to "ZW"
 )
-
-val ratingEndpointParams = mapOf(
-    "accountNumber" to "351403631",
-    "originCountryCode" to "KE",
-    "originCityName" to "Nairobi",
-    "destinationCountryCode" to PostalService.retailer.countryCode,
-    "destinationCityName" to PostalService.retailer.city,
-    "weight" to "2",
-    "length" to "34",
-    "width" to "32",
-    "height" to "34",
-    "plannedShippingDate" to getPlannedShippingDate(),
-    "isCustomsDeclarable" to "false",
-    "unitOfMeasurement" to "metric"
-)

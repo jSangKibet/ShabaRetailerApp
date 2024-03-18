@@ -39,30 +39,6 @@ fun getShippingCost(jsonResult: String): Double {
     }
 }
 
-/**
- * This function returns the product from a json string
- * default values represent worldwide shipping
- */
-fun getProductCodes(jsonResult: String): Pair<String, String> {
-    return try {
-        val gson = Gson()
-        val resultAsJson = gson.fromJson(jsonResult, JsonObject::class.java)
-        val productArray = resultAsJson.getAsJsonArray("products")
-        val product = productArray.get(0).asJsonObject
-        val productCode = product.get("productCode").asString
-        val localProductCode = product.get("localProductCode").asString
-        Pair(productCode, localProductCode)
-    } catch (e: Exception) {
-        Log.e("StringThatFailedParse", jsonResult)
-        e.printStackTrace()
-        Pair("", "")
-    }
-}
-
-
-/**
- * This function returns shipment from a json string
- */
 fun getShipmentDetails(jsonResult: String): OrderShipmentDetails {
     return try {
         val gson = Gson()

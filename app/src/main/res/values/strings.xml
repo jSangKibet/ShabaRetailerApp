@@ -148,8 +148,8 @@
     <string name="order_tc_accepted">I have read &amp; accepted the terms &amp; conditions of placing an order</string>
     <string name="tc">Terms &amp; conditions</string>
     <string name="placing_order">Placing order</string>
-    <string name="getting_shipping_rates">Getting shipping rates…</string>
-    <string name="error_getting_shipping_rates">There was an error getting shipping rates. Please try again.</string>
+    <string name="getting_shipping_costs">Getting shipping costs…</string>
+    <string name="error_getting_shipping_costs">There was an error getting shipping costs. Please try again.</string>
     <string name="order_placed">Order placed successfully!</string>
 
     <!-- bank details -->

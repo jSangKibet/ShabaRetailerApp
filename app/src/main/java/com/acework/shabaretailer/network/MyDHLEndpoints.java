@@ -15,6 +15,7 @@ public interface MyDHLEndpoints {
     @GET("rates")
     Call<String> rates(@QueryMap Map<String, String> parameters);
 
+    @POST("landed-cost")
     Call<String> landedCost(@Body LandedCostRequestBody landedCostRequestBody);
 
     @POST("shipments")

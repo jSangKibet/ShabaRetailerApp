@@ -30,7 +30,6 @@ public class NetworkOperations {
     }
 
     public static void landedCost(LandedCostRequestBody landedCostRequestBody, NetworkOperationsListener<String> listener) {
-        System.out.println(new Gson().toJson(landedCostRequestBody));
         Call<String> call = RetrofitServiceGenerator.endpoints.landedCost(landedCostRequestBody);
         call.enqueue(new Callback<>() {
             @Override

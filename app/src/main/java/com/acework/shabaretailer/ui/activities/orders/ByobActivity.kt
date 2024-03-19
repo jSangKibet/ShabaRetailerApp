@@ -53,8 +53,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.acework.shabaretailer.PostalService
 import com.acework.shabaretailer.R
 import com.acework.shabaretailer.atlas.STATE_ERROR
+import com.acework.shabaretailer.ui.components.buttons.ButtonBar
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconBlack
 import com.acework.shabaretailer.ui.components.buttons.ButtonIconOutlinedGray
+import com.acework.shabaretailer.ui.components.dialogs.DialogCostBreakdown
 import com.acework.shabaretailer.ui.components.dialogs.DialogLoading
 import com.acework.shabaretailer.ui.components.dialogs.DialogPaymentDetails
 import com.acework.shabaretailer.ui.components.dialogs.DialogSuccess
@@ -934,7 +936,7 @@ fun OrderSummary(
 
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "$%.2f".format(byobUiState.shippingCosts.total)
+                    text = "$%.2f".format(byobUiState.shippingCosts.getTotalShippingCosts())
                 )
             }
 
@@ -950,9 +952,15 @@ fun OrderSummary(
 
                 Text(
                     style = MaterialTheme.typography.titleLarge,
-                    text = "$%.2f".format(bagsTotal + byobUiState.shippingCosts.total)
+                    text = "$%.2f".format(byobUiState.shippingCosts.total)
                 )
             }
+
+            ButtonBar(
+                onClick = { byobViewModel.setShowCostBreakdown(true) },
+                text = stringResource(id = R.string.cost_breakdown)
+            )
+
 
             // retailer info title
             Text(
@@ -1092,6 +1100,13 @@ fun OrderSummary(
         DialogPaymentDetails(
             copyAccountNumber = copyAccountNumber,
             dismiss = { byobViewModel.updateShowBankDetails(false) }
+        )
+    }
+
+    if (byobUiState.showCostBreakdown) {
+        DialogCostBreakdown(
+            dismiss = { byobViewModel.setShowCostBreakdown(false) },
+            shippingCosts = byobUiState.shippingCosts
         )
     }
 }

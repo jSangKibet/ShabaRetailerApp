@@ -152,6 +152,18 @@
     <string name="error_getting_shipping_costs">There was an error getting shipping costs. Please try again.</string>
     <string name="order_placed">Order placed successfully!</string>
 
+    <!-- confirm order -> cost breakdown -->
+    <string name="cost_breakdown">Cost breakdown</string>
+    <string name="cost_of_bags_label">Cost of bags:</string>
+    <string name="weight_price_label">Weight price:</string>
+    <string name="duties_label">Duties:</string>
+    <string name="taxes_label">Taxes:</string>
+    <string name="dhl_shipping_fees_label">DHL shipping fees:</string>
+    <string name="dhl_express_fee_label">DHL express fee:</string>
+    <string name="total_shipping_costs_label">Total shipping costs:</string>
+    <string name="total_order_cost_label">Total order cost:</string>
+    <string name="costs_in_usd">All costs are in USD</string>
+
     <!-- bank details -->
     <string name="payment_bank_details">Payment bank details</string>
     <string name="bank">Bank</string>

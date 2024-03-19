@@ -104,6 +104,9 @@ class ByobViewModel : ViewModel() {
     fun updateShowBankDetails(value: Boolean) =
         _uiState.update { state -> state.copy(showBankDetails = value) }
 
+    fun setShowCostBreakdown(value: Boolean) =
+        _uiState.update { state -> state.copy(showCostBreakdown = value) }
+
     // getters
     fun getTotal(): Int {
         return (PRICE_WAHURA * (uiState.value.wahura / 2)) + PRICE_TWENDE * (uiState.value.twende)
@@ -235,7 +238,7 @@ class ByobViewModel : ViewModel() {
                     uiState.value.twende,
                     uiState.value.wahura / 2
                 )
-            ) { requestStatus, responseStatus, errorCode, result ->
+            ) { requestStatus, responseStatus, _, result ->
                 _uiState.update { state -> state.copy(loading = false) }
                 if (requestStatus && responseStatus) {
 
@@ -254,11 +257,12 @@ class ByobViewModel : ViewModel() {
                         _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                     }
                 } else {
-                    println(result)
-                    if (result.contains("200003")) {
-                        _uiState.update { state -> state.copy(landedCostsErrorMessage = "Your country requires a state or province code to allow shipping. Please edit your information to include your state or province code.") }
-                    } else {
-                        _uiState.update { state -> state.copy(landedCostsErrorMessage = "There was an error getting shipping costs. Please try again.") }
+                    if (result != null) {
+                        if (result.contains("200003")) {
+                            _uiState.update { state -> state.copy(landedCostsErrorMessage = "Your country requires a state or province code to allow shipping. Please edit your information to include your state or province code.") }
+                        } else {
+                            _uiState.update { state -> state.copy(landedCostsErrorMessage = "There was an error getting shipping costs. Please try again.") }
+                        }
                     }
                     _uiState.update { state -> state.copy(loadingCosts = STATE_ERROR) }
                 }
@@ -342,7 +346,8 @@ data class ByobUiState(
     val errorPlacingOrder: Boolean = false,
     val loadingCosts: Int = STATE_LOADING,
     val landedCostsErrorMessage: String = "There was an error getting shipping costs. Please try again.",
-    val shippingCosts: ShippingCosts = ShippingCosts(0.0),
+    val shippingCosts: ShippingCosts = ShippingCosts(0.0, 0.0),
     val productCodes: Pair<String, String> = Pair("D", "D"),
-    val loadingShipment: Int = STATE_LOADING
+    val loadingShipment: Int = STATE_LOADING,
+    val showCostBreakdown: Boolean = false
 )

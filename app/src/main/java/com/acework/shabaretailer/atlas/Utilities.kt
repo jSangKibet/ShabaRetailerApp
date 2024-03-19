@@ -90,10 +90,15 @@ fun getShippingCosts(bagTotal: Double, landedCost: String): ShippingCosts {
         val productArray = resultAsJson.getAsJsonArray("products")
         val product = productArray.get(0).asJsonObject
 
-        val detailedPriceBreakdown = product.get("detailedPriceBreakdown").asJsonObject
-        val breakdown = detailedPriceBreakdown.getAsJsonArray("breakdown")
+        val totalPriceArray = product.get("totalPrice").asJsonArray
+        val totalPriceObject = totalPriceArray.get(0).asJsonObject
+        val totalPrice = totalPriceObject.get("price").asString.toDouble()
 
-        val shippingCosts = ShippingCosts(bagTotal)
+        val detailedPriceBreakdown = product.get("detailedPriceBreakdown").asJsonArray
+        val detailedPriceBreakdownObject = detailedPriceBreakdown.get(0).asJsonObject
+        val breakdown = detailedPriceBreakdownObject.getAsJsonArray("breakdown")
+
+        val shippingCosts = ShippingCosts(bagTotal, totalPrice)
 
         for (element in breakdown) {
             val obj = element.asJsonObject
@@ -101,7 +106,6 @@ fun getShippingCosts(bagTotal: Double, landedCost: String): ShippingCosts {
             val price = obj.get("price").asDouble
 
             when (name) {
-                "SPRQN" -> shippingCosts.weightPrice = price
                 "STSCH" -> shippingCosts.dhlExpressFee = price
                 "TOTAL DUTIES" -> shippingCosts.duties = price
                 "TOTAL TAXES" -> shippingCosts.taxes = price
@@ -109,10 +113,11 @@ fun getShippingCosts(bagTotal: Double, landedCost: String): ShippingCosts {
             }
         }
 
+        shippingCosts.calculateWeightPrice()
         shippingCosts
     } catch (e: Exception) {
         Log.e("StringThatFailedParse", landedCost)
         e.printStackTrace()
-        ShippingCosts(0.0)
+        ShippingCosts(0.0, 0.0)
     }
 }

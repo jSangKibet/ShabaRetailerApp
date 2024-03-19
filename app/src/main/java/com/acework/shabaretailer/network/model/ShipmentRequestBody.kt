@@ -1,92 +1,27 @@
 package com.acework.shabaretailer.network.model
 
-import com.acework.shabaretailer.PostalService
-import com.acework.shabaretailer.atlas.getPlannedShippingDateAndTime
-
 data class ShipmentRequestBody(
-    val plannedShippingDateAndTime: String = "",
-    val pickup: Pickup = Pickup(),
-    val productCode: String = "",
-    val localProductCode: String = "",
-    val accounts: List<Account> = listOf(Account()),
-    val customerDetails: CustomerDetails = CustomerDetails(),
-    val content: Content = Content()
+    var requestOndemandDeliveryURL: Boolean? = null,
+    var plannedShippingDateAndTime: String? = null,
+    var pickup: Pickup? = Pickup(),
+    var productCode: String? = null,
+    var localProductCode: String? = null,
+    var getRateEstimates: Boolean? = null,
+    var accounts: ArrayList<Accounts> = arrayListOf(),
+    var valueAddedServices: ArrayList<String> = arrayListOf(),
+    var outputImageProperties: OutputImageProperties? = OutputImageProperties(),
+    var customerDetails: CustomerDetails? = CustomerDetails(),
+    var content: Content? = Content(),
+    var shipmentNotification: ArrayList<ShipmentNotification> = arrayListOf()
 )
 
 data class Pickup(
-    val isRequested: Boolean = true
+    var isRequested: Boolean? = null
 )
 
-data class Account(
-    val typeCode: String = "shipper",
-    val number: String = "351403631"
-)
+data class Accounts (
 
-data class CustomerDetails(
-    val shipperDetails: PartyDetails = PartyDetails(),
-    val receiverDetails: PartyDetails = PartyDetails(),
-)
+    @SerializedName("typeCode" ) var typeCode : String? = null,
+    @SerializedName("number"   ) var number   : String? = null
 
-data class PartyDetails(
-    val postalAddress: PostalAddress = PostalAddress(),
-    val contactInformation: ContactInformation = ContactInformation()
 )
-
-data class PostalAddress(
-    val postalCode: String = "0100",
-    val cityName: String = "Nairobi",
-    val countryCode: String = "KE",
-    val addressLine1: String = "432-00618 Ruaraka",
-    val provinceCode: String = ""
-)
-
-data class ContactInformation(
-    val email: String = "team@theshaba.com",
-    val phone: String = "+254114286821",
-    val companyName: String = "The Shaba",
-    val fullName: String = "The Shaba"
-)
-
-data class Content(
-    val packages: List<Package> = listOf(Package()),
-    val isCustomsDeclarable: Boolean = true,
-    val description: String = "Sisal handbags",
-    val incoterm: String = "DAP",
-    val unitOfMeasurement: String = "metric"
-)
-
-data class Package(
-    val weight: Double = 2.0,
-    val dimensions: Dimensions = Dimensions()
-)
-
-data class Dimensions(
-    val length: Double = 34.0,
-    val width: Double = 32.0,
-    val height: Double = 34.0
-)
-
-fun getShipmentRequestBody(productCodes: Pair<String, String>): ShipmentRequestBody {
-    return ShipmentRequestBody(
-        plannedShippingDateAndTime = getPlannedShippingDateAndTime(),
-        productCode = productCodes.first,
-        localProductCode = productCodes.second,
-        customerDetails = CustomerDetails(
-            receiverDetails = PartyDetails(
-                postalAddress = PostalAddress(
-                    postalCode = PostalService.retailer.postalAddress,
-                    cityName = PostalService.retailer.city,
-                    countryCode = PostalService.retailer.countryCode,
-                    addressLine1 = PostalService.retailer.postalAddress,
-                    provinceCode = PostalService.retailer.stateCode
-                ),
-                contactInformation = ContactInformation(
-                    email = PostalService.retailer.email,
-                    phone = PostalService.retailer.number,
-                    companyName = PostalService.retailer.businessName,
-                    fullName = PostalService.retailer.name
-                )
-            )
-        )
-    )
-}

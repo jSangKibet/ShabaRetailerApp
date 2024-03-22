@@ -10,14 +10,18 @@ import com.acework.shabaretailer.atlas.PRICE_WAHURA
 import com.acework.shabaretailer.atlas.STATE_ERROR
 import com.acework.shabaretailer.atlas.STATE_LOADING
 import com.acework.shabaretailer.atlas.STATE_SUCCESS
+import com.acework.shabaretailer.atlas.getPlannedShippingDate
+import com.acework.shabaretailer.atlas.getPlannedShippingDateAndTime
 import com.acework.shabaretailer.atlas.getShipmentDetails
 import com.acework.shabaretailer.atlas.getShippingCosts
+import com.acework.shabaretailer.atlas.getTwendeLineItem
+import com.acework.shabaretailer.atlas.getWahuraLineItem
 import com.acework.shabaretailer.model.Order
 import com.acework.shabaretailer.model.OrderItem
-import com.acework.shabaretailer.model.OrderShipmentDetails
 import com.acework.shabaretailer.model.ShippingCosts
 import com.acework.shabaretailer.network.NetworkOperations
 import com.acework.shabaretailer.network.model.LandedCostRequestBody
+import com.acework.shabaretailer.network.model.LineItems
 import com.acework.shabaretailer.network.model.getShipmentRequestBody
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
@@ -130,20 +134,21 @@ class ByobViewModel : ViewModel() {
                         uiState.value.twendeBlack)
     }
 
-    private fun getOrder(id: String, shipmentDetails: OrderShipmentDetails): Order {
+    private fun getOrder(
+        id: String,
+        shipmentDetails: Pair<String, String>,
+        shippingDateTime: String
+    ): Order {
         return Order(
             PostalService.retailer.city,
             PostalService.retailer.country,
-            shipmentDetails.dispatchConfirmationNumber,
-            shipmentDetails.docContent,
-            shipmentDetails.docImageFormat,
-            shipmentDetails.docTypeCode,
             id,
             getOrderItems(),
-            false,
             PostalService.retailer.id,
-            shipmentDetails.shipmentTrackingNumber,
-            uiState.value.shippingCosts.total,
+            shipmentDetails.second,
+            shipmentDetails.first,
+            uiState.value.shippingCosts,
+            shippingDateTime,
             "Pending",
             System.currentTimeMillis()
         )
@@ -278,15 +283,22 @@ class ByobViewModel : ViewModel() {
                 loadingShipment = STATE_LOADING
             )
         }
-        viewModelScope.launch {
 
-            val shipmentRequestBody = getShipmentRequestBody(uiState.value.productCodes)
+        viewModelScope.launch {
+            val shippingDateTime = getPlannedShippingDateAndTime()
+
+            val shipmentRequestBody = getShipmentRequestBody(
+                bagTotal = getBagTotal(),
+                invoiceDate = getPlannedShippingDate(),
+                lineItems = getLineItems(),
+                plannedShippingDateAndTime = shippingDateTime
+            )
 
             NetworkOperations.shipment(shipmentRequestBody) { requestStatus, responseStatus, errorCode, result ->
                 if (requestStatus && responseStatus) {
                     val shipmentDetails = getShipmentDetails(result)
-                    if (shipmentDetails.dispatchConfirmationNumber.isNotEmpty()) {
-                        placeOrder(shipmentDetails)
+                    if (shipmentDetails.first.isNotEmpty() && shipmentDetails.second.isNotEmpty()) {
+                        placeOrder(shipmentDetails, shippingDateTime)
                     } else {
                         _uiState.update { state ->
                             state.copy(
@@ -310,10 +322,27 @@ class ByobViewModel : ViewModel() {
         }
     }
 
-    private fun placeOrder(shipmentDetails: OrderShipmentDetails) {
+    private fun getBagTotal(): Int {
+        var bagTotal = uiState.value.twende * PRICE_TWENDE
+        bagTotal += (uiState.value.wahura / 2) * PRICE_WAHURA
+        return bagTotal
+    }
+
+    private fun getLineItems(): List<LineItems> {
+        val lineItems: MutableList<LineItems> = mutableListOf()
+        if (uiState.value.wahura > 0) {
+            lineItems.add(getWahuraLineItem(uiState.value.wahura / 2))
+        }
+        if (uiState.value.twende > 0) {
+            lineItems.add(getTwendeLineItem(uiState.value.twende))
+        }
+        return lineItems
+    }
+
+    private fun placeOrder(shipmentDetails: Pair<String, String>, shippingDateTime: String) {
         val db = Firebase.firestore
         val newOrderRef = db.collection("orders").document()
-        newOrderRef.set(getOrder(newOrderRef.id, shipmentDetails))
+        newOrderRef.set(getOrder(newOrderRef.id, shipmentDetails, shippingDateTime))
             .addOnSuccessListener {
                 _uiState.update { it.copy(loading = false, orderPlaced = true) }
             }

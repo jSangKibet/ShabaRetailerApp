@@ -8,6 +8,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -28,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.acework.shabaretailer.PostalService
 import com.acework.shabaretailer.R
-import com.acework.shabaretailer.atlas.getTotal
 import com.acework.shabaretailer.model.Order
 import com.acework.shabaretailer.ui.components.views.headers.HeaderWithoutAction
 import com.acework.shabaretailer.ui.theme.ShabaRetailersTheme
@@ -134,7 +134,7 @@ fun Order(
             )
             Text(
                 style = MaterialTheme.typography.titleSmall,
-                text = "$%.2f".format(order.getTotal() + order.shipping)
+                text = "$%.2f".format(order.shippingCosts.total)
             )
         }
 
@@ -142,18 +142,7 @@ fun Order(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    style = MaterialTheme.typography.labelMedium,
-                    text = stringResource(id = R.string.payment_status)
-                )
-                Text(
-                    style = MaterialTheme.typography.titleSmall,
-                    text = stringResource(id = if (order.paymentStatus) R.string.paid else R.string.not_paid)
-                )
-            }
+            Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 modifier = Modifier.height(48.dp),

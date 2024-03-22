@@ -1,6 +1,5 @@
 package com.acework.shabaretailer.atlas
 
-import com.acework.shabaretailer.PostalService
 import com.acework.shabaretailer.model.Item
 
 const val STATE_LOADING = 0
@@ -10,7 +9,7 @@ const val STATE_ERROR = 2
 const val PRICE_WAHURA = 35
 const val PRICE_TWENDE = 25
 
-val items = hashMapOf(
+val items = hashMapOf<String, Item>(
     "1" to Item(
         color = "Cream",
         description = "Twende sling bag is a mini pouch that comes with an adjustable strap and a detachable insert. The earth tone colours highlight our artisan skill, a heritage craft passed down through generations. The bag features a draw string for closure. It can be worn as a sling bag or a cross body bag. This is your on the go bag for a weekend hangout, quick run around town and can be your statement adventure bag for your next holiday destination as you explore the beach or safari. It perfectly fits your essentials like your passport & phone with extra space for your go to lipstick and small carriables.",

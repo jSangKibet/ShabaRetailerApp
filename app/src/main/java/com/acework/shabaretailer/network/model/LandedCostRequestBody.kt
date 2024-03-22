@@ -89,6 +89,12 @@ data class LCPackage(
     val dimensions: Dimensions = Dimensions()
 )
 
+data class Dimensions(
+    val length: Int = 34,
+    val width: Int = 32,
+    val height: Int = 34
+)
+
 data class LCItem(
     val number: Int = 0,
     val name: String = "",

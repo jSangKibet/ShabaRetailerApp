@@ -175,10 +175,13 @@ private fun ActivityRoot(
                             style = MaterialTheme.typography.labelMedium,
                             text = stringResource(id = R.string.shipping_customs_cost)
                         )
-                        Text(
-                            style = MaterialTheme.typography.titleSmall,
-                            text = "$%.2f".format(uiState.order.shipping)
-                        )
+                        uiState.order.shippingCosts.let {
+                            val shippingCosts = it.total - it.bagTotal
+                            Text(
+                                style = MaterialTheme.typography.titleSmall,
+                                text = "$%.2f".format(shippingCosts)
+                            )
+                        }
                     }
 
                     Column(
@@ -191,7 +194,7 @@ private fun ActivityRoot(
                         )
                         Text(
                             style = MaterialTheme.typography.titleSmall,
-                            text = "$%.2f".format(uiState.order.getTotal() + uiState.order.shipping)
+                            text = "$%.2f".format(uiState.order.shippingCosts.total)
                         )
                     }
                 }

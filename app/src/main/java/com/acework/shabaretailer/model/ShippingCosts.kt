@@ -1,6 +1,8 @@
 package com.acework.shabaretailer.model
 
-class ShippingCosts(val bagTotal: Double, val total: Double) {
+class ShippingCosts(var bagTotal: Double, var total: Double) {
+    constructor() : this(0.0, 0.0)
+
     var weightPrice: Double = 0.0
     var duties: Double = 0.0
     var taxes: Double = 0.0

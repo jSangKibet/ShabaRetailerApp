@@ -19,7 +19,7 @@ import java.util.Locale
 class OrderVM(private val orderId: String) : ViewModel() {
     private val _uiState = MutableStateFlow(OrderUiState())
     val uiState: StateFlow<OrderUiState> = _uiState.asStateFlow()
-    val dateFormatter = SimpleDateFormat("dd MM yyyy, hh:mm a", Locale.getDefault())
+    val dateFormatter = SimpleDateFormat("dd MMMM yyyy, hh:mm a", Locale.getDefault())
 
     init {
         loadOrder()

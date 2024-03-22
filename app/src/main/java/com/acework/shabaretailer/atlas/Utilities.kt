@@ -1,8 +1,11 @@
 package com.acework.shabaretailer.atlas
 
 import android.util.Log
-import com.acework.shabaretailer.model.OrderShipmentDetails
 import com.acework.shabaretailer.model.ShippingCosts
+import com.acework.shabaretailer.network.model.CommodityCodes
+import com.acework.shabaretailer.network.model.LineItems
+import com.acework.shabaretailer.network.model.Quantity
+import com.acework.shabaretailer.network.model.Weight
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import java.text.SimpleDateFormat
@@ -39,30 +42,22 @@ fun getShippingCost(jsonResult: String): Double {
     }
 }
 
-fun getShipmentDetails(jsonResult: String): OrderShipmentDetails {
+fun getShipmentDetails(jsonResult: String): Pair<String, String> {
     return try {
         val gson = Gson()
         val resultAsJson = gson.fromJson(jsonResult, JsonObject::class.java)
 
         val shipmentTrackingNumber = resultAsJson.get("shipmentTrackingNumber").asString
-        val dispatchConfirmationNumber = resultAsJson.get("dispatchConfirmationNumber").asString
-        val documents = resultAsJson.getAsJsonArray("documents")
-        val document = documents.get(0).asJsonObject
-        val docContent = document.get("content").asString
-        val docImageFormat = document.get("imageFormat").asString
-        val docTypeCode = document.get("typeCode").asString
 
-        OrderShipmentDetails(
-            dispatchConfirmationNumber,
-            docContent,
-            docImageFormat,
-            docTypeCode,
-            shipmentTrackingNumber
-        )
+        val documents = resultAsJson.getAsJsonArray("documents")
+        val documentObject = documents.get(0).asJsonObject
+        val document = documentObject.get("content").asString
+
+        Pair(shipmentTrackingNumber, document)
     } catch (e: Exception) {
         Log.e("StringThatFailedParse", jsonResult)
         e.printStackTrace()
-        OrderShipmentDetails()
+        Pair("", "")
     }
 }
 
@@ -120,4 +115,52 @@ fun getShippingCosts(bagTotal: Double, landedCost: String): ShippingCosts {
         e.printStackTrace()
         ShippingCosts(0.0, 0.0)
     }
+}
+
+fun getWahuraLineItem(quantity: Int): LineItems {
+    return getLineItem(
+        "Wahura Bucket Bag",
+        1,
+        PRICE_WAHURA,
+        quantity
+    )
+}
+
+fun getTwendeLineItem(quantity: Int): LineItems {
+    return getLineItem(
+        "Twende Sling Bag",
+        2,
+        PRICE_TWENDE,
+        quantity
+    )
+}
+
+fun getLineItem(
+    name: String,
+    number: Int,
+    price: Int,
+    quantity: Int
+): LineItems {
+    return LineItems(
+        number = number,
+        description = name,
+        price = price,
+        quantity = Quantity(
+            value = quantity,
+            unitOfMeasurement = "PCS"
+        ),
+        commodityCodes = listOf(
+            CommodityCodes(
+                typeCode = "outbound",
+                value = "420221"
+            )
+        ),
+        exportReasonType = "commercial_purpose_or_sale",
+        manufacturerCountry = "KE",
+        weight = Weight(
+            netValue = 0.9,
+            grossValue = 0.9
+        ),
+        isTaxesPaid = true
+    )
 }

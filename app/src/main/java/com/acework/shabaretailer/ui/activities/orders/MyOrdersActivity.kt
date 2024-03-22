@@ -8,7 +8,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -142,7 +141,16 @@ fun Order(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.weight(1f))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    style = MaterialTheme.typography.labelMedium,
+                    text = stringResource(id = R.string.payment_status)
+                )
+                Text(
+                    style = MaterialTheme.typography.titleSmall,
+                    text = order.paymentStatus
+                )
+            }
 
             Button(
                 modifier = Modifier.height(48.dp),

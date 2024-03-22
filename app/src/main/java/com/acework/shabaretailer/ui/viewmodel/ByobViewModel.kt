@@ -145,6 +145,7 @@ class ByobViewModel : ViewModel() {
             id,
             getOrderItems(),
             PostalService.retailer.id,
+            "Not paid",
             shipmentDetails.second,
             shipmentDetails.first,
             uiState.value.shippingCosts,

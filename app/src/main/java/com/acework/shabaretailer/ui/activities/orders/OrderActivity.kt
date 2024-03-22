@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.acework.shabaretailer.R
 import com.acework.shabaretailer.atlas.getItemName
-import com.acework.shabaretailer.atlas.getTotal
 import com.acework.shabaretailer.model.OrderItem
 import com.acework.shabaretailer.ui.components.buttons.ButtonBar
 import com.acework.shabaretailer.ui.components.buttons.ButtonBarOutlined
@@ -173,6 +172,20 @@ private fun ActivityRoot(
                     ) {
                         Text(
                             style = MaterialTheme.typography.labelMedium,
+                            text = stringResource(id = R.string.cost_of_bags)
+                        )
+                        Text(
+                            style = MaterialTheme.typography.titleSmall,
+                            text = "$%.2f".format(uiState.order.shippingCosts.bagTotal)
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            style = MaterialTheme.typography.labelMedium,
                             text = stringResource(id = R.string.shipping_customs_cost)
                         )
                         uiState.order.shippingCosts.let {
@@ -183,9 +196,10 @@ private fun ActivityRoot(
                             )
                         }
                     }
+                }
 
+                Row(modifier = Modifier.fillMaxWidth()) {
                     Column(
-                        horizontalAlignment = Alignment.End,
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(
@@ -195,6 +209,20 @@ private fun ActivityRoot(
                         Text(
                             style = MaterialTheme.typography.titleSmall,
                             text = "$%.2f".format(uiState.order.shippingCosts.total)
+                        )
+                    }
+
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text(
+                            style = MaterialTheme.typography.labelMedium,
+                            text = stringResource(id = R.string.payment_status)
+                        )
+                        Text(
+                            style = MaterialTheme.typography.titleSmall,
+                            text = uiState.order.paymentStatus
                         )
                     }
                 }

@@ -251,6 +251,7 @@
     <string name="shipment_tracking_number">Shipment tracking number</string>
     <string name="tracking_number_copied">Tracking number copied</string>
     <string name="copy_tracking_number">Copy tracking number</string>
+    <string name="cost_of_bags">Cost of bags</string>
 
     <string name="title_activity_about">AboutActivity</string>
 

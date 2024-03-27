@@ -2,10 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -14,107 +10,87 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.ShabaRetailer"
+        android:theme="@style/Theme.ShabaRetailers"
         tools:targetApi="31">
         <activity
-            android:name=".ui.view.catalog.CatalogActivity"
-            android:exported="false" />
+            android:name=".ui.activities.retailer.DeleteAccountActivity"
+            android:exported="false"
+            android:label="@string/title_activity_delete_account"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.view.byb.BybIntroActivity"
-            android:exported="false" />
+            android:name=".ui.activities.retailer.EmailVerificationActivity"
+            android:exported="false"
+            android:label="@string/title_activity_email_verification"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.view.byb.InstructionsActivity"
-            android:exported="false" />
+            android:name=".ui.activities.catalog.CatalogActivity"
+            android:exported="false"
+            android:label="@string/title_activity_catalog2"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.ConfirmOrderActivity"
-            android:exported="false" />
+            android:name=".ui.activities.retailer.AboutActivity"
+            android:exported="false"
+            android:label="@string/title_activity_about"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.BuildYourBoxActivity"
-            android:exported="false" />
+            android:name=".ui.activities.retailer.WelcomeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_welcome"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.view.byb.ChooseInsertColorsActivity"
-            android:exported="false" />
+            android:name=".ui.activities.orders.OrderActivity"
+            android:exported="false"
+            android:label="@string/title_activity_order"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.ItemDetailsActivity"
-            android:exported="false" />
+            android:name=".ui.activities.orders.MyOrdersActivity"
+            android:exported="false"
+            android:label="@string/title_activity_my_orders"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".WelcomeActivity"
-            android:exported="false" />
+            android:name=".ui.activities.retailer.ChangePasswordActivity"
+            android:exported="false"
+            android:label="@string/title_activity_change_password"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ChangePasswordActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".ui.activities.retailer.EditRetailerActivity"
+            android:exported="false"
+            android:label="@string/title_activity_edit_retailer"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".catalog.PreviewActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".ui.activities.orders.ByobActivity"
+            android:exported="false"
+            android:label="@string/title_activity_byob"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ForgotPasswordActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".ui.activities.catalog.CatalogItemActivity"
+            android:exported="false"
+            android:label="@string/title_activity_catalog_item"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".EditRetailerActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".ui.activities.retailer.SignUpActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".AccountVerificationActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".ui.activities.retailer.CreateRetailerActivity"
+            android:exported="false"
+            android:label="@string/title_activity_sign_up"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
-            android:name=".ui.OrderInformationActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".ui.MyOrdersActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".SignupActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
-        <activity
-            android:name=".LoginActivity"
-            android:exported="false">
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
-        </activity>
+            android:name=".ui.activities.retailer.LoginActivity"
+            android:exported="false"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.ShabaRetailers" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.ShabaRetailers">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
-            <meta-data
-                android:name="android.app.lib_name"
-                android:value="" />
         </activity>
     </application>
 

@@ -23,7 +23,7 @@ class MyOrdersVM : ViewModel() {
 
     private fun loadOrders() {
         val database = Firebase.firestore
-        database.collection("orders")
+        database.collection("ordersV2")
             .orderBy("timestamp", Query.Direction.DESCENDING)
             .whereEqualTo("retailerId", PostalService.retailer.id)
             .addSnapshotListener { snapshot, exception ->

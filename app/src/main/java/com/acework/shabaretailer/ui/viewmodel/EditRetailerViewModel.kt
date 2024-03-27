@@ -85,7 +85,7 @@ class EditRetailerViewModel : ViewModel() {
                 uiState.value.stateCode
             )
 
-            db.collection("retailers").document(user.uid).set(retailer)
+            db.collection("retailersV2").document(user.uid).set(retailer)
                 .addOnSuccessListener {
                     _uiState.update { s ->
                         s.copy(

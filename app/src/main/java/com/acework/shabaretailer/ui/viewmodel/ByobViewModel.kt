@@ -342,7 +342,7 @@ class ByobViewModel : ViewModel() {
 
     private fun placeOrder(shipmentDetails: Pair<String, String>, shippingDateTime: String) {
         val db = Firebase.firestore
-        val newOrderRef = db.collection("orders").document()
+        val newOrderRef = db.collection("ordersV2").document()
         newOrderRef.set(getOrder(newOrderRef.id, shipmentDetails, shippingDateTime))
             .addOnSuccessListener {
                 _uiState.update { it.copy(loading = false, orderPlaced = true) }

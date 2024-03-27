@@ -48,7 +48,7 @@ class CatalogViewModel : ViewModel() {
         _uiState.update { state -> state.copy(loading = true, retailerLoading = STATE_LOADING) }
 
         val db = Firebase.firestore
-        db.collection("retailers").document(uiState.value.user!!.uid).get()
+        db.collection("retailersV2").document(uiState.value.user!!.uid).get()
             .addOnSuccessListener {
                 _uiState.update { state ->
                     state.copy(

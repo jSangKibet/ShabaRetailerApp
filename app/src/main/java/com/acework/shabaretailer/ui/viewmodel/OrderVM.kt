@@ -33,7 +33,7 @@ class OrderVM(private val orderId: String) : ViewModel() {
                 loadingError = false,
             )
         }
-        database.collection("orders").document(orderId)
+        database.collection("ordersV2").document(orderId)
             .addSnapshotListener { snapshot, exception ->
                 if (exception == null) {
                     snapshot?.let {
@@ -78,7 +78,7 @@ class OrderVM(private val orderId: String) : ViewModel() {
     fun cancelOrder() {
         _uiState.update { state -> state.copy(loading = true, confirmOrderCancellation = false) }
         val database = Firebase.firestore
-        database.collection("orders").document(orderId).update("status", "Canceled")
+        database.collection("ordersV2").document(orderId).update("status", "Canceled")
             .addOnCompleteListener {
                 _uiState.update { state -> state.copy(loading = false, orderUpdated = true) }
             }
@@ -94,7 +94,7 @@ class OrderVM(private val orderId: String) : ViewModel() {
     fun restoreOrder() {
         _uiState.update { state -> state.copy(loading = true, confirmOrderRestoration = false) }
         val database = Firebase.firestore
-        database.collection("orders").document(orderId).update("status", "Pending")
+        database.collection("ordersV2").document(orderId).update("status", "Pending")
             .addOnCompleteListener {
                 _uiState.update { state -> state.copy(loading = false, orderUpdated = true) }
             }
@@ -116,7 +116,7 @@ class OrderVM(private val orderId: String) : ViewModel() {
     fun orderReceived() {
         _uiState.update { state -> state.copy(loading = true, confirmOrderReception = false) }
         val database = Firebase.firestore
-        database.collection("orders").document(orderId).update("status", "Received")
+        database.collection("ordersV2").document(orderId).update("status", "Received")
             .addOnCompleteListener {
                 _uiState.update { state -> state.copy(loading = false, orderUpdated = true) }
             }

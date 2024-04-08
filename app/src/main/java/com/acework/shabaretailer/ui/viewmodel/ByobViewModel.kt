@@ -25,6 +25,7 @@ import com.acework.shabaretailer.network.model.LineItems
 import com.acework.shabaretailer.network.model.getShipmentRequestBody
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.firestore
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -227,7 +228,7 @@ class ByobViewModel : ViewModel() {
     }
 
     fun errorConsumed() {
-        _uiState.update { it.copy(errorPlacingOrder = false) }
+        _uiState.update { it.copy(errorPlacingOrder = false, loadingShipment = STATE_LOADING) }
     }
 
     fun getLandedCost() {
@@ -309,7 +310,6 @@ class ByobViewModel : ViewModel() {
                         }
                     }
                     _uiState.update { state -> state.copy(loading = false) }
-                    println(result)
                 } else {
                     println(errorCode)
                     _uiState.update { state ->

@@ -9,6 +9,7 @@ data class Retailer(
     val id: String = "",
     val name: String = "",
     val number: String = "",
+    val postalCode: String = "",
     val postalAddress: String = "",
     val stateCode: String="",
 ) {
@@ -22,6 +23,7 @@ data class Retailer(
             id: String,
             name: String,
             number: String,
+            postalCode: String,
             postalAddress: String,
             stateCode: String
         ): Retailer {
@@ -34,6 +36,7 @@ data class Retailer(
                 id,
                 name,
                 number,
+                postalCode,
                 postalAddress,
                 stateCode
             )

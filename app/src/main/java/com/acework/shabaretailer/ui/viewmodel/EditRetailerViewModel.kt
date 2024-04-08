@@ -24,6 +24,7 @@ class EditRetailerViewModel : ViewModel() {
         businessName: String = uiState.value.businessName,
         country: String = uiState.value.country,
         city: String = uiState.value.city,
+        postalCode: String=uiState.value.postalCode,
         postalAddress: String = uiState.value.postalAddress,
         number: String = uiState.value.number,
         name: String = uiState.value.name,
@@ -34,6 +35,7 @@ class EditRetailerViewModel : ViewModel() {
                 businessName = businessName,
                 country = country,
                 city = city,
+                postalCode = postalCode,
                 postalAddress = postalAddress,
                 number = number,
                 name = name,
@@ -49,6 +51,7 @@ class EditRetailerViewModel : ViewModel() {
                 businessNameError = state.businessName.trim().isEmpty(),
                 countryError = state.country.isEmpty(),
                 cityError = state.city.trim().isEmpty(),
+                postalCodeError = state.postalCode.trim().isEmpty(),
                 postalAddressError = state.postalAddress.trim().isEmpty(),
                 numberError = !state.number.trim().matches(Regex("[+]\\d+")),
                 nameError = state.name.trim().isEmpty()
@@ -81,6 +84,7 @@ class EditRetailerViewModel : ViewModel() {
                 PostalService.retailer.id,
                 uiState.value.name,
                 uiState.value.number,
+                uiState.value.postalCode,
                 uiState.value.postalAddress,
                 uiState.value.stateCode
             )
@@ -112,6 +116,7 @@ data class EditRetailerUiState(
     val businessName: String = PostalService.retailer.businessName,
     val country: String = PostalService.retailer.country,
     val city: String = PostalService.retailer.city,
+    val postalCode: String = PostalService.retailer.postalCode,
     val postalAddress: String = PostalService.retailer.postalAddress,
     val number: String = PostalService.retailer.number,
     val name: String = PostalService.retailer.name,
@@ -121,6 +126,7 @@ data class EditRetailerUiState(
     val businessNameError: Boolean = false,
     val countryError: Boolean = false,
     val cityError: Boolean = false,
+    val postalCodeError: Boolean = false,
     val postalAddressError: Boolean = false,
     val numberError: Boolean = false,
     val nameError: Boolean = false,
@@ -134,6 +140,7 @@ fun EditRetailerUiState.isInputValid(): Boolean {
     if (businessNameError) return false
     if (countryError) return false
     if (cityError) return false
+    if (postalCodeError) return false
     if (postalAddressError) return false
     if (numberError) return false
     if (nameError) return false

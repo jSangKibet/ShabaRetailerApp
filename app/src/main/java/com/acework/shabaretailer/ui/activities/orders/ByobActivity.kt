@@ -39,7 +39,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -143,13 +142,6 @@ private fun ActivityRoot(
             modifier = Modifier.align(Alignment.BottomCenter)
         )
 
-        if (byobUiState.errorPlacingOrder) {
-            LaunchedEffect(snackbarHostState) {
-                snackbarHostState.showSnackbar(message = "There was an error placing your order. Please try again.")
-                byobViewModel.errorConsumed()
-            }
-        }
-
         if (byobUiState.orderPlaced) {
             DialogSuccess(action = back, text = stringResource(id = R.string.order_placed))
         }
@@ -158,6 +150,14 @@ private fun ActivityRoot(
             SnackbarModal(
                 text = byobUiState.landedCostsErrorMessage,
                 action = { back() },
+                actionText = stringResource(id = R.string.okay_u)
+            )
+        }
+
+        if (byobUiState.loadingShipment == STATE_ERROR || byobUiState.errorPlacingOrder) {
+            SnackbarModal(
+                text = "There was an error placing your order. Please try again",
+                action = { byobViewModel.errorConsumed() },
                 actionText = stringResource(id = R.string.okay_u)
             )
         }

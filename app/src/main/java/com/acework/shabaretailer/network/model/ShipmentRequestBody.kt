@@ -64,7 +64,7 @@ fun getShipmentRequestBody(
                 postalAddress = PostalAddress(
                     cityName = PostalService.retailer.city,
                     countryCode = PostalService.retailer.countryCode,
-                    postalCode = "",
+                    postalCode = PostalService.retailer.postalCode,
                     addressLine1 = PostalService.retailer.postalAddress,
                     countryName = PostalService.retailer.country
                 ),

@@ -137,6 +137,17 @@ private fun ActivityRoot(
                     value = uiState.city
                 )
 
+                // postal code
+                TextFieldTranslucent(
+                    errorMsg = R.string.field_required,
+                    isError = uiState.postalCodeError,
+                    label = R.string.postal_code,
+                    onValueChange = { address ->
+                        viewModel.updateFields(postalCode = address)
+                    },
+                    value = uiState.postalCode
+                )
+
                 // postal address
                 TextFieldTranslucent(
                     errorMsg = R.string.field_required,

@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -102,7 +104,10 @@ private fun ActivityRoot(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
-                Column(modifier = Modifier.weight(1f)) {
+                Column(modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .weight(1f))
+                {
                     // business name
                     TextFieldTranslucent(
                         errorMsg = R.string.field_required,
@@ -135,6 +140,17 @@ private fun ActivityRoot(
                             viewModel.updateFields(city = city)
                         },
                         value = uiState.city
+                    )
+
+                    // postal code
+                    TextFieldTranslucent(
+                        errorMsg = R.string.field_required,
+                        isError = uiState.postalCodeError,
+                        label = R.string.postal_code,
+                        onValueChange = { address ->
+                            viewModel.updateFields(postalCode = address)
+                        },
+                        value = uiState.postalCode
                     )
 
                     // postal address

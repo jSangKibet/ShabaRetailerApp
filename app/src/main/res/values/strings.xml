@@ -48,6 +48,7 @@
     <string name="your_business_name">Your business\'s name</string>
     <string name="your_mobile_number">Your mobile number (international format)</string>
     <string name="your_name">Your name</string>
+    <string name="postal_code">Postal code</string>
     <string name="postal_address">Postal address</string>
     <string name="required_shipping_details">Your mobile number &amp; name are required for shipping purposes. Please provide correct details.</string>
     <string name="optional_required_state_code">In some countries such as Canada, you must provide a state or province code to be able to receive shipments. If you live in such an area, please provide your state or province code.</string>

@@ -23,6 +23,7 @@ class CreateRetailerViewModel : ViewModel() {
         businessName: String = uiState.value.businessName,
         country: String = uiState.value.country,
         city: String = uiState.value.city,
+        postalCode: String = uiState.value.postalCode,
         postalAddress: String = uiState.value.postalAddress,
         number: String = uiState.value.number,
         name: String = uiState.value.name,
@@ -33,6 +34,7 @@ class CreateRetailerViewModel : ViewModel() {
                 businessName = businessName,
                 country = country,
                 city = city,
+                postalCode = postalCode,
                 postalAddress = postalAddress,
                 number = number,
                 name = name,
@@ -47,6 +49,7 @@ class CreateRetailerViewModel : ViewModel() {
                 businessNameError = state.businessName.trim().isEmpty(),
                 countryError = state.country.isEmpty(),
                 cityError = state.city.trim().isEmpty(),
+                postalCodeError = state.postalCode.trim().isEmpty(),
                 postalAddressError = state.postalAddress.trim().isEmpty(),
                 numberError = !state.number.trim().matches(Regex("[+]\\d+")),
                 nameError = state.name.trim().isEmpty()
@@ -80,6 +83,7 @@ class CreateRetailerViewModel : ViewModel() {
                     user.uid,
                     uiState.value.name,
                     uiState.value.number,
+                    uiState.value.postalCode,
                     uiState.value.postalAddress,
                     uiState.value.stateCode
                 )
@@ -112,6 +116,7 @@ data class CreateRetailerUiState(
     val businessName: String = "",
     val country: String = "",
     val city: String = "",
+    val postalCode: String = "",
     val postalAddress: String = "",
     val number: String = "",
     val name: String = "",
@@ -121,6 +126,7 @@ data class CreateRetailerUiState(
     val businessNameError: Boolean = false,
     val countryError: Boolean = false,
     val cityError: Boolean = false,
+    val postalCodeError: Boolean = false,
     val postalAddressError: Boolean = false,
     val numberError: Boolean = false,
     val nameError: Boolean = false,
@@ -134,6 +140,7 @@ fun CreateRetailerUiState.isInputValid(): Boolean {
     if (businessNameError) return false
     if (countryError) return false
     if (cityError) return false
+    if (postalCodeError) return false
     if (postalAddressError) return false
     if (numberError) return false
     if (nameError) return false

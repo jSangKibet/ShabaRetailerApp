@@ -12,8 +12,8 @@ android {
         applicationId ="com.acework.shabaretailer"
         minSdk =21
         targetSdk =34
-        versionCode= 12
-        versionName ="5.1"
+        versionCode= 13
+        versionName ="6"
 
         testInstrumentationRunner ="androidx.test.runner.AndroidJUnitRunner"
     }
